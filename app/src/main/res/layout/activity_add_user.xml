@@ -5,38 +5,35 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".activity.AddDogActivity">
+    tools:context=".activity.AddUserActivity">
 
     <android.support.v7.widget.Toolbar
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorPrimary">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_arrow_back_black_24dp"
-                android:onClick="outadd"/>
+                android:onClick="back"
+                android:src="@drawable/ic_arrow_back_black_24dp" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Dog"
-                android:textStyle="bold"
+                android:layout_marginLeft="10dp"
+                android:text="User"
                 android:textColor="#fff"
                 android:textSize="20sp"
-                android:layout_marginLeft="10dp"/>
+                android:textStyle="bold" />
         </LinearLayout>
     </android.support.v7.widget.Toolbar>
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -46,19 +43,23 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/imageaddog"
-            android:layout_width="130dp"
-            android:layout_height="130dp"
+            android:id="@+id/imagesignup"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:src="@drawable/money" />
 
         <ImageView
-            android:id="@+id/fileaddog"
-            android:layout_width="25dp"
+            android:id="@+id/file"
+            android:layout_width="20dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="105dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="78dp"
             android:src="@drawable/ic_insert_drive_file_black_24dp" />
     </LinearLayout>
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -73,21 +74,20 @@
                 android:layout_marginBottom="5dp">
 
                 <EditText
-                    android:id="@+id/idaddog"
+                    android:id="@+id/username"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="ID"
+                    android:hint="Username"
                     android:imeOptions="actionNext"
                     android:inputType="text" />
             </android.support.design.widget.TextInputLayout>
-
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp">
 
                 <EditText
-                    android:id="@+id/nameaddog"
+                    android:id="@+id/name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Name"
@@ -101,7 +101,7 @@
                 android:layout_marginBottom="5dp">
 
                 <EditText
-                    android:id="@+id/ageaddog"
+                    android:id="@+id/age"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Age"
@@ -109,17 +109,31 @@
                     android:inputType="number" />
             </android.support.design.widget.TextInputLayout>
 
+
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/priceaddog"
+                    android:id="@+id/phone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Price"
+                    android:hint="Phone"
+                    android:imeOptions="actionGo"
+                    android:inputType="phone" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/gmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Gmail"
                     android:imeOptions="actionDone"
-                    android:inputType="numberDecimal" />
+                    android:inputType="text" />
             </android.support.design.widget.TextInputLayout>
 
             <Button
@@ -127,10 +141,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/buttonkeyboad_conner"
-                android:onClick="addog"
+                android:onClick="adduser"
                 android:text="SAVE"
                 android:textColor="#fff" />
-        </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

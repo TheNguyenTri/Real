@@ -7,14 +7,17 @@
     tools:context=".activity.HomeActivity">
 
     <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/coor"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <android.support.design.widget.AppBarLayout
+            android:id="@+id/appbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <android.support.design.widget.CollapsingToolbarLayout
+                android:id="@+id/coll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:contentScrim="@color/colorPrimary"
@@ -42,73 +45,30 @@
                 </android.support.v7.widget.Toolbar>
             </android.support.design.widget.CollapsingToolbarLayout>
         </android.support.design.widget.AppBarLayout>
-
-        <android.support.v4.widget.NestedScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-            <!--<HorizontalScrollView-->
-            <!--android:id="@+id/b"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content">-->
-
-            <!--<FrameLayout-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content">-->
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/selector_listview_one"
-                android:orientation="vertical">
-
-                <View
-                    android:layout_width="fill_parent"
-                    android:layout_height="5.0dip"
-                    android:background="@drawable/setting_line" />
-
-                <GridView
-                    android:id="@+id/lvcho"
-                    android:layout_width="match_parent"
-                    android:layout_height="420dp"
-                    android:horizontalSpacing="5dp"
-                    android:numColumns="3"
-                    android:padding="5dp"
-                    android:verticalSpacing="5dp"></GridView>
-
-                <View
-                    android:layout_width="fill_parent"
-                    android:layout_height="5.0dip"
-                    android:background="@drawable/setting_line" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/content" />
-            </LinearLayout>
-            <!--</FrameLayout>-->
-            <!--</HorizontalScrollView>-->
-            <!--<TextView-->
+        <include layout="@layout/content_main" />
+        <!--<android.support.v4.widget.NestedScrollView-->
+            <!--app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
             <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="@string/content" />-->
-            <!--</LinearLayout>-->
-        </android.support.v4.widget.NestedScrollView>
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginRight="20dp"
-            android:layout_marginBottom="20dp"
-            android:onClick="addd"
-            android:src="@drawable/ic_edit_black_24dp" />
+            <!--android:layout_height="wrap_content">-->
+            <!--<android.support.v7.widget.RecyclerView-->
+                <!--android:id="@+id/recycler_view"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent" />-->
+        <!--</android.support.v4.widget.NestedScrollView>-->
     </android.support.design.widget.CoordinatorLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_marginBottom="80dp"
+        android:onClick="addtype"
+        android:layout_marginRight="20dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
 
+        android:src="@drawable/ic_edit_black_24dp"/>
     <android.support.design.widget.BottomNavigationView
         android:layout_width="match_parent"
+        android:id="@+id/navi"
         android:layout_height="wrap_content"
         app:itemTextColor="#FFF"
         app:itemIconTint="#fff"

@@ -3,7 +3,6 @@ package android.trithe.real.activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.trithe.real.LoginActivity;
 import android.trithe.real.R;
 
 import java.util.Timer;
@@ -20,7 +19,7 @@ public class HelloActivity extends AppCompatActivity {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                Intent intent = new Intent(HelloActivity.this, LoginActivity.class);
+                Intent intent = new Intent(HelloActivity.this, HomeActivity.class);
                 startActivity(intent);
             }
         }, 1000);

@@ -9,7 +9,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".LoginActivity" />
         <activity android:name=".activity.HelloActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -17,10 +16,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.SignupActivity" />
-        <activity android:name=".activity.AddDogActivity" />
+        <activity android:name=".activity.AddUserActivity" />
         <activity android:name=".activity.HomeActivity" />
-        <activity android:name=".activity.EditDogActivity"/>
+        <activity android:name=".activity.AddTypeActivity" />
+        <activity android:name=".activity.ListUserActivity" />
+        <activity android:name=".activity.EditTypeActivity"></activity>
     </application>
 
 </manifest>
