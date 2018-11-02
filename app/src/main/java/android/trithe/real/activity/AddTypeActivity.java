@@ -21,6 +21,7 @@ import android.widget.Toast;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Random;
 
 public class AddTypeActivity extends AppCompatActivity {
     private ImageView imageaddog;
@@ -32,13 +33,14 @@ public class AddTypeActivity extends AppCompatActivity {
     private final int SELECT_PHOTO = 101;
     final private int REQUEST_CODE_WRITE_STORAGE = 1;
     private TypeDAO typeDAO;
+    String id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_type);
         initView();
-        typeDAO=new TypeDAO(this);
+        typeDAO = new TypeDAO(this);
         fileaddog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -50,7 +52,9 @@ public class AddTypeActivity extends AppCompatActivity {
         btnsave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TypePet type = new TypePet(idaddog.getText().toString(), nameaddog.getText().toString(), ImageViewChange(imageaddog));
+                Random random = new Random();
+                id = String.valueOf(random.nextInt());
+                TypePet type = new TypePet(id, nameaddog.getText().toString(), ImageViewChange(imageaddog));
                 if (typeDAO.insertType(type) > 0) {
                     Toast.makeText(getApplicationContext(), "Add successfully", Toast.LENGTH_SHORT).show();
                     finish();
@@ -94,7 +98,7 @@ public class AddTypeActivity extends AppCompatActivity {
     private void initView() {
         imageaddog = (ImageView) findViewById(R.id.imageaddog);
         fileaddog = (ImageView) findViewById(R.id.fileaddog);
-        idaddog = (EditText) findViewById(R.id.idaddog);
+//        idaddog = (EditText) findViewById(R.id.idaddog);
         nameaddog = (EditText) findViewById(R.id.nameaddog);
         btnsave = (Button) findViewById(R.id.btnsave);
         btncancel = (Button) findViewById(R.id.btncancel);

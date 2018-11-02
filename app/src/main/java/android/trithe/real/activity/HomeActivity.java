@@ -23,6 +23,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
@@ -36,7 +37,6 @@ public class HomeActivity extends AppCompatActivity {
     private ImageView imageaddog;
     private ImageView fileaddog;
     private Toolbar toolbar;
-
     private final int SELECT_PHOTO = 101;
     final private int REQUEST_CODE_WRITE_STORAGE = 1;
 

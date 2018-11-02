@@ -37,19 +37,19 @@
 
         android:orientation="vertical">
 
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp">
+        <!--<android.support.design.widget.TextInputLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginBottom="5dp">-->
 
-            <EditText
-                android:id="@+id/idaddog"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="ID"
-                android:imeOptions="actionNext"
-                android:inputType="text" />
-        </android.support.design.widget.TextInputLayout>
+            <!--<EditText-->
+                <!--android:id="@+id/idaddog"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:hint="ID"-->
+                <!--android:imeOptions="actionNext"-->
+                <!--android:inputType="text" />-->
+        <!--</android.support.design.widget.TextInputLayout>-->
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
