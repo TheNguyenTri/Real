@@ -57,11 +57,10 @@ public class EditTypeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 //                TypePet type = new TypePet(id, nameedit.getText().toString(), ImageViewChange(imageedit));
-                if (typeDAO.updateType(id, nameedit.getText().toString(), ImageViewChange(imageedit)) > 0) {
-                    Toast.makeText(getApplicationContext(), "Add successfully", Toast.LENGTH_SHORT).show();
-                    finish();
-//                    Log.d("nhan", type.toString());
-                }
+//                if (typeDAO.updateType(type) > 0) {
+//                    Toast.makeText(getApplicationContext(), "Add successfully", Toast.LENGTH_SHORT).show();
+//                    finish();
+//                }
             }
         });
     }

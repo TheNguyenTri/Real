@@ -16,11 +16,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.AddUserActivity" />
         <activity android:name=".activity.HomeActivity" />
-        <activity android:name=".activity.AddTypeActivity" />
-        <activity android:name=".activity.ListUserActivity" />
-        <activity android:name=".activity.EditTypeActivity"></activity>
+        <activity android:name=".activity.EditTypeActivity" />
+        <activity android:name=".activity.StatisticsActivity" />
+        <activity
+            android:name=".activity.PetActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustNothing" />
+        <activity android:name=".activity.BrowseActivity"></activity>
     </application>
 
 </manifest>

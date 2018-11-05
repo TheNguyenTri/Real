@@ -22,21 +22,6 @@ public class TypeDAO {
         db = databasemanager.getWritableDatabase();
     }
 
-    public int insertType(TypePet type) {
-        ContentValues values = new ContentValues();
-        values.put("id", type.getId());
-        values.put("name", type.getName());
-        values.put("image", type.getImage());
-        try {
-            if (db.insert(TABLE_NAME, null, values) == -1) {
-                return -1;
-            }
-        } catch (Exception ex) {
-            Log.e(TAG, ex.toString());
-        }
-        return 1;
-    }
-
     public List<TypePet> getAllType() {
         List<TypePet> dsType = new ArrayList<>();
         Cursor c = db.query(TABLE_NAME, null, null, null, null, null, null);
@@ -72,15 +57,30 @@ public class TypeDAO {
         return 1;
     }
 
-//    public int updateType(TypePet type) {
-//        ContentValues values = new ContentValues();
-//        values.put("name", type.getName());
-//        values.put("image", type.getImage());
-//        int result = db.update(TABLE_NAME, values, "id=?", new
-//                String[]{type.getId()});
-//        if (result == 0) {
-//            return -1;
-//        }
-//        return 1;
-//    }
+    public int updateType(TypePet type) {
+        ContentValues values = new ContentValues();
+        values.put("id", type.getId());
+        values.put("name", type.getName());
+        values.put("image", type.getImage());
+        int result = db.update(TABLE_NAME, values, "id=?", new
+                String[]{type.getId()});
+        if (result == 0) {
+            return -1;
+        }
+        return 1;
+    }
+    public int insertType(TypePet type) {
+        ContentValues values = new ContentValues();
+        values.put("id", type.getId());
+        values.put("name", type.getName());
+        values.put("image", type.getImage());
+        try {
+            if (db.insert(TABLE_NAME, null, values) == -1) {
+                return -1;
+            }
+        } catch (Exception ex) {
+            Log.e(TAG, ex.toString());
+        }
+        return 1;
+    }
 }

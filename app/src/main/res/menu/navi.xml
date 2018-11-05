@@ -10,6 +10,6 @@
         android:title="Browse" />
     <item
         android:id="@+id/setting"
-        android:icon="@drawable/ic_settings_black_24dp"
-        android:title="Setting" />
+        android:icon="@drawable/ic_insert_chart_black_24dp"
+        android:title="Statistics" />
 </menu>

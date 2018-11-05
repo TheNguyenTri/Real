@@ -1,13 +1,18 @@
 package android.trithe.real.adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.trithe.real.R;
 import android.trithe.real.activity.EditTypeActivity;
+import android.trithe.real.activity.HomeActivity;
 import android.trithe.real.database.TypeDAO;
+import android.trithe.real.inter.OnClick;
 import android.trithe.real.model.TypePet;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -22,6 +27,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.MyViewHolder> {
@@ -29,29 +35,25 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.MyViewHolder> 
     private Context context;
     private List<TypePet> list;
     private TypeDAO typeDAO;
-    private ImageView imageaddog;
-    private ImageView fileaddog;
-    private EditText namedialog;
-    private Button btnsave;
-    private Button btncancel;
+    private OnClick onClick;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView name, count;
+        public TextView name;
         public ImageView avatar, overflow;
 
         public MyViewHolder(View view) {
             super(view);
             name = (TextView) view.findViewById(R.id.title);
-            count = (TextView) view.findViewById(R.id.count);
             avatar = (ImageView) view.findViewById(R.id.thumbnail);
             overflow = (ImageView) view.findViewById(R.id.overflow);
         }
     }
 
 
-    public TypeAdapter(Context mContext, List<TypePet> albumList) {
+    public TypeAdapter(Context mContext, List<TypePet> albumList, OnClick onClick) {
         this.context = mContext;
         this.list = albumList;
+        this.onClick = onClick;
     }
 
     @Override
@@ -66,7 +68,6 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.MyViewHolder> 
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         TypePet typePet = list.get(position);
         holder.name.setText(typePet.getName());
-        holder.count.setText(list.size() + " songs");
 
         // loading album cover using Glide library
         Glide.with(context).load(typePet.getImage()).into(holder.avatar);
@@ -106,13 +107,14 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.MyViewHolder> 
             typeDAO = new TypeDAO(context);
             switch (menuItem.getItemId()) {
                 case R.id.edit:
-                    Intent intent = new Intent(context, EditTypeActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putString("ID", list.get(position).getId());
-                    bundle.putString("NAME", list.get(position).getName());
-                    bundle.putByteArray("IMAGE", list.get(position).getImage());
-                    intent.putExtras(bundle);
-                    context.startActivity(intent);
+//                    Intent intent = new Intent(context, EditTypeActivity.class);
+//                    Bundle bundle = new Bundle();
+//                    bundle.putString("ID", list.get(position).getId());
+//                    bundle.putString("NAME", list.get(position).getName());
+//                    bundle.putByteArray("IMAGE", list.get(position).getImage());
+//                    intent.putExtras(bundle);
+//                    context.startActivity(intent);
+                    onClick.onItemClickClicked(position);
                     return true;
                 case R.id.delete:
                     typeDAO.deleteTypeByID(list.get(position).getId());
@@ -125,6 +127,9 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.MyViewHolder> 
             return false;
         }
     }
+
+
+
 
     @Override
     public int getItemCount() {
