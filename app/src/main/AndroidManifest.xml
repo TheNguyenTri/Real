@@ -22,7 +22,9 @@
         <activity android:name=".activity.StatisticsActivity" />
         <activity android:name=".activity.BrowseActivity" />
         <activity android:name=".activity.HomeActivity" />
-        <activity android:name=".activity.PetActivity" />
+        <activity android:name=".activity.PetActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustNothing"/>
         <activity android:name=".activity.WebViewBrowserActivity" />
         <activity android:name=".activity.PlanActivity"></activity>
     </application>

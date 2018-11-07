@@ -63,8 +63,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:orientation="vertical"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp">
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp">
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
