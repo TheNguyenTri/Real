@@ -5,40 +5,45 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.PetActivity">
-
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimary"
-        app:layout_collapseMode="pin">
-
-        <LinearLayout
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:onClick="backpet"
-                android:src="@drawable/ic_arrow_back_black_24dp" />
-
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:text="@string/pet"
-                android:textColor="#fff"
-                android:textSize="22sp"
-                android:layout_marginStart="20dp" />
-        </LinearLayout>
-    </android.support.v7.widget.Toolbar>
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:onClick="back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_arrow_back_black_24dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="15dp"
+                    android:text="Pet"
+                    android:textColor="#fff"
+                    android:textSize="22sp"
+                    android:layout_marginStart="15dp" />
+            </LinearLayout>
+        </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.AppBarLayout>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/toolbar">
+        android:layout_below="@id/appbar">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -145,7 +150,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
-                    android:background="@drawable/button_corner_dark"
+                    android:background="@drawable/buttonkeyboad_conner"
                     android:text="@string/save"
                     android:textColor="#fff" />
             </LinearLayout>
@@ -155,6 +160,7 @@
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navi"
         android:layout_width="match_parent"
+        app:labelVisibilityMode="labeled"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@color/colorPrimary"

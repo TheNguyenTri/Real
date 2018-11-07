@@ -3,10 +3,10 @@ package android.trithe.real.activity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Rect;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -163,7 +163,7 @@ public class BrowseActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.main2, menu);
         return super.onCreateOptionsMenu(menu);
     }
 

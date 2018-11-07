@@ -5,12 +5,12 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.trithe.real.R;
 import android.trithe.real.database.PetDAO;
@@ -18,12 +18,12 @@ import android.trithe.real.database.TypeDAO;
 import android.trithe.real.model.Pet;
 import android.trithe.real.model.TypePet;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -159,6 +159,9 @@ public class PetActivity extends AppCompatActivity {
                         break;
                     case R.id.browse:
                         startActivity(new Intent(getApplicationContext(), BrowseActivity.class));
+                        break;
+                    case  R.id.plan:
+                        startActivity(new Intent(getApplicationContext(), PlanActivity.class));
                         break;
                     case R.id.setting:
                         startActivity(new Intent(getApplicationContext(), StatisticsActivity.class));
@@ -308,9 +311,6 @@ public class PetActivity extends AppCompatActivity {
         return 1;
     }
 
-    public void backpet(View view) {
-        onBackPressed();
-    }
 
     private byte[] ImageViewChange(ImageView imageView) {
         BitmapDrawable drawable = (BitmapDrawable) imageView.getDrawable();
@@ -319,5 +319,13 @@ public class PetActivity extends AppCompatActivity {
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
         return stream.toByteArray();
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main2,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
+    public void back(View view) {
+        onBackPressed();
+    }
 }
