@@ -1,37 +1,34 @@
 package android.trithe.real.model;
 
-import java.util.Arrays;
+import android.support.annotation.NonNull;
 
 public class TypePet {
     private String id;
     private String name;
-    private byte[] image;
+    private int image;
 
-    public TypePet(String id, String name, byte[] image) {
+    public TypePet(String id, String name, int image) {
         this.id = id;
         this.name = name;
         this.image = image;
-    }
-
-    @Override
-    public String toString() {
-        return "Type{" +
-                "id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", image=" + Arrays.toString(image) +
-                '}';
     }
 
     public TypePet() {
 
     }
 
-    public byte[] getImage() {
+    public int getImage() {
 
         return image;
     }
 
-    public void setImage(byte[] image) {
+    @NonNull
+    @Override
+    public String toString() {
+        return getName();
+    }
+
+    public void setImage(int image) {
         this.image = image;
     }
 

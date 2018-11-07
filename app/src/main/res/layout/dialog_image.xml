@@ -17,7 +17,8 @@
             android:layout_width="50.0dip"
             android:layout_height="50.0dip"
             android:layout_marginLeft="15dp"
-            android:src="@drawable/camera" />
+            android:src="@drawable/camera"
+            android:layout_marginStart="15dp" />
 
         <TextView
             android:layout_width="0.0dip"
@@ -27,7 +28,8 @@
             android:gravity="center_vertical"
             android:text="Camera"
             android:textColor="#ff000000"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:layout_marginStart="10.0dip" />
     </LinearLayout>
 
     <View
@@ -48,7 +50,8 @@
             android:layout_width="50.0dip"
             android:layout_height="50.0dip"
             android:layout_marginLeft="15dp"
-            android:src="@drawable/image" />
+            android:src="@drawable/image"
+            android:layout_marginStart="15dp" />
 
         <TextView
             android:layout_width="0.0dip"
@@ -58,7 +61,8 @@
             android:gravity="center_vertical"
             android:text="Image"
             android:textColor="#ff000000"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:layout_marginStart="10.0dip" />
     </LinearLayout>
 
 </LinearLayout>

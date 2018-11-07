@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/home"
         android:icon="@drawable/ic_home_black_24dp"
@@ -8,6 +9,10 @@
         android:id="@+id/browse"
         android:icon="@drawable/ic_explore_black_24dp"
         android:title="Browse" />
+    <item
+        android:id="@+id/plan"
+        android:icon="@drawable/ic_assignment_black_24dp"
+        android:title="Plan" />
     <item
         android:id="@+id/setting"
         android:icon="@drawable/ic_insert_chart_black_24dp"
