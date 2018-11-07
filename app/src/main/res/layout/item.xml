@@ -1,5 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -10,7 +11,8 @@
         android:layout_gravity="center"
         android:layout_margin="@dimen/card_margin"
         android:elevation="3dp"
-        card_view:cardCornerRadius="@dimen/card_album_radius">
+        card_view:cardCornerRadius="@dimen/card_album_radius"
+        tools:targetApi="lollipop">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -19,7 +21,6 @@
             <ImageView
                 android:id="@+id/thumbnail"
                 android:layout_width="match_parent"
-                android:layout_margin="5dp"
                 android:layout_height="@dimen/album_cover_height"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
@@ -37,6 +38,7 @@
                 android:textSize="@dimen/album_title" />
 
             <ImageView
+                android:id="@+id/imgStar"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_below="@id/title"
@@ -53,7 +55,8 @@
                 android:layout_below="@id/thumbnail"
                 android:layout_marginTop="@dimen/ic_album_overflow_margin_top"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_dots" />
+                android:src="@drawable/ic_dots"
+                android:layout_alignParentEnd="true" />
 
         </RelativeLayout>
 

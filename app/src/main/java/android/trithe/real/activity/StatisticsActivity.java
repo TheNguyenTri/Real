@@ -10,12 +10,11 @@ import android.view.MenuItem;
 import android.view.View;
 
 public class StatisticsActivity extends AppCompatActivity {
-    private BottomNavigationView bottomNavigationView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_statistics);
-        bottomNavigationView=findViewById(R.id.navi);
+        BottomNavigationView bottomNavigationView = findViewById(R.id.navi);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {

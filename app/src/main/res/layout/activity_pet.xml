@@ -28,9 +28,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
-                android:text="Pet"
+                android:text="@string/pet"
                 android:textColor="#fff"
-                android:textSize="22sp" />
+                android:textSize="22sp"
+                android:layout_marginStart="20dp" />
         </LinearLayout>
     </android.support.v7.widget.Toolbar>
 
@@ -55,16 +56,10 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="10dp"
                 android:orientation="vertical"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp">
-
-                <Spinner
-                    android:id="@+id/loaipet"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"></Spinner>
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
@@ -72,35 +67,63 @@
                     android:layout_marginBottom="5dp">
 
                     <EditText
-                        android:id="@+id/age"
+                        android:id="@+id/edName"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Age" />
+                        android:inputType="text"
+                        android:imeOptions="actionNext"
+                        android:hint="@string/namepet" />
                 </android.support.design.widget.TextInputLayout>
 
                 <Spinner
-                    android:id="@+id/gender"
+                    android:layout_marginBottom="5dp"
+                    android:id="@+id/sploaipet"
+                    android:imeOptions="actionGo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"></Spinner>
+                    android:layout_marginBottom="5dp">
+
+                    <EditText
+                        android:id="@+id/edage"
+                        android:layout_width="match_parent"
+                        android:inputType="number"
+                        android:imeOptions="actionNext"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/agepet" />
+                </android.support.design.widget.TextInputLayout>
+
+                <Spinner
+                    android:id="@+id/sphealth"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionGo"
+                    android:layout_marginBottom="7dp" />
 
                 <RadioGroup
+                    android:id="@+id/rdgroup"
+                    android:layout_marginBottom="5dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
                     <RadioButton
+                        android:id="@+id/rdMale"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:checked="true"
-                        android:text="Male" />
+                        android:text="@string/malepet" />
 
                     <RadioButton
+                        android:id="@+id/reFemale"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Female" />
+                        android:text="@string/female" />
                 </RadioGroup>
 
                 <android.support.design.widget.TextInputLayout
@@ -109,18 +132,21 @@
                     android:layout_marginBottom="5dp">
 
                     <EditText
-                        android:id="@+id/weight"
+                        android:id="@+id/edweight"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Weight" />
+                        android:inputType="numberDecimal"
+                        android:imeOptions="actionDone"
+                        android:hint="@string/weightpet" />
                 </android.support.design.widget.TextInputLayout>
 
                 <Button
+                    android:id="@+id/btnSave"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="15dp"
                     android:background="@drawable/button_corner_dark"
-                    android:text="Save"
+                    android:text="@string/save"
                     android:textColor="#fff" />
             </LinearLayout>
         </LinearLayout>
@@ -134,5 +160,5 @@
         android:background="@color/colorPrimary"
         app:itemIconTint="#fff"
         app:itemTextColor="#FFF"
-        app:menu="@menu/navi"></android.support.design.widget.BottomNavigationView>
+        app:menu="@menu/navi" />
 </RelativeLayout>

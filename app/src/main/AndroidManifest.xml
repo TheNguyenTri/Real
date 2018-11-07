@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="android.trithe.real">
-
+    <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:allowBackup="true"
+        android:fullBackupContent="@xml/backup_descriptor"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -17,13 +18,13 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.HomeActivity" />
-        <activity android:name=".activity.EditTypeActivity" />
         <activity android:name=".activity.StatisticsActivity" />
         <activity
             android:name=".activity.PetActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustNothing" />
-        <activity android:name=".activity.BrowseActivity"></activity>
+        <activity android:name=".activity.BrowseActivity" />
+        <activity android:name=".activity.WebViewBrowserActivity"></activity>
     </application>
 
 </manifest>

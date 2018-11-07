@@ -1,13 +1,15 @@
 package android.trithe.real.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.trithe.real.R;
-import android.trithe.real.database.TypeDAO;
-import android.trithe.real.inter.OnClick;
-import android.trithe.real.model.TypePet;
+import android.trithe.real.activity.PetActivity;
+import android.trithe.real.database.PetDAO;
+import android.trithe.real.model.Pet;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -16,36 +18,34 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-
 import com.bumptech.glide.Glide;
 
 import java.util.List;
 
-public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.MyViewHolder> {
+public class PetAdapter extends RecyclerView.Adapter<PetAdapter.MyViewHolder> {
 
     private final Context context;
-    private List<TypePet> list;
-    private final OnClick onClick;
+    private List<Pet> list;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         final TextView name;
         final ImageView avatar;
         final ImageView overflow;
+        final ImageView star;
 
         MyViewHolder(View view) {
             super(view);
             name = view.findViewById(R.id.title);
             avatar = view.findViewById(R.id.thumbnail);
             overflow = view.findViewById(R.id.overflow);
+            star = view.findViewById(R.id.imgStar);
         }
     }
-//
-//
-    public TypeAdapter(Context mContext, List<TypePet> albumList, OnClick onClick) {
-// --Commented out by Inspection STOP (06/11/2018 9:18 SA)
+
+
+    public PetAdapter(Context mContext, List<Pet> albumList) {
         this.context = mContext;
         this.list = albumList;
-        this.onClick = onClick;
     }
 
     @NonNull
@@ -59,12 +59,36 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.MyViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
-        TypePet typePet = list.get(position);
-        holder.name.setText(typePet.getName());
-
+        Pet pet = list.get(position);
+        holder.name.setText(pet.getName());
+        if (list.get(position).getHealth().equalsIgnoreCase("Weak")) {
+            Glide.with(context).load(R.drawable.saoden).into(holder.star);
+        }
+        if (list.get(position).getHealth().equalsIgnoreCase("Normal")) {
+            Glide.with(context).load(R.drawable.saobac).into(holder.star);
+        }
+        if (list.get(position).getHealth().equalsIgnoreCase("Strong")) {
+            Glide.with(context).load(R.drawable.saovang).into(holder.star);
+        }
         // loading album cover using Glide library
-        Glide.with(context).load(typePet.getImage()).into(holder.avatar);
-
+        Glide.with(context).load(pet.getImage()).into(holder.avatar);
+        holder.avatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, PetActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("ID", list.get(position).getId());
+                bundle.putString("NAME", list.get(position).getName());
+                bundle.putString("LOAI", list.get(position).getGiongloai());
+                bundle.putString("AGE", String.valueOf(list.get(position).getAge()));
+                bundle.putString("WEIGHT", String.valueOf(list.get(position).getWeight()));
+                bundle.putString("HEALTH", list.get(position).getHealth());
+                bundle.putString("GENDER", list.get(position).getGender());
+                bundle.putByteArray("IMAGE", list.get(position).getImage());
+                intent.putExtras(bundle);
+                context.startActivity(intent);
+            }
+        });
         holder.overflow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -91,15 +115,13 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.MyViewHolder> 
     class MyMenuItemClickListener implements PopupMenu.OnMenuItemClickListener {
         private final int position;
 
-// --Commented out by Inspection START (06/11/2018 9:18 SA):
         MyMenuItemClickListener(int positon) {
             this.position = positon;
         }
-// --Commented out by Inspection STOP (06/11/2018 9:18 SA)
 
         @Override
         public boolean onMenuItemClick(MenuItem menuItem) {
-            TypeDAO typeDAO = new TypeDAO(context);
+            PetDAO petDAO = new PetDAO(context);
             switch (menuItem.getItemId()) {
                 case R.id.type:
 //                    Intent intent = new Intent(context, EditTypeActivity.class);
@@ -109,12 +131,11 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.MyViewHolder> 
 //                    bundle.putByteArray("IMAGE", list.get(position).getImage());
 //                    intent.putExtras(bundle);
 //                    context.startActivity(intent);
-                    onClick.onItemClickClicked(position);
                     return true;
                 case R.id.delete:
-//                    typeDAO.deleteTypeByID(list.get(position).getId());
+                    petDAO.deleteTypeByID(list.get(position).getId());
                     list.clear();
-                    list = typeDAO.getAllType();
+                    list = petDAO.getAllPet();
                     notifyDataSetChanged();
                     return true;
                 default:
@@ -124,17 +145,13 @@ public class TypeAdapter extends RecyclerView.Adapter<TypeAdapter.MyViewHolder> 
     }
 
 
-
-
     @Override
     public int getItemCount() {
         return list.size();
     }
 
-// --Commented out by Inspection START (06/11/2018 9:18 SA):
-//    public void changeDataset(List<TypePet> items) {
-//        this.list = items;
-//        notifyDataSetChanged();
-//    }
-// --Commented out by Inspection STOP (06/11/2018 9:18 SA)
+    public void changeDataset(List<Pet> items) {
+        this.list = items;
+        notifyDataSetChanged();
+    }
 }

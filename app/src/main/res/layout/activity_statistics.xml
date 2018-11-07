@@ -30,7 +30,8 @@
                 android:layout_marginLeft="15dp"
                 android:text="Statistics"
                 android:textColor="#fff"
-                android:textSize="22sp" />
+                android:textSize="22sp"
+                android:layout_marginStart="15dp" />
         </LinearLayout>
     </android.support.v7.widget.Toolbar>
 
@@ -39,7 +40,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/navi"
-        android:layout_below="@id/toolbar"></ListView>
+        android:layout_below="@id/toolbar" />
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navi"
@@ -49,5 +50,5 @@
         android:background="@color/colorPrimary"
         app:itemIconTint="#fff"
         app:itemTextColor="#FFF"
-        app:menu="@menu/navi"></android.support.design.widget.BottomNavigationView>
+        app:menu="@menu/navi" />
 </RelativeLayout>
