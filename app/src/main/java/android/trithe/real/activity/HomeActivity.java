@@ -47,6 +47,7 @@ import com.bumptech.glide.Glide;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -246,6 +247,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
     }
+
 
     private void initCollapsingToolbar() {
         final CollapsingToolbarLayout collapsingToolbar =
