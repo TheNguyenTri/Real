@@ -40,7 +40,8 @@
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view"
+        android:id="@+id/recycler_viewass"
+        android:padding="5dp"
         android:layout_width="match_parent"
         android:layout_marginBottom="60dp"
         android:layout_height="match_parent"
@@ -53,7 +54,7 @@
         app:labelVisibilityMode="labeled"
         android:layout_alignParentBottom="true"
         android:background="@color/colorPrimary"
+        app:itemTextColor="#fff"
         app:itemIconTint="#fff"
-        app:itemTextColor="#FFF"
         app:menu="@menu/navi" />
 </RelativeLayout>

@@ -36,16 +36,15 @@
                 android:paddingTop="@dimen/album_title_padding"
                 android:textColor="@color/album_title"
                 android:textSize="@dimen/album_title" />
-
-            <ImageView
-                android:id="@+id/imgStar"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+            <TextView
+                android:id="@+id/weight"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_below="@id/title"
-                android:src="@drawable/saovang"
-                android:layout_marginBottom="5dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp" />
+                android:paddingBottom="5dp"
+                android:paddingLeft="@dimen/album_title_padding"
+                android:paddingRight="@dimen/album_title_padding"
+                android:textSize="12sp" />
 
             <ImageView
                 android:id="@+id/overflow"

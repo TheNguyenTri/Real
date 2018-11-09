@@ -10,5 +10,5 @@
         android:id="@+id/search"
         android:icon="@drawable/ic_search_black_24dp"
         android:title="Search"
-        app:showAsAction="always" />
+        app:showAsAction="never" />
 </menu>

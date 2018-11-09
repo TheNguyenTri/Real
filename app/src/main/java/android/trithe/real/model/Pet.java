@@ -81,6 +81,11 @@ private byte[] image;
         this.image = image;
     }
 
+    @Override
+    public String toString() {
+        return getName();
+    }
+
     public byte[] getImage() {
 
         return image;

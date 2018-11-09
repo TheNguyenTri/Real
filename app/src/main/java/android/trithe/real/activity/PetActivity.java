@@ -17,6 +17,7 @@ import android.trithe.real.database.PetDAO;
 import android.trithe.real.database.TypeDAO;
 import android.trithe.real.model.Pet;
 import android.trithe.real.model.TypePet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -42,7 +43,6 @@ import java.util.List;
 import java.util.Random;
 
 public class PetActivity extends AppCompatActivity {
-    private BottomNavigationView bottomNavigationView;
     private Toolbar toolbar;
     private ImageView imgpet;
     private EditText edName;
@@ -56,16 +56,16 @@ public class PetActivity extends AppCompatActivity {
     private TypeDAO typeDAO;
     private List<TypePet> listtype = new ArrayList<>();
     private final List<String> heal = new ArrayList<>();
-    // --Commented out by Inspection (06/11/2018 9:18 SA):private Uri uri;
     private String id;
     private String magiongloai;
     private String health;
     private String gender;
     private final int CAPTURE_PHOTO = 102;
     private RadioGroup rg;
-    private RadioButton rdNam;
     private String idupdate;
     String value;
+    private RadioButton radioButton,radioButtonfe;
+    private List<Pet> list=new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,26 +150,6 @@ public class PetActivity extends AppCompatActivity {
         getType();
 
 //botom
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                switch (menuItem.getItemId()) {
-                    case R.id.home:
-                        startActivity(new Intent(getApplicationContext(), HomeActivity.class));
-                        break;
-                    case R.id.browse:
-                        startActivity(new Intent(getApplicationContext(), BrowseActivity.class));
-                        break;
-                    case  R.id.plan:
-                        startActivity(new Intent(getApplicationContext(), PlanActivity.class));
-                        break;
-                    case R.id.setting:
-                        startActivity(new Intent(getApplicationContext(), StatisticsActivity.class));
-                        break;
-                }
-                return false;
-            }
-        });
         getintent();
     }
 
@@ -182,6 +162,7 @@ public class PetActivity extends AppCompatActivity {
             String loaiupdate = bundle.getString("LOAI");
             edage.setText(bundle.getString("AGE"));
             edweight.setText(bundle.getString("WEIGHT"));
+            String genders=bundle.getString("GENDER");
             sploaipet.setSelection(checkPositionType(loaiupdate));
             sphealth.setSelection(checkPositionHealth(bundle.getString("HEALTH")));
             Glide.with(PetActivity.this).load(bundle.getByteArray("IMAGE")).into(imgpet);
@@ -210,6 +191,7 @@ public class PetActivity extends AppCompatActivity {
                         if (petDAO.insertPet(pet) > 0) {
                             Toast.makeText(getApplicationContext(), getString(R.string.alertsuccessfully), Toast.LENGTH_SHORT).show();
                             finish();
+                        Log.d("a",list.toString());
                         }
                     }
                 }
@@ -280,11 +262,11 @@ public class PetActivity extends AppCompatActivity {
         sphealth = findViewById(R.id.sphealth);
         edweight = findViewById(R.id.edweight);
         btnSave = findViewById(R.id.btnSave);
-        bottomNavigationView = findViewById(R.id.navi);
         rg = findViewById(R.id.rdgroup);
         petDAO = new PetDAO(getApplicationContext());
         typeDAO = new TypeDAO(getApplicationContext());
-        rdNam = findViewById(R.id.rdMale);
+        radioButton=findViewById(R.id.rdMale);
+        radioButtonfe=findViewById(R.id.rdFemale);
     }
 
     private int validate() {

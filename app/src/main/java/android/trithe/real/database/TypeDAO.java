@@ -75,9 +75,17 @@ public class TypeDAO {
         values.put("name", type.getName());
         values.put("image", type.getImage());
         try {
-           db.insert(TABLE_NAME, null, values);
+            db.insert(TABLE_NAME, null, values);
         } catch (Exception ex) {
             Log.e(TAG, ex.toString());
         }
+    }
+
+    public int getnullType() {
+        String countQuery = "SELECT  * FROM " + TABLE_NAME;
+        Cursor cursor = db.rawQuery(countQuery, null);
+        int dem = cursor.getCount();
+        cursor.close();
+        return dem;
     }
 }

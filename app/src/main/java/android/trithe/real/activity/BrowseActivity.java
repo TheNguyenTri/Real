@@ -44,7 +44,7 @@ public class BrowseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_browse);
-        toolbar =findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         BottomNavigationView bottomNavigationView = findViewById(R.id.navi);
         recyclerView = findViewById(R.id.recycler_view);
@@ -100,23 +100,25 @@ public class BrowseActivity extends AppCompatActivity {
         recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(), true));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(browseAdapter);
-
-
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                switch (menuItem.getItemId()) {
-                    case R.id.home:
-                        startActivity(new Intent(getApplicationContext(), HomeActivity.class));
-                        break;
-                    case R.id.setting:
-                        startActivity(new Intent(getApplicationContext(), StatisticsActivity.class));
-                        break;
-                }
-                return false;
-            }
-        });
+        bottomNavigationView.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
     }
+    private BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+            switch (menuItem.getItemId()) {
+                case R.id.home:
+                    startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+                    break;
+                case R.id.plan:
+                    startActivity(new Intent(getApplicationContext(), PlanActivity.class));
+                    break;
+                case R.id.setting:
+                    startActivity(new Intent(getApplicationContext(), StatisticsActivity.class));
+                    break;
+            }
+            return false;
+        }
+    };
 
     public void back(View view) {
         onBackPressed();

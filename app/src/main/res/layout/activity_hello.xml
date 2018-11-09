@@ -3,12 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#5f524a"
     android:gravity="center"
     tools:context=".activity.HelloActivity">
 
     <ImageView
         android:layout_width="280dp"
         android:layout_height="280dp"
-        android:src="@drawable/money" />
+        android:src="@drawable/logo" />
 </RelativeLayout>

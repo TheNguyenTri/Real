@@ -20,6 +20,7 @@ import android.trithe.real.database.PetDAO;
 import android.trithe.real.database.TypeDAO;
 import android.trithe.real.model.Pet;
 import android.trithe.real.model.TypePet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,12 +30,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
-    // --Commented out by Inspection (06/11/2018 9:18 SA):private FloatingActionButton fab1;
     private TypeDAO typeDAO;
     private PetDAO petDAO;
     private RecyclerView recyclerView;
     private PetAdapter petAdapter;
     private List<Pet> listpet;
+    private List<TypePet> typePetList =new ArrayList<>();
     private Toolbar toolbar;
     private BottomNavigationView bottomNavigationView;
 
@@ -57,24 +58,26 @@ public class HomeActivity extends AppCompatActivity {
         recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(), true));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(petAdapter);
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                switch (menuItem.getItemId()) {
-                    case R.id.browse:
-                        startActivity(new Intent(getApplicationContext(), BrowseActivity.class));
-                        break;
-                    case R.id.setting:
-                        startActivity(new Intent(getApplicationContext(), StatisticsActivity.class));
-                        break;
-                    case  R.id.plan:
-                        startActivity(new Intent(getApplicationContext(), PlanActivity.class));
-                        break;
-                }
-                return false;
-            }
-        });
+        bottomNavigationView.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
     }
+
+    private BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+            switch (menuItem.getItemId()) {
+                case R.id.browse:
+                    startActivity(new Intent(getApplicationContext(), BrowseActivity.class));
+                    break;
+                case R.id.setting:
+                    startActivity(new Intent(getApplicationContext(), StatisticsActivity.class));
+                    break;
+                case R.id.plan:
+                    startActivity(new Intent(getApplicationContext(), PlanActivity.class));
+                    break;
+            }
+            return false;
+        }
+    };
 
 
     private void initCollapsingToolbar() {
@@ -177,13 +180,15 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void in() {
-        typeDAO.insertType(new TypePet("t1", "Chó", R.drawable.dog));
-        typeDAO.insertType(new TypePet("t2", "Mèo", R.drawable.cat));
-        typeDAO.insertType(new TypePet("t3", "Cá", R.drawable.ca));
-        typeDAO.insertType(new TypePet("t4", "Chim", R.drawable.chim));
-        typeDAO.insertType(new TypePet("t5", "Kagaroo", R.drawable.kagaroo));
-        typeDAO.insertType(new TypePet("t6", "Ếch", R.drawable.ech));
-        typeDAO.insertType(new TypePet("t7", "Sóc", R.drawable.soc));
+        if (typeDAO.getnullType() ==0) {
+            typeDAO.insertType(new TypePet("t1", "Chó", R.drawable.dog));
+            typeDAO.insertType(new TypePet("t2", "Mèo", R.drawable.cat));
+            typeDAO.insertType(new TypePet("t3", "Cá", R.drawable.ca));
+            typeDAO.insertType(new TypePet("t4", "Chim", R.drawable.chim));
+            typeDAO.insertType(new TypePet("t5", "Kagaroo", R.drawable.kagaroo));
+            typeDAO.insertType(new TypePet("t6", "Ếch", R.drawable.ech));
+            typeDAO.insertType(new TypePet("t7", "Sóc", R.drawable.soc));
+        }
     }
 }
 //             bundle.putByteArray("IMAGE", list.get(position).getImage());

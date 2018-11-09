@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 class Databasemanager extends SQLiteOpenHelper {
-    private static final String DATABASE_NAME = "3p";
+    private static final String DATABASE_NAME = "4p";
     private static final int VERSION = 1;
 
     public Databasemanager(Context context) {
@@ -16,12 +16,14 @@ class Databasemanager extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(TypeDAO.SQL_TYPEPET);
         db.execSQL(PetDAO.SQL_PET);
+        db.execSQL(PlanssDAO.SQL_PLANSS);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("Drop table if exists " + TypeDAO.TABLE_NAME);
         db.execSQL("Drop table if exists " + PetDAO.TABLE_NAME);
+        db.execSQL("Drop table if exists " + PlanssDAO.TABLE_NAME);
         onCreate(db);
     }
 }

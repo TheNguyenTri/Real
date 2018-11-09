@@ -31,14 +31,14 @@ public class PetAdapter extends RecyclerView.Adapter<PetAdapter.MyViewHolder> {
         final TextView name;
         final ImageView avatar;
         final ImageView overflow;
-        final ImageView star;
+        final TextView weight;
 
         MyViewHolder(View view) {
             super(view);
             name = view.findViewById(R.id.title);
             avatar = view.findViewById(R.id.thumbnail);
             overflow = view.findViewById(R.id.overflow);
-            star = view.findViewById(R.id.imgStar);
+            weight=view.findViewById(R.id.weight);
         }
     }
 
@@ -61,15 +61,7 @@ public class PetAdapter extends RecyclerView.Adapter<PetAdapter.MyViewHolder> {
     public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
         Pet pet = list.get(position);
         holder.name.setText(pet.getName());
-        if (list.get(position).getHealth().equalsIgnoreCase("Weak")) {
-            Glide.with(context).load(R.drawable.saoden).into(holder.star);
-        }
-        if (list.get(position).getHealth().equalsIgnoreCase("Normal")) {
-            Glide.with(context).load(R.drawable.saobac).into(holder.star);
-        }
-        if (list.get(position).getHealth().equalsIgnoreCase("Strong")) {
-            Glide.with(context).load(R.drawable.saovang).into(holder.star);
-        }
+        holder.weight.setText(pet.getWeight()+" kilogram");
         // loading album cover using Glide library
         Glide.with(context).load(pet.getImage()).into(holder.avatar);
         holder.avatar.setOnClickListener(new View.OnClickListener() {

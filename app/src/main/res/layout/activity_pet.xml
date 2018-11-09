@@ -16,7 +16,6 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@color/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay">
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -124,7 +123,7 @@
                         android:text="@string/malepet" />
 
                     <RadioButton
-                        android:id="@+id/reFemale"
+                        android:id="@+id/rdFemale"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -156,15 +155,4 @@
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
-
-    <android.support.design.widget.BottomNavigationView
-        android:id="@+id/navi"
-        android:layout_width="match_parent"
-        app:labelVisibilityMode="labeled"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@color/colorPrimary"
-        app:itemIconTint="#fff"
-        app:itemTextColor="#FFF"
-        app:menu="@menu/navi" />
 </RelativeLayout>

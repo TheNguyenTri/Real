@@ -12,21 +12,26 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.HelloActivity">
+        <activity android:name=".activity.HelloActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.StatisticsActivity" />
-        <activity android:name=".activity.BrowseActivity" />
-        <activity android:name=".activity.HomeActivity" />
+        <activity android:name=".activity.StatisticsActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activity.BrowseActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activity.HomeActivity"
+            android:screenOrientation="portrait"/>
         <activity android:name=".activity.PetActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustNothing"/>
-        <activity android:name=".activity.WebViewBrowserActivity" />
-        <activity android:name=".activity.PlanActivity"></activity>
+            android:screenOrientation="portrait" />
+        <activity android:name=".activity.WebViewBrowserActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activity.PlanActivity"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

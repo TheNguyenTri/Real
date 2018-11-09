@@ -33,4 +33,8 @@
     <string name="female">Female</string>
     <string name="save">Save</string>
     <string name="pet">Pet</string>
+    <string name="finish_plan">You have completed the plan</string>
+    <string name="save_error">Save error</string>
+    <string name="app_name2">Happy Pets</string>
+    <string name="event">Bạn có sự kiện hôm nay</string>
 </resources>

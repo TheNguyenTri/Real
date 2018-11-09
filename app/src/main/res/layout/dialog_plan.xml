@@ -5,34 +5,98 @@
     android:orientation="vertical"
     android:padding="20dp">
 
-    <Spinner
-        android:id="@+id/sppet"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"></Spinner>
+        android:layout_height="45dp"
+        android:layout_marginBottom="5dp"
+        android:gravity="center"
+        android:orientation="horizontal">
 
-    <Spinner
-        android:id="@+id/spaction"
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="45dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:src="@drawable/dogicon" />
+
+        <Spinner
+            android:id="@+id/sppet"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="5"></Spinner>
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"></Spinner>
+        android:layout_marginBottom="5dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="45dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:src="@drawable/ic_business_center_black_24dp" />
+
+        <Spinner
+            android:id="@+id/spaction"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="5"></Spinner>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <EditText
-            android:id="@+id/eddate"
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:onClick="datePicker"
+            android:src="@drawable/ic_today_black_24dp" />
+
+        <android.support.design.widget.TextInputLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="5" />
+            android:layout_weight="5">
+
+            <EditText
+                android:id="@+id/eddate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Date" />
+        </android.support.design.widget.TextInputLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
         <ImageView
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_marginRight="10dp"
             android:layout_weight="1"
-            android:src="@drawable/ic_today_black_24dp" />
+            android:onClick="timePicker"
+            android:src="@drawable/ic_alarm_black_24dp" />
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="5">
+
+            <EditText
+                android:id="@+id/edtime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Time" />
+        </android.support.design.widget.TextInputLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -43,7 +107,7 @@
         <Button
             android:id="@+id/btnsave"
             android:layout_width="0dp"
-            android:layout_height="50dp"
+            android:layout_height="40dp"
             android:layout_marginTop="20dp"
             android:layout_weight="1"
             android:background="@drawable/buttonkeyboad_conner"
@@ -53,7 +117,7 @@
         <Button
             android:id="@+id/btncancel"
             android:layout_width="0dp"
-            android:layout_height="50dp"
+            android:layout_height="40dp"
             android:layout_marginLeft="30dp"
             android:layout_marginTop="20dp"
             android:layout_weight="1"

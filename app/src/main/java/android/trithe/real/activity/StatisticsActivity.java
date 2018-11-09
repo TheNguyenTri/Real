@@ -20,24 +20,25 @@ public class StatisticsActivity extends AppCompatActivity {
         toolbar=findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         BottomNavigationView bottomNavigationView = findViewById(R.id.navi);
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                switch (menuItem.getItemId()) {
-                    case R.id.home:
-                        startActivity(new Intent(getApplicationContext(),HomeActivity.class));
-                        break;
-                    case  R.id.plan:
-                        startActivity(new Intent(getApplicationContext(), PlanActivity.class));
-                        break;
-                    case R.id.browse:
-                        startActivity(new Intent(getApplicationContext(), BrowseActivity.class));
-                        break;
-                }
-                return false;
-            }
-        });
+        bottomNavigationView.setOnNavigationItemSelectedListener(navigationItemSelectedListener);
     }
+    private BottomNavigationView.OnNavigationItemSelectedListener navigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+            switch (menuItem.getItemId()) {
+                case R.id.home:
+                    startActivity(new Intent(getApplicationContext(),HomeActivity.class));
+                    break;
+                case  R.id.plan:
+                    startActivity(new Intent(getApplicationContext(), PlanActivity.class));
+                    break;
+                case R.id.browse:
+                    startActivity(new Intent(getApplicationContext(), BrowseActivity.class));
+                    break;
+            }
+            return false;
+        }
+    };
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main2,menu);
