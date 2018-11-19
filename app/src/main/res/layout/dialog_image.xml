@@ -26,7 +26,7 @@
             android:layout_marginLeft="10.0dip"
             android:layout_weight="1.0"
             android:gravity="center_vertical"
-            android:text="Camera"
+            android:text="@string/camera"
             android:textColor="#ff000000"
             android:textSize="18sp"
             android:layout_marginStart="10.0dip" />
@@ -59,7 +59,7 @@
             android:layout_marginLeft="10.0dip"
             android:layout_weight="1.0"
             android:gravity="center_vertical"
-            android:text="Image"
+            android:text="@string/image"
             android:textColor="#ff000000"
             android:textSize="18sp"
             android:layout_marginStart="10.0dip" />

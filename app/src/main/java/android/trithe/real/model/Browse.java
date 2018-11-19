@@ -1,9 +1,9 @@
 package android.trithe.real.model;
 
 public class Browse {
-    public  String name;
-    public String url;
-    public String image;
+    private String name;
+    private String url;
+    private String image;
 
     public Browse() {
 

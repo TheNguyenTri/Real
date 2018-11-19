@@ -4,7 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.trithe.real.model.Pet;
+import android.trithe.real.model.History;
 import android.trithe.real.model.Planss;
 import android.util.Log;
 
@@ -20,6 +20,8 @@ public class PlanssDAO {
     public static final String TABLE_NAME = "Planss";
     public static final String SQL_PLANSS = "CREATE TABLE Planss (id NCHAR(5) primary key, name NVARCHAR(50), idpet NCHAR(5), day date , gio String);";
     private static final String TAG = "PlanssDAO";
+    private static final String Date1 = "day";
+    private static final String Time1 = "gio";
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
 
@@ -50,6 +52,32 @@ public class PlanssDAO {
         c.close();
         return dsPlanss;
     }
+
+    public List<Planss> getAllPlanssAsc() {
+        List<Planss> dsPlanss = new ArrayList<>();
+        String selectQuery = "SELECT  * FROM " + TABLE_NAME + " ORDER BY " + Date1 + " ASC ,  " + Time1 + " ASC ";
+        Cursor c = db.rawQuery(selectQuery, null);
+        c.moveToFirst();
+        while (!c.isAfterLast()) {
+            Planss ee = new Planss();
+            ee.setId(c.getString(0));
+            ee.setName(c.getString(1));
+            ee.setIdpet(c.getString(2));
+            try {
+                ee.setDay(sdf.parse(c.getString(3)));
+                ee.setTime(c.getString(4));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            dsPlanss.add(ee);
+            Log.d("//=====", ee.toString());
+            c.moveToNext();
+        }
+        c.close();
+        return dsPlanss;
+    }
+
+
 
     //    delete
     public void deletePlanssByID(String id) {

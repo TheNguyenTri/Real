@@ -1,63 +1,60 @@
 package android.trithe.real.adapter;
 
-import android.app.AlertDialog;
+import android.content.ClipData;
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.trithe.real.R;
-import android.trithe.real.activity.HelloActivity;
-import android.trithe.real.activity.HomeActivity;
-import android.trithe.real.activity.PetActivity;
-import android.trithe.real.activity.PlanActivity;
-import android.trithe.real.database.PetDAO;
+import android.trithe.real.database.HistoryDAO;
 import android.trithe.real.database.PlanssDAO;
 import android.trithe.real.inter.OnClick;
 import android.trithe.real.inter.OnClick1;
-import android.trithe.real.model.Pet;
+import android.trithe.real.model.History;
 import android.trithe.real.model.Planss;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Spinner;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.Random;
 
 public class PlanssAdapter extends RecyclerView.Adapter<PlanssAdapter.MyViewHolder> {
 
     private final Context context;
     private List<Planss> list;
     private final SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-    private final SimpleDateFormat sdf1 = new SimpleDateFormat("hh:mm a");
-    private OnClick onClick;
-    private OnClick1 onClick1;
+    private final OnClick onClick;
+    private final OnClick1 onClick1;
+    private HistoryDAO historyDAO;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         final TextView name;
+        final TextView planss;
         final TextView day;
         final ImageView avatar;
         final CheckBox checkBox;
+        final RelativeLayout viewBackground;
+        public final RelativeLayout viewForeground;
 
         MyViewHolder(View view) {
             super(view);
             name = view.findViewById(R.id.tvNamepet);
+            planss = view.findViewById(R.id.tvplanpet);
             day = view.findViewById(R.id.tvday);
             avatar = view.findViewById(R.id.avatar);
             checkBox = view.findViewById(R.id.cbo);
+            viewBackground = view.findViewById(R.id.view_background);
+            viewForeground = view.findViewById(R.id.view_foreground);
         }
     }
 
@@ -80,9 +77,10 @@ public class PlanssAdapter extends RecyclerView.Adapter<PlanssAdapter.MyViewHold
 
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
-        Planss planss = list.get(position);
-        holder.name.setText(planss.getIdpet()+" | "+planss.getName());
-        holder.day.setText(planss.getTime()+ " | " + sdf.format(planss.getDay()));
+        final Planss planss = list.get(position);
+        holder.name.setText(planss.getIdpet());
+        holder.planss.setText(planss.getName());
+        holder.day.setText(planss.getTime() + " | " + sdf.format(planss.getDay()));
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -94,30 +92,38 @@ public class PlanssAdapter extends RecyclerView.Adapter<PlanssAdapter.MyViewHold
             @Override
             public void onClick(View v) {
                 if (holder.checkBox.isChecked()) {
-                    onClick1.onItemClickClicked(position);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            historyDAO = new HistoryDAO(context);
+                            Random random = new Random();
+                            String id = String.valueOf(random.nextInt());
+                            History histories = new History(id, planss.getName(), planss.getIdpet(), planss.getDay(), planss.getTime());
+                            if (historyDAO.insertHistory(histories) > 0) {
+//                                Toast.makeText(context, context.getString(R.string.alertsuccessfully), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, context.getString(R.string.finish_plan), Toast.LENGTH_SHORT).show();
+                                onClick1.onItemClickClicked(position);
+                            }
+
+                        }
+                    }, 1500);
                 }
             }
         });
-
-        Glide.with(context).load(R.drawable.cander).into(holder.avatar);
-        // loading album cover using Glide library
-//        holder.avatar.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(context, PetActivity.class);
-//                Bundle bundle = new Bundle();
-//                bundle.putString("ID", list.get(position).getId());
-//                bundle.putString("NAME", list.get(position).getName());
-//                bundle.putString("LOAI", list.get(position).getGiongloai());
-//                bundle.putString("AGE", String.valueOf(list.get(position).getAge()));
-//                bundle.putString("WEIGHT", String.valueOf(list.get(position).getWeight()));
-//                bundle.putString("HEALTH", list.get(position).getHealth());
-//                bundle.putString("GENDER", list.get(position).getGender());
-//                bundle.putByteArray("IMAGE", list.get(position).getImage());
-//                intent.putExtras(bundle);
-//                context.startActivity(intent);
-//            }
-//        });
+        holder.checkBox.setChecked(false);
+        if (planss.getName().equals("Đi bộ")) {
+            Glide.with(context).load(R.drawable.dibo).into(holder.avatar);
+        } else if (planss.getName().equals("Cho ăn")) {
+            Glide.with(context).load(R.drawable.doan).into(holder.avatar);
+        } else if (planss.getName().equals("Tắm rửa")) {
+            Glide.with(context).load(R.drawable.tam).into(holder.avatar);
+        } else if (planss.getName().equals("Đi khám thú y")) {
+            Glide.with(context).load(R.drawable.kham).into(holder.avatar);
+        } else if (planss.getName().equals("Mua thức ăn, phụ kiện")) {
+            Glide.with(context).load(R.drawable.shop).into(holder.avatar);
+        } else if (planss.getName().equals("Khác")) {
+            Glide.with(context).load(R.drawable.cander).into(holder.avatar);
+        }
     }
 
     @Override
@@ -128,5 +134,18 @@ public class PlanssAdapter extends RecyclerView.Adapter<PlanssAdapter.MyViewHold
     public void changeDataset(List<Planss> items) {
         this.list = items;
         notifyDataSetChanged();
+    }
+
+    public void removeItem(int position) {
+        onClick1.onItemClickClicked(position);
+        notifyItemRemoved(position);
+    }
+
+    public void restoreItem(Planss item, int position) {
+        PlanssDAO planssDAO = new PlanssDAO(context);
+        list.add(position, item);
+        // notify item added by position
+        planssDAO.insertPlanss(item);
+        notifyItemInserted(position);
     }
 }

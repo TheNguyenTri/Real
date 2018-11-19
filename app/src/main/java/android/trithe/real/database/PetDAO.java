@@ -12,15 +12,18 @@ import java.util.List;
 
 
 public class PetDAO {
-    private final SQLiteDatabase db;
+    private SQLiteDatabase db;
+    private final Databasemanager databasemanager;
     public static final String TABLE_NAME = "PET";
+    private static final String Health = "health";
     public static final String SQL_PET = "CREATE TABLE PET (id NCHAR(5) primary key, name NVARCHAR(10), giongloai NCHAR(7), age INT, health NVARCHAR(50), weight float, gender NVARCHAR(50), image Blob);";
     private static final String TAG = "PetDAO";
 
     public PetDAO(Context context) {
-        Databasemanager databasemanager = new Databasemanager(context);
+        databasemanager = new Databasemanager(context);
         db = databasemanager.getWritableDatabase();
     }
+
 
     public List<Pet> getAllPet() {
         List<Pet> dsType = new ArrayList<>();
@@ -42,6 +45,34 @@ public class PetDAO {
         }
         c.close();
         return dsType;
+    }
+
+    public int getKhoe() {
+        db = databasemanager.getReadableDatabase();
+        String selectQuery = "SELECT  *  FROM " + TABLE_NAME + " where " + Health + " like 'S%'";
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        int count = cursor.getCount();
+       cursor.close();
+        Log.d("abc", count+"");
+        return count;
+    }
+
+    public int getYeu() {
+        db = databasemanager.getReadableDatabase();
+        String selectQuery = "SELECT  *  FROM " + TABLE_NAME + " where " + Health + " like 'W%'";
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        int count = cursor.getCount();
+        cursor.close();
+        return count;
+    }
+
+    public int getBT() {
+        db = databasemanager.getReadableDatabase();
+        String selectQuery = "SELECT  *  FROM " + TABLE_NAME + " where " + Health + " like 'N%'";
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        int count = cursor.getCount();
+        cursor.close();
+        return count;
     }
 
     //    delete

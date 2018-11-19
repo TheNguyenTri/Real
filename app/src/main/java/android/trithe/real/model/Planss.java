@@ -1,6 +1,5 @@
 package android.trithe.real.model;
 import java.util.Date;
-import java.util.Timer;
 
 public class Planss {
     private String id;

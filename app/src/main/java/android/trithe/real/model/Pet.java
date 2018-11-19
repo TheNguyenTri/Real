@@ -1,5 +1,7 @@
 package android.trithe.real.model;
 
+import android.support.annotation.NonNull;
+
 public class Pet {
 private String id;
 private String name;
@@ -81,6 +83,7 @@ private byte[] image;
         this.image = image;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return getName();
