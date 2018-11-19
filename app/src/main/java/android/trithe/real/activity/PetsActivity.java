@@ -59,10 +59,10 @@ public class PetsActivity extends AppCompatActivity {
     private final int CAPTURE_PHOTO = 102;
     private RadioGroup rg;
     private String idupdate;
-    String value;
+//    String value;
     private RadioButton radioButton, radioButtonfe;
     private final List<Pet> list = new ArrayList<>();
-    final private int REQUEST_CODE_WRITE_STORAGE = 1;
+//    final private int REQUEST_CODE_WRITE_STORAGE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

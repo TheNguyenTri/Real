@@ -30,7 +30,8 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
                 android:scaleType="fitXY"
-                android:focusable="true" />
+                android:focusable="true"
+                android:contentDescription="@string/todo" />
 
             <TextView
                 android:layout_marginBottom="10dp"

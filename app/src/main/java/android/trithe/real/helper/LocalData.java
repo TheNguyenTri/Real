@@ -26,16 +26,16 @@ public class LocalData {
 
     // Settings Page Set Reminder
 
-    public boolean getReminderStatus()
-    {
-        return appSharedPrefs.getBoolean(reminderStatus, false);
-    }
-
-    public void setReminderStatus(boolean status)
-    {
-        prefsEditor.putBoolean(reminderStatus, status);
-        prefsEditor.commit();
-    }
+//    public boolean getReminderStatus()
+//    {
+//        return appSharedPrefs.getBoolean(reminderStatus, false);
+//    }
+//
+//    public void setReminderStatus(boolean status)
+//    {
+//        prefsEditor.putBoolean(reminderStatus, status);
+//        prefsEditor.commit();
+//    }
 
     // Settings Page Reminder Time (Hour)
 
@@ -63,11 +63,11 @@ public class LocalData {
         prefsEditor.commit();
     }
 
-    public void reset()
-    {
-        prefsEditor.clear();
-        prefsEditor.commit();
-
-    }
+//    public void reset()
+//    {
+//        prefsEditor.clear();
+//        prefsEditor.commit();
+//
+//    }
 
 }

@@ -31,9 +31,9 @@ public class PetAdapter extends RecyclerView.Adapter<PetAdapter.MyViewHolder> im
 
     private final Context context;
     private List<Pet> list;
-    private List<Pet> listSort;
+    private final List<Pet> listSort;
     private Filter Filter;
-    private OnClick onClick;
+    private final OnClick onClick;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         final TextView name;
@@ -86,7 +86,6 @@ public class PetAdapter extends RecyclerView.Adapter<PetAdapter.MyViewHolder> im
                 bundle.putString("WEIGHT", String.valueOf(list.get(position).getWeight()));
                 bundle.putString("HEALTH", list.get(position).getHealth());
                 bundle.putString("GENDER", list.get(position).getGender());
-                Toast.makeText(context, list.get(position).getGender() + list.get(position).getGiongloai(), Toast.LENGTH_SHORT).show();
                 bundle.putByteArray("IMAGE", list.get(position).getImage());
                 intent.putExtras(bundle);
                 onClick.onItemClickClicked(position);
@@ -138,7 +137,6 @@ public class PetAdapter extends RecyclerView.Adapter<PetAdapter.MyViewHolder> im
                     bundle.putString("WEIGHT", String.valueOf(list.get(position).getWeight()));
                     bundle.putString("HEALTH", list.get(position).getHealth());
                     bundle.putString("GENDER", list.get(position).getGender());
-                    Toast.makeText(context, list.get(position).getGender(), Toast.LENGTH_SHORT).show();
                     bundle.putByteArray("IMAGE", list.get(position).getImage());
                     intent.putExtras(bundle);
                     onClick.onItemClickClicked(position);

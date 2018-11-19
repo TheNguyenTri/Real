@@ -15,8 +15,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
-import org.w3c.dom.Text;
-
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -68,18 +66,25 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
         holder.name.setText(planss.getIdpet());
         holder.planss.setText(planss.getName());
         holder.day.setText(planss.getTime() + " | " + sdf.format(planss.getDay()));
-        if (planss.getName().equals("Đi bộ")) {
-            Glide.with(context).load(R.drawable.dibo).into(holder.avatar);
-        } else if (planss.getName().equals("Cho ăn")) {
-            Glide.with(context).load(R.drawable.doan).into(holder.avatar);
-        } else if (planss.getName().equals("Tắm rửa")) {
-            Glide.with(context).load(R.drawable.tam).into(holder.avatar);
-        } else if (planss.getName().equals("Đi khám thú y")) {
-            Glide.with(context).load(R.drawable.kham).into(holder.avatar);
-        } else if (planss.getName().equals("Mua thức ăn, phụ kiện")) {
-            Glide.with(context).load(R.drawable.shop).into(holder.avatar);
-        } else if (planss.getName().equals("Khác")) {
-            Glide.with(context).load(R.drawable.cander).into(holder.avatar);
+        switch (planss.getName()) {
+            case "Đi bộ":
+                Glide.with(context).load(R.drawable.dibo).into(holder.avatar);
+                break;
+            case "Cho ăn":
+                Glide.with(context).load(R.drawable.doan).into(holder.avatar);
+                break;
+            case "Tắm rửa":
+                Glide.with(context).load(R.drawable.tam).into(holder.avatar);
+                break;
+            case "Đi khám thú y":
+                Glide.with(context).load(R.drawable.kham).into(holder.avatar);
+                break;
+            case "Mua thức ăn, phụ kiện":
+                Glide.with(context).load(R.drawable.shop).into(holder.avatar);
+                break;
+            case "Khác":
+                Glide.with(context).load(R.drawable.cander).into(holder.avatar);
+                break;
         }
     }
 
@@ -88,9 +93,5 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
         return list.size();
     }
 
-    public void changeDataset(List<History> items) {
-        this.list = items;
-        notifyDataSetChanged();
-    }
 
 }

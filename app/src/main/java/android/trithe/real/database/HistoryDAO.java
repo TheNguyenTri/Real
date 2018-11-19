@@ -28,28 +28,28 @@ public class HistoryDAO {
         db = databasemanager.getWritableDatabase();
     }
 
-    public List<History> getAllHistory() {
-        List<History> dsPlanss = new ArrayList<>();
-        Cursor c = db.query(TABLE_NAME, null, null, null, null, null, null);
-        c.moveToFirst();
-        while (!c.isAfterLast()) {
-            History ee = new History();
-            ee.setId(c.getString(0));
-            ee.setName(c.getString(1));
-            ee.setIdpet(c.getString(2));
-            try {
-                ee.setDay(sdf.parse(c.getString(3)));
-                ee.setTime(c.getString(4));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            dsPlanss.add(ee);
-            Log.d("//=====", ee.toString());
-            c.moveToNext();
-        }
-        c.close();
-        return dsPlanss;
-    }
+//    public List<History> getAllHistory() {
+//        List<History> dsPlanss = new ArrayList<>();
+//        Cursor c = db.query(TABLE_NAME, null, null, null, null, null, null);
+//        c.moveToFirst();
+//        while (!c.isAfterLast()) {
+//            History ee = new History();
+//            ee.setId(c.getString(0));
+//            ee.setName(c.getString(1));
+//            ee.setIdpet(c.getString(2));
+//            try {
+//                ee.setDay(sdf.parse(c.getString(3)));
+//                ee.setTime(c.getString(4));
+//            } catch (ParseException e) {
+//                e.printStackTrace();
+//            }
+//            dsPlanss.add(ee);
+//            Log.d("//=====", ee.toString());
+//            c.moveToNext();
+//        }
+//        c.close();
+//        return dsPlanss;
+//    }
 
     public List<History> getAllHistoryAsc() {
         List<History> dsPlanss = new ArrayList<>();

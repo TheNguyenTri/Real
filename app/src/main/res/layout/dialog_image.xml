@@ -18,7 +18,8 @@
             android:layout_height="50.0dip"
             android:layout_marginLeft="15dp"
             android:src="@drawable/camera"
-            android:layout_marginStart="15dp" />
+            android:layout_marginStart="15dp"
+            android:contentDescription="@string/todo" />
 
         <TextView
             android:layout_width="0.0dip"
@@ -51,7 +52,8 @@
             android:layout_height="50.0dip"
             android:layout_marginLeft="15dp"
             android:src="@drawable/image"
-            android:layout_marginStart="15dp" />
+            android:layout_marginStart="15dp"
+            android:contentDescription="@string/todo" />
 
         <TextView
             android:layout_width="0.0dip"

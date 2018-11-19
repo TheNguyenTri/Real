@@ -29,7 +29,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:onClick="back"
-                    android:src="@drawable/ic_arrow_back_black_24dp" />
+                    android:src="@drawable/ic_arrow_back_black_24dp"
+                    android:contentDescription="@string/todo" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -59,7 +60,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="30dp"
-                android:src="@drawable/logo" />
+                android:src="@drawable/logo"
+                android:contentDescription="@string/todo" />
 
             <TextView
                 android:layout_width="match_parent"

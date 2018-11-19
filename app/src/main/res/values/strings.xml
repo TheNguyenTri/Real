@@ -12,14 +12,12 @@
     <string name="malepet">Male</string>
     <string name="female">Female</string>
     <string name="save">Save</string>
-    <string name="pet">Pet</string>
     <string name="finish_plan">You have completed the plan</string>
     <string name="save_error">Save error</string>
     <string name="about">About</string>
     <string name="happypets">Happy Pets</string>
     <string name="version">Version 2.1.1</string>
     <string name="dev">Developer by</string>
-    <string name="sp">Developer by</string>
     <string name="legal">Legal</string>
     <string name="shop">Shop</string>
     <string name="camera">Camera</string>
@@ -39,4 +37,9 @@
     <string name="history">History</string>
     <string name="connection">Sorry, connection to server falied</string>
     <string name="support">Support app</string>
+    <string name="retry">RETRY</string>
+    <string name="todo">TODO</string>
+    <string name="loai">Species</string>
+    <string name="gender">Gender</string>
+    <string name="health">Health</string>
 </resources>

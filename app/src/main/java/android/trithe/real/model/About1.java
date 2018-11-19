@@ -22,9 +22,6 @@ public class About1 {
         return subname;
     }
 
-    public void setSubname(String subname) {
-        this.subname = subname;
-    }
 
     public About1(String name, String subname) {
 

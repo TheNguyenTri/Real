@@ -90,7 +90,7 @@ public class PlanFragment extends Fragment implements DatePickerDialog.OnDateSet
         Toolbar toolbar = view.findViewById(R.id.toolbar);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ///
-        ClipboardManager myClipboard = (ClipboardManager) getActivity().getSystemService(CLIPBOARD_SERVICE);
+//        ClipboardManager myClipboard = (ClipboardManager) getActivity().getSystemService(CLIPBOARD_SERVICE);
         localData = new LocalData(getActivity());
         //
         coordinatorLayout=view.findViewById(R.id.coor);

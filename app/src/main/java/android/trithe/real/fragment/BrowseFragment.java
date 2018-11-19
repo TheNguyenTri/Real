@@ -15,7 +15,6 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -28,11 +27,8 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -52,7 +48,6 @@ public class BrowseFragment extends Fragment {
     private RecyclerView recyclerView;
     private BrowseAdapter browseAdapter;
     private final List<Browse> list = new ArrayList<>();
-    private TextView textView;
 
     @Nullable
     @Override
@@ -60,7 +55,7 @@ public class BrowseFragment extends Fragment {
         final View view = inflater.inflate(R.layout.browse_fragment, container, false);
         setHasOptionsMenu(true);
         recyclerView = view.findViewById(R.id.recycler_view);
-        textView = view.findViewById(R.id.tvretry);
+        TextView textView = view.findViewById(R.id.tvretry);
 
 ////
 
