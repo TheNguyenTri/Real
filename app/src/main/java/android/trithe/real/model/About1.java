@@ -2,7 +2,7 @@ package android.trithe.real.model;
 
 public class About1 {
     private String name;
-    private String subname;
+    private final String subname;
 
 // --Commented out by Inspection START (17/11/2018 2:47 CH):
 //    public About1() {

@@ -3,7 +3,7 @@
     <string name="action_settings">About</string>
     <string name="alertsuccessfully">Save Successfully</string>
     <string name="empty">This information cann ot be empty</string>
-    <string name="maximum10">Maximum length is 10 characters</string>
+    <string name="maximum20">Maximum length is 20 characters</string>
     <string name="agemaximum">Maximum age is 10</string>
     <string name="min1">Minimum weight is 1 kq</string>
     <string name="namepet">Name</string>

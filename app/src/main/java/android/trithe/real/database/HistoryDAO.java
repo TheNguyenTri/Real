@@ -18,7 +18,7 @@ public class HistoryDAO {
     public static final String TABLE_NAME = "Historys";
     private static final String Date1 = "day";
     private static final String Time1 = "gio";
-    public static final String SQL_HISTORY = "CREATE TABLE Historys (id NCHAR(5) primary key, name NVARCHAR(50), idpet NCHAR(5), day date , gio String);";
+    public static final String SQL_HISTORY = "CREATE TABLE Historys (id NCHAR(7) primary key, name NVARCHAR(50), idpet NCHAR(7), day date , gio String);";
     private static final String TAG = "HistoryDAO";
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 

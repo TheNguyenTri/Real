@@ -80,7 +80,8 @@
                     android:layout_marginLeft="4dp"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="10dp"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:layout_marginStart="4dp">
 
                     <TextView
                         android:layout_width="0dp"
@@ -97,7 +98,8 @@
                         android:layout_marginLeft="10dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="4"
-                        android:imeOptions="actionGo" />
+                        android:imeOptions="actionGo"
+                        android:layout_marginStart="10dp" />
                 </LinearLayout>
 
                 <android.support.design.widget.TextInputLayout
@@ -121,7 +123,8 @@
                     android:layout_marginLeft="4dp"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="10dp"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:layout_marginStart="4dp">
 
                     <TextView
                         android:layout_width="0dp"
@@ -138,7 +141,8 @@
                     android:layout_marginLeft="10dp"
                     android:layout_height="wrap_content"
 
-                    android:imeOptions="actionGo" />
+                    android:imeOptions="actionGo"
+                    android:layout_marginStart="10dp" />
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -146,7 +150,8 @@
                     android:layout_marginLeft="4dp"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="10dp"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:layout_marginStart="4dp">
 
                     <TextView
                         android:layout_width="0dp"
@@ -162,7 +167,8 @@
                     android:layout_marginLeft="10dp"
                     android:layout_weight="4"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:layout_marginStart="10dp">
 
                     <RadioButton
                         android:id="@+id/rdMale"

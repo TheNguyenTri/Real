@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
-import android.content.ClipboardManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -57,8 +56,6 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Random;
-
-import static android.content.Context.CLIPBOARD_SERVICE;
 
 
 public class PlanFragment extends Fragment implements DatePickerDialog.OnDateSetListener, RecyclerItemTouchHelper.RecyclerItemTouchHelperListener {

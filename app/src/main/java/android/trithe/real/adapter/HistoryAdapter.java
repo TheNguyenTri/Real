@@ -21,7 +21,7 @@ import java.util.List;
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHolder> {
 
     private final Context context;
-    private List<History> list;
+    private final List<History> list;
     private final SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 
     public class MyViewHolder extends RecyclerView.ViewHolder {

@@ -43,6 +43,7 @@ import java.util.List;
 public class PetFragment extends Fragment {
     private TypeDAO typeDAO;
     private PetAdapter petAdapter;
+    List<Pet> listpet = new ArrayList<>();
 
     @Nullable
     @Override
@@ -83,7 +84,6 @@ public class PetFragment extends Fragment {
         //
         PetDAO petDAO = new PetDAO(getActivity());
         typeDAO = new TypeDAO(getActivity());
-        List<Pet> listpet = new ArrayList<>();
 
         ConstraintLayout constraintLayout = view.findViewById(R.id.ll);
         if (petDAO.getAllPet().size() == 0) {
@@ -194,13 +194,14 @@ public class PetFragment extends Fragment {
 
     private void in() {
         if (typeDAO.getAllType().size() == 0) {
-            typeDAO.insertType(new TypePet("t1", "Chó", R.drawable.dog));
-            typeDAO.insertType(new TypePet("t2", "Mèo", R.drawable.cat));
-            typeDAO.insertType(new TypePet("t3", "Cá", R.drawable.ca));
-            typeDAO.insertType(new TypePet("t4", "Chim", R.drawable.chim));
-            typeDAO.insertType(new TypePet("t5", "Kagaroo", R.drawable.kagaroo));
-            typeDAO.insertType(new TypePet("t6", "Ếch", R.drawable.ech));
-            typeDAO.insertType(new TypePet("t7", "Sóc", R.drawable.soc));
+            typeDAO.insertType(new TypePet("t1", "Chó"));
+            typeDAO.insertType(new TypePet("t2", "Mèo"));
+            typeDAO.insertType(new TypePet("t3", "Cá"));
+            typeDAO.insertType(new TypePet("t4", "Chim"));
+            typeDAO.insertType(new TypePet("t5", "Kagaroo"));
+            typeDAO.insertType(new TypePet("t6", "Ếch"));
+            typeDAO.insertType(new TypePet("t7", "Sóc"));
+            typeDAO.insertType(new TypePet("t8", "Khác"));
         }
     }
 

@@ -17,7 +17,7 @@ import java.util.List;
 public class PlanssDAO {
     private final SQLiteDatabase db;
     public static final String TABLE_NAME = "Planss";
-    public static final String SQL_PLANSS = "CREATE TABLE Planss (id NCHAR(5) primary key, name NVARCHAR(50), idpet NCHAR(5), day date , gio String);";
+    public static final String SQL_PLANSS = "CREATE TABLE Planss (id NCHAR(7) primary key, name NVARCHAR(50), idpet NCHAR(7), day date , gio String);";
     private static final String TAG = "PlanssDAO";
     private static final String Date1 = "day";
     private static final String Time1 = "gio";

@@ -5,22 +5,16 @@ import android.support.annotation.NonNull;
 public class TypePet {
     private String id;
     private String name;
-    private int image;
 
-    public TypePet(String id, String name, int image) {
+    public TypePet(String id, String name) {
         this.id = id;
         this.name = name;
-        this.image = image;
     }
 
     public TypePet() {
 
     }
 
-    public int getImage() {
-
-        return image;
-    }
 
     @NonNull
     @Override
@@ -28,9 +22,6 @@ public class TypePet {
         return getName();
     }
 
-    public void setImage(int image) {
-        this.image = image;
-    }
 
     public String getId() {
         return id;

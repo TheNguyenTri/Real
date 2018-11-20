@@ -292,8 +292,8 @@ public class PetsActivity extends AppCompatActivity {
         if (edName.getText().toString().equals("")) {
             edName.setError(getString(R.string.empty));
             return check;
-        } else if (edName.getText().toString().length() > 10) {
-            edName.setError(getString(R.string.maximum10));
+        } else if (edName.getText().toString().length() > 20) {
+            edName.setError(getString(R.string.maximum20));
             return check;
         } else if (edage.getText().toString().equals("")) {
             edage.setError(getString(R.string.empty));

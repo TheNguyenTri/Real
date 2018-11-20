@@ -16,7 +16,7 @@ public class PetDAO {
     private final Databasemanager databasemanager;
     public static final String TABLE_NAME = "PET";
     private static final String Health = "health";
-    public static final String SQL_PET = "CREATE TABLE PET (id NCHAR(5) primary key, name NVARCHAR(10), giongloai NCHAR(7), age INT, health NVARCHAR(50), weight float, gender NVARCHAR(50), image Blob);";
+    public static final String SQL_PET = "CREATE TABLE PET (id NCHAR(7) primary key, name NVARCHAR(20), giongloai NCHAR(7), age INT, health NVARCHAR(50), weight float, gender NVARCHAR(50), image Blob);";
     private static final String TAG = "PetDAO";
 
     public PetDAO(Context context) {

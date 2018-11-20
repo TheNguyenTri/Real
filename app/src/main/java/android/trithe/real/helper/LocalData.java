@@ -14,7 +14,6 @@ public class LocalData {
     private final SharedPreferences appSharedPrefs;
     private final SharedPreferences.Editor prefsEditor;
 
-    private static final String reminderStatus="reminderStatus";
     private static final String hour="hour";
     private static final String min="min";
 

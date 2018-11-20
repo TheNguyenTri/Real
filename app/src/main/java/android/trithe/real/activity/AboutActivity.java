@@ -22,7 +22,7 @@ public class AboutActivity extends AppCompatActivity {
         ListView listView1 = findViewById(R.id.lvbou1);
         ListView listView2 = findViewById(R.id.lvbou2);
         ListView listView3 = findViewById(R.id.lvbou3);
-        list.add(new About1("Nguyen Tri The", "thentph06484@gmai.com"));
+        list.add(new About1("Nguyen Tri The", "thentph06484@fpt.edu.vn"));
         list.add(new About1("FPT Polytechnic", "fpteducation@fe.edu.vn"));
         List<String> list2 = new ArrayList<>();
         List<String> list3 = new ArrayList<>();
