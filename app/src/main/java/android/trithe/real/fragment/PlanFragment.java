@@ -6,10 +6,12 @@ import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -90,7 +92,7 @@ public class PlanFragment extends Fragment implements DatePickerDialog.OnDateSet
 //        ClipboardManager myClipboard = (ClipboardManager) getActivity().getSystemService(CLIPBOARD_SERVICE);
         localData = new LocalData(getActivity());
         //
-        coordinatorLayout=view.findViewById(R.id.coor);
+        coordinatorLayout = view.findViewById(R.id.coor);
 //
         final CollapsingToolbarLayout collapsingToolbar = view.findViewById(R.id.coll);
         collapsingToolbar.setTitle(" ");
@@ -133,12 +135,9 @@ public class PlanFragment extends Fragment implements DatePickerDialog.OnDateSet
         planssAdapter = new PlanssAdapter(getActivity(), listplanss, new OnClick() {
             @Override
             public void onItemClickClicked(int position) {
-                final LayoutInflater inflater = LayoutInflater.from(getActivity());
-                final View view = inflater.inflate(R.layout.dialog_plan, null);
-                final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle("Edit Plan");
-                builder.setView(view);
-                final AlertDialog dialog = builder.show();
+                View view = getLayoutInflater().inflate(R.layout.dialog_plan, null);
+                final BottomSheetDialog dialog = new BottomSheetDialog(getContext());
+                dialog.setContentView(view);
                 eddate = view.findViewById(R.id.eddate);
                 edtime = view.findViewById(R.id.edtime);
                 sppet = view.findViewById(R.id.sppet);
@@ -173,8 +172,6 @@ public class PlanFragment extends Fragment implements DatePickerDialog.OnDateSet
                         timePickerDialog.show();
                     }
                 });
-
-
 
 
                 spinner();
@@ -213,14 +210,20 @@ public class PlanFragment extends Fragment implements DatePickerDialog.OnDateSet
                         dialog.dismiss();
                     }
                 });
+                dialog.show();
             }
         }, new OnClick1() {
             @Override
             public void onItemClickClicked(final int position) {
-                planssDAO.deletePlanssByID(listplanss.get(position).getId());
-                listplanss.clear();
-                listplanss = planssDAO.getAllPlanssAsc();
-                planssAdapter.changeDataset(listplanss);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        planssDAO.deletePlanssByID(listplanss.get(position).getId());
+                        listplanss.clear();
+                        listplanss = planssDAO.getAllPlanssAsc();
+                        planssAdapter.changeDataset(listplanss);
+                    }
+                }, 700);
             }
         });
         recyclerView.setAdapter(planssAdapter);
@@ -253,7 +256,94 @@ public class PlanFragment extends Fragment implements DatePickerDialog.OnDateSet
         return view;
     }
 
+    private void dialog() {
+        View view = getLayoutInflater().inflate(R.layout.dialog_plan, null);
+        final BottomSheetDialog dialog = new BottomSheetDialog(getContext());
+        dialog.setContentView(view);
 
+
+//                final LayoutInflater inflater = LayoutInflater.from(getActivity());
+//                final View view = inflater.inflate(R.layout.dialog_plan, null);
+//                final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+//                builder.setTitle("Add Plan");
+//                builder.setView(view);
+//                final AlertDialog dialog = builder.show();
+        sppet = view.findViewById(R.id.sppet);
+        spaction = view.findViewById(R.id.spaction);
+        eddate = view.findViewById(R.id.eddate);
+        edtime = view.findViewById(R.id.edtime);
+        btnsave = view.findViewById(R.id.btnsave);
+        btncancel = view.findViewById(R.id.btncancel);
+        imageDate = view.findViewById(R.id.imgdate);
+        imageDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatePickerFragment fragment = new DatePickerFragment();
+                fragment.show(getActivity().getSupportFragmentManager(), "date");
+
+            }
+        });
+        imageTime = view.findViewById(R.id.imgtime);
+        imageTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Calendar calendar = Calendar.getInstance();
+                calendar.get(Calendar.HOUR);
+                calendar.get(Calendar.MINUTE);
+                TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int hourOfDay, int minutes) {
+
+                        edtime.setText(hourOfDay + ":" + minutes);
+                        localData.set_hour(hourOfDay);
+                        localData.set_min(minutes);
+                        NotificationScheduler.setReminder(getContext(), AlarmReceiver.class, localData.get_hour(), localData.get_min());
+                    }
+                }, 0, 0, false);
+                timePickerDialog.show();
+            }
+        });
+        spinner();
+
+        btnsave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (eddate.getText().toString().equals("")) {
+                    eddate.setError(getString(R.string.empty));
+                } else if (edtime.getText().toString().equals("")) {
+                    edtime.setError(getString(R.string.empty));
+                } else {
+                    try {
+                        Random random = new Random();
+                        String id = String.valueOf(random.nextInt());
+                        Planss planss;
+                        planss = new Planss(id, name, idpet, sdf.parse(eddate.getText().toString()), edtime.getText().toString());
+                        if (planssDAO.insertPlanss(planss) > 0) {
+                            dialog.dismiss();
+                            Toast.makeText(getActivity(), getString(R.string.alertsuccessfully), Toast.LENGTH_SHORT).show();
+                            listplanss.clear();
+                            listplanss = planssDAO.getAllPlanssAsc();
+//                                    sendChanels();
+                            planssAdapter.changeDataset(listplanss);
+                            constraintLayout.setVisibility(View.GONE);
+                        } else {
+                            Toast.makeText(getActivity(), getString(R.string.save_error), Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+        });
+        btncancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
 
 
     private int checkPositionPet(String strPet) {
@@ -279,7 +369,7 @@ public class PlanFragment extends Fragment implements DatePickerDialog.OnDateSet
 //        notificationManager.notify(1, notificationCompat);
 //    }
 
-//
+    //
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         getActivity().getMenuInflater().inflate(R.menu.menu_add_plan, menu);
@@ -290,86 +380,7 @@ public class PlanFragment extends Fragment implements DatePickerDialog.OnDateSet
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.add_plan:
-                final LayoutInflater inflater = LayoutInflater.from(getActivity());
-                final View view = inflater.inflate(R.layout.dialog_plan, null);
-                final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle("Add Plan");
-                builder.setView(view);
-                final AlertDialog dialog = builder.show();
-                sppet = view.findViewById(R.id.sppet);
-                spaction = view.findViewById(R.id.spaction);
-                eddate = view.findViewById(R.id.eddate);
-                edtime = view.findViewById(R.id.edtime);
-                btnsave = view.findViewById(R.id.btnsave);
-                btncancel = view.findViewById(R.id.btncancel);
-                imageDate = view.findViewById(R.id.imgdate);
-                imageDate.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        DatePickerFragment fragment = new DatePickerFragment();
-                        fragment.show(getActivity().getSupportFragmentManager(), "date");
-
-                    }
-                });
-                imageTime = view.findViewById(R.id.imgtime);
-                imageTime.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        final Calendar calendar = Calendar.getInstance();
-                        calendar.get(Calendar.HOUR);
-                        calendar.get(Calendar.MINUTE);
-                        TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
-                            @Override
-                            public void onTimeSet(TimePicker timePicker, int hourOfDay, int minutes) {
-
-                                edtime.setText(hourOfDay + ":" + minutes);
-                                localData.set_hour(hourOfDay);
-                                localData.set_min(minutes);
-                                NotificationScheduler.setReminder(getContext(), AlarmReceiver.class, localData.get_hour(), localData.get_min());
-                            }
-                        }, 0, 0, false);
-                        timePickerDialog.show();
-                    }
-                });
-                spinner();
-
-                btnsave.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (eddate.getText().toString().equals("")) {
-                            eddate.setError(getString(R.string.empty));
-                        } else if (edtime.getText().toString().equals("")) {
-                            edtime.setError(getString(R.string.empty));
-                        } else {
-                            try {
-                                Random random = new Random();
-                                String id = String.valueOf(random.nextInt());
-                                Planss planss;
-                                planss = new Planss(id, name, idpet, sdf.parse(eddate.getText().toString()), edtime.getText().toString());
-                                if (planssDAO.insertPlanss(planss) > 0) {
-                                    dialog.dismiss();
-                                    Toast.makeText(getActivity(), getString(R.string.alertsuccessfully), Toast.LENGTH_SHORT).show();
-                                    listplanss.clear();
-                                    listplanss = planssDAO.getAllPlanssAsc();
-//                                    sendChanels();
-                                    planssAdapter.changeDataset(listplanss);
-                                    constraintLayout.setVisibility(View.GONE);
-                                } else {
-                                    Toast.makeText(getActivity(), getString(R.string.save_error), Toast.LENGTH_SHORT).show();
-                                }
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
-
-                        }
-                    }
-                });
-                btncancel.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog.dismiss();
-                    }
-                });
+                dialog();
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -387,14 +398,14 @@ public class PlanFragment extends Fragment implements DatePickerDialog.OnDateSet
 
             }
         });
-  if(action.size() ==0) {
-      action.add("Đi bộ");
-      action.add("Cho ăn");
-      action.add("Tắm rửa");
-      action.add("Đi khám thú y");
-      action.add("Mua thức ăn, phụ kiện");
-      action.add("Khác");
-  }
+        if (action.size() == 0) {
+            action.add("Đi bộ");
+            action.add("Cho ăn");
+            action.add("Tắm rửa");
+            action.add("Đi khám thú y");
+            action.add("Mua thức ăn, phụ kiện");
+            action.add("Khác");
+        }
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, action);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spaction.setAdapter(dataAdapter);

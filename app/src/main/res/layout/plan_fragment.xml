@@ -7,34 +7,6 @@
     android:id="@+id/coor"
     android:layout_marginBottom="56dp"
     tools:context=".fragment.PlanFragment">
-    <!--<android.support.design.widget.AppBarLayout-->
-    <!--android:id="@+id/appbar"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:theme="@style/AppTheme.AppBarOverlay">-->
-    <!--<android.support.v7.widget.Toolbar-->
-    <!--android:id="@+id/toolbar"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="?attr/actionBarSize"-->
-    <!--android:background="@color/colorPrimary"-->
-    <!--app:popupTheme="@style/AppTheme.PopupOverlay">-->
-
-    <!--<LinearLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:orientation="horizontal">-->
-    <!--<TextView-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:layout_marginLeft="15dp"-->
-    <!--android:textStyle="bold"-->
-    <!--android:text="Plan"-->
-    <!--android:textColor="#fff"-->
-    <!--android:textSize="22sp"-->
-    <!--android:layout_marginStart="15dp" />-->
-    <!--</LinearLayout>-->
-    <!--</android.support.v7.widget.Toolbar>-->
-    <!--</android.support.design.widget.AppBarLayout>-->
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"

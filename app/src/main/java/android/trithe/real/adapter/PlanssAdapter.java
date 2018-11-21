@@ -90,21 +90,15 @@ public class PlanssAdapter extends RecyclerView.Adapter<PlanssAdapter.MyViewHold
             @Override
             public void onClick(View v) {
                 if (holder.checkBox.isChecked()) {
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
                             historyDAO = new HistoryDAO(context);
                             Random random = new Random();
                             String id = String.valueOf(random.nextInt());
                             History histories = new History(id, planss.getName(), planss.getIdpet(), planss.getDay(), planss.getTime());
                             if (historyDAO.insertHistory(histories) > 0) {
-//                                Toast.makeText(context, context.getString(R.string.alertsuccessfully), Toast.LENGTH_SHORT).show();
                                 Toast.makeText(context, context.getString(R.string.finish_plan), Toast.LENGTH_SHORT).show();
                                 onClick1.onItemClickClicked(position);
                             }
 
-                        }
-                    }, 1500);
                 }
             }
         });
