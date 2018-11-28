@@ -90,13 +90,12 @@
                         android:paddingTop="1dp"
                         android:textColor="#000000"
                         android:text="@string/loai" />
-
                     <Spinner
                         android:id="@+id/sploaipet"
                         android:layout_width="0dp"
+                        android:layout_weight="4"
                         android:layout_marginLeft="10dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="4"
                         android:imeOptions="actionGo"
                         android:layout_marginStart="10dp" />
                 </LinearLayout>
@@ -139,7 +138,6 @@
                     android:layout_weight="4"
                     android:layout_marginLeft="10dp"
                     android:layout_height="wrap_content"
-
                     android:imeOptions="actionGo"
                     android:layout_marginStart="10dp" />
                 </LinearLayout>

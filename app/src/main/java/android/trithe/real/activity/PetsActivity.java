@@ -86,7 +86,23 @@ public class PetsActivity extends AppCompatActivity {
         } else if (radioButtonfe.isChecked()) {
             gender = "Female";
         }
+
+        sploaipet.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                magiongloai = listtype.get(sploaipet.getSelectedItemPosition()).getName();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+        getType();
+
+
         //health
+
         sphealth.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -146,18 +162,6 @@ public class PetsActivity extends AppCompatActivity {
                 });
             }
         });
-        sploaipet.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                magiongloai = listtype.get(sploaipet.getSelectedItemPosition()).getName();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-        getType();
 
 //botom
         getintent();

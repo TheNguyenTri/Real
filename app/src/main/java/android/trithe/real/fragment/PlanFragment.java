@@ -3,7 +3,10 @@ package android.trithe.real.fragment;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.Notification;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,12 +19,14 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.trithe.real.R;
+import android.trithe.real.activity.MainActivity;
 import android.trithe.real.helper.AlarmReceiver;
 import android.trithe.real.helper.LocalData;
 import android.trithe.real.helper.NotificationScheduler;
@@ -42,6 +47,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -215,15 +221,11 @@ public class PlanFragment extends Fragment implements DatePickerDialog.OnDateSet
         }, new OnClick1() {
             @Override
             public void onItemClickClicked(final int position) {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
+
                         planssDAO.deletePlanssByID(listplanss.get(position).getId());
                         listplanss.clear();
                         listplanss = planssDAO.getAllPlanssAsc();
                         planssAdapter.changeDataset(listplanss);
-                    }
-                }, 700);
             }
         });
         recyclerView.setAdapter(planssAdapter);
@@ -293,7 +295,6 @@ public class PlanFragment extends Fragment implements DatePickerDialog.OnDateSet
                 TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(), new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int hourOfDay, int minutes) {
-
                         edtime.setText(hourOfDay + ":" + minutes);
                         localData.set_hour(hourOfDay);
                         localData.set_min(minutes);
@@ -364,9 +365,14 @@ public class PlanFragment extends Fragment implements DatePickerDialog.OnDateSet
         return 0;
     }
 
-//    public void sendChanels() {
-//        Notification notificationCompat = new NotificationCompat.Builder(getActivity(), CHANNEL_ID).setSmallIcon(R.drawable.logo).setContentTitle(getString(R.string.app_name2)).setContentText(getString(R.string.event)).setPriority(NotificationCompat.PRIORITY_HIGH).setCategory(NotificationCompat.CATEGORY_MESSAGE).build();
-//        notificationManager.notify(1, notificationCompat);
+//    public static void sendChanels() {
+////        Notification notificationCompat = new NotificationCompat.Builder(getActivity(), CHANNEL_ID).setSmallIcon(R.drawable.logo).setContentTitle(getString(R.string.app_name2)).setContentText(getString(R.string.event)).setPriority(NotificationCompat.PRIORITY_HIGH).setCategory(NotificationCompat.CATEGORY_MESSAGE).build();
+////        notificationManager.notify(1, notificationCompat);
+//        View view = null;
+//        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(view.getContext());
+//        mBuilder.setSmallIcon(R.drawable.logo);
+//        mBuilder.setContentTitle("Notification Alert, Click Me!");
+//        mBuilder.setContentText("Hi, This is Android Notification Detail!");
 //    }
 
     //
@@ -458,29 +464,21 @@ public class PlanFragment extends Fragment implements DatePickerDialog.OnDateSet
 
     }
 
-//    @Override
-//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//        getActivity().invalidateOptionsMenu();
-//        super.onCreateOptionsMenu(menu, inflater);
-//    }
-
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder) {
         if (viewHolder instanceof PlanssAdapter.MyViewHolder) {
             final Planss deletedItem = listplanss.get(viewHolder.getAdapterPosition());
             final int deletedIndex = viewHolder.getAdapterPosition();
             planssAdapter.removeItem(viewHolder.getAdapterPosition());
-            Snackbar snackbar = Snackbar
-                    .make(coordinatorLayout, " Removed from item!", Snackbar.LENGTH_LONG);
+            Snackbar snackbar = Snackbar.make(coordinatorLayout, " Removed from item!", Snackbar.LENGTH_LONG);
             snackbar.setAction("UNDO", new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
-                    // undo is selected, restore the deleted item
                     planssAdapter.restoreItem(deletedItem, deletedIndex);
                 }
             });
-            snackbar.setActionTextColor(Color.YELLOW);
+            snackbar.setActionTextColor(Color.RED);
             snackbar.show();
 
         }

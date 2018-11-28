@@ -1,6 +1,7 @@
 package android.trithe.real.adapter;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -90,14 +91,28 @@ public class PlanssAdapter extends RecyclerView.Adapter<PlanssAdapter.MyViewHold
             @Override
             public void onClick(View v) {
                 if (holder.checkBox.isChecked()) {
-                            historyDAO = new HistoryDAO(context);
-                            Random random = new Random();
-                            String id = String.valueOf(random.nextInt());
-                            History histories = new History(id, planss.getName(), planss.getIdpet(), planss.getDay(), planss.getTime());
-                            if (historyDAO.insertHistory(histories) > 0) {
-                                Toast.makeText(context, context.getString(R.string.finish_plan), Toast.LENGTH_SHORT).show();
+                    historyDAO = new HistoryDAO(context);
+                    Random random = new Random();
+                    String id = String.valueOf(random.nextInt());
+                    History histories = new History(id, planss.getName(), planss.getIdpet(), planss.getDay(), planss.getTime());
+                    if (historyDAO.insertHistory(histories) > 0) {
+                        final android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(context);
+                        builder.setTitle("Message");
+                        builder.setMessage("Have you completed this plan yet ?");
+                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
                                 onClick1.onItemClickClicked(position);
                             }
+                        });
+                        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                holder.checkBox.setChecked(false);
+                            }
+                        });
+                        builder.show();
+                    }
 
                 }
             }

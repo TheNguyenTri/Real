@@ -12,7 +12,6 @@
     <string name="malepet">Male</string>
     <string name="female">Female</string>
     <string name="save">Save</string>
-    <string name="finish_plan">You have completed the plan</string>
     <string name="save_error">Save error</string>
     <string name="about">About</string>
     <string name="happypets">Happy Pets</string>
@@ -33,6 +32,7 @@
     <string name="plan">Plan</string>
     <string name="statistics">Statistics</string>
     <string name="nullpet">Thêm những vật nuôi của bạn vào đây đi nào</string>
+    <string name="nullhistory">Danh sách nhiệm vụ đã hoàn thành của bạn</string>
     <string name="nullplan">Thêm những kế hoạch của bạn vào đây đi nào</string>
     <string name="history">History</string>
     <string name="connection">Sorry, connection to server falied</string>

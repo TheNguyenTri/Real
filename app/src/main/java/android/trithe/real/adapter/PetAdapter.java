@@ -10,6 +10,7 @@ import android.trithe.real.R;
 import android.trithe.real.activity.PetsActivity;
 import android.trithe.real.database.PetDAO;
 import android.trithe.real.inter.OnClick;
+import android.trithe.real.inter.OnClick1;
 import android.trithe.real.model.Pet;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -33,6 +34,7 @@ public class PetAdapter extends RecyclerView.Adapter<PetAdapter.MyViewHolder> im
     private final List<Pet> listSort;
     private Filter Filter;
     private final OnClick onClick;
+    private OnClick1 onClick1;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         final TextView name;
@@ -50,11 +52,12 @@ public class PetAdapter extends RecyclerView.Adapter<PetAdapter.MyViewHolder> im
     }
 
 
-    public PetAdapter(Context mContext, List<Pet> albumList, OnClick onClick) {
+    public PetAdapter(Context mContext, List<Pet> albumList, OnClick onClick,OnClick1 onClick1) {
         this.context = mContext;
         this.list = albumList;
         this.listSort = albumList;
         this.onClick = onClick;
+        this.onClick1=onClick1;
     }
 
     @NonNull
@@ -146,6 +149,7 @@ public class PetAdapter extends RecyclerView.Adapter<PetAdapter.MyViewHolder> im
                     list.clear();
                     list = petDAO.getAllPet();
                     notifyDataSetChanged();
+                    onClick1.onItemClickClicked(position);
                     return true;
                 default:
             }

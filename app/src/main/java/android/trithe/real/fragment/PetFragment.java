@@ -20,12 +20,15 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.trithe.real.R;
 import android.trithe.real.activity.AboutActivity;
+import android.trithe.real.activity.MainActivity;
 import android.trithe.real.adapter.PetAdapter;
 import android.trithe.real.database.PetDAO;
 import android.trithe.real.database.TypeDAO;
 import android.trithe.real.inter.OnClick;
+import android.trithe.real.inter.OnClick1;
 import android.trithe.real.model.Pet;
 import android.trithe.real.model.TypePet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -44,12 +47,12 @@ public class PetFragment extends Fragment {
     private TypeDAO typeDAO;
     private PetAdapter petAdapter;
     List<Pet> listpet = new ArrayList<>();
-
+    private  ConstraintLayout constraintLayout;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.pet_fragment, container, false);
-        RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
+        final View view = inflater.inflate(R.layout.pet_fragment, container, false);
+        final RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
         Toolbar toolbar = view.findViewById(R.id.toolbar1);
         setHasOptionsMenu(true);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
@@ -82,10 +85,10 @@ public class PetFragment extends Fragment {
         ///
         //
         //
-        PetDAO petDAO = new PetDAO(getActivity());
+        final PetDAO petDAO = new PetDAO(getActivity());
         typeDAO = new TypeDAO(getActivity());
 
-        ConstraintLayout constraintLayout = view.findViewById(R.id.ll);
+        constraintLayout = view.findViewById(R.id.ll);
         if (petDAO.getAllPet().size() == 0) {
             constraintLayout.setVisibility(View.VISIBLE);
         } else {
@@ -98,6 +101,19 @@ public class PetFragment extends Fragment {
             @Override
             public void onItemClickClicked(int position) {
                 getActivity().finish();
+
+            }
+        }, new OnClick1() {
+            @Override
+            public void onItemClickClicked(int position) {
+                if (petDAO.getAllPet().size() == 0) {
+                    constraintLayout.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.GONE);
+                    Log.e("abc", String.valueOf(petDAO.getAllPet().size()));
+                } else {
+                    constraintLayout.setVisibility(View.GONE);
+                }
+
             }
         });
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 2);
@@ -107,7 +123,6 @@ public class PetFragment extends Fragment {
         recyclerView.setAdapter(petAdapter);
         return view;
     }
-
 
     class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
         private final int spanCount;
@@ -205,13 +220,4 @@ public class PetFragment extends Fragment {
         }
     }
 
-//    private void loadFragment(Fragment fragment) {
-//        // load fragment
-//        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-//        transaction.replace(R.id.famelayout1, fragment);
-//        transaction.addToBackStack(null);
-//        transaction.commit();
-//    }
 }
-//             bundle.putByteArray("IMAGE", list.get(position).getImage());
-//                    intent.putExtras(bundle);

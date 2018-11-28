@@ -3,6 +3,7 @@ package android.trithe.real.fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
@@ -17,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
 import com.github.mikephil.charting.charts.PieChart;
@@ -47,12 +49,22 @@ public class StatisticsFragment extends Fragment {
         RecyclerView.LayoutManager manager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(manager);
 
+        if (petDAO.getAllPet().size() != 0) {
+            RelativeLayout relativeLayout = view.findViewById(R.id.rl);
+            relativeLayout.setVisibility(View.VISIBLE);
+        }
+        if(historyDAO.getAllHistoryAsc().size() !=0){
+            ConstraintLayout constraintLayout=view.findViewById(R.id.lls);
+            constraintLayout.setVisibility(View.INVISIBLE);
+        }
+
 
         /////
         final CollapsingToolbarLayout collapsingToolbar = view.findViewById(R.id.coll);
         collapsingToolbar.setTitle(" ");
         AppBarLayout appBarLayout = view.findViewById(R.id.appbar);
         appBarLayout.setExpanded(true);
+
         // hiding & showing the title when toolbar expanded & collapsed
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             boolean isShow = false;
