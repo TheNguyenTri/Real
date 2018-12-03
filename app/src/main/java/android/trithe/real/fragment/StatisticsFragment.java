@@ -1,5 +1,6 @@
 package android.trithe.real.fragment;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -7,6 +8,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.trithe.real.R;
@@ -33,6 +35,8 @@ import java.util.List;
 
 public class StatisticsFragment extends Fragment {
     private ArrayList<String> PieEntryLabels;
+    private CardView cardView;
+    ConstraintLayout constraintLayout;
 
     @Nullable
     @Override
@@ -41,6 +45,8 @@ public class StatisticsFragment extends Fragment {
         setHasOptionsMenu(true);
 
         RecyclerView recyclerView = view.findViewById(R.id.recycler_viewass1);
+        cardView = view.findViewById(R.id.cvs);
+        constraintLayout = view.findViewById(R.id.lls);
         HistoryDAO historyDAO = new HistoryDAO(getContext());
         PetDAO petDAO = new PetDAO(getContext());
         List<History> listhistory = historyDAO.getAllHistoryAsc();
@@ -53,9 +59,9 @@ public class StatisticsFragment extends Fragment {
             RelativeLayout relativeLayout = view.findViewById(R.id.rl);
             relativeLayout.setVisibility(View.VISIBLE);
         }
-        if(historyDAO.getAllHistoryAsc().size() !=0){
-            ConstraintLayout constraintLayout=view.findViewById(R.id.lls);
+        if (historyDAO.getAllHistoryAsc().size() != 0) {
             constraintLayout.setVisibility(View.INVISIBLE);
+            cardView.setVisibility(View.VISIBLE);
         }
 
 
@@ -91,10 +97,15 @@ public class StatisticsFragment extends Fragment {
         PieChart pieChart = view.findViewById(R.id.chart1);
         ArrayList<Entry> entries = new ArrayList<>();
         PieEntryLabels = new ArrayList<>();
-        entries.add(new BarEntry(petDAO.getKhoe(), 0));
-        entries.add(new BarEntry(petDAO.getBT(), 1));
-
-        entries.add(new BarEntry(petDAO.getYeu(), 2));
+        if (petDAO.getKhoe() != 0) {
+            entries.add(new BarEntry(petDAO.getKhoe(), 0));
+        }
+        if (petDAO.getBT() != 0) {
+            entries.add(new BarEntry(petDAO.getBT(), 1));
+        }
+        if (petDAO.getYeu() != 0) {
+            entries.add(new BarEntry(petDAO.getYeu(), 2));
+        }
 
         AddValuesToPieEntryLabels();
         PieDataSet pieDataSet = new PieDataSet(entries, "");
@@ -118,10 +129,5 @@ public class StatisticsFragment extends Fragment {
 
     }
 
-//    @Override
-//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//        super.onCreateOptionsMenu(menu, inflater);
-//        getActivity().getMenuInflater().inflate(R.menu.main2, menu);
-//    }
 
 }

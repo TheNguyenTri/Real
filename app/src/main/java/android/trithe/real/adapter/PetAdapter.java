@@ -34,7 +34,6 @@ public class PetAdapter extends RecyclerView.Adapter<PetAdapter.MyViewHolder> im
     private final List<Pet> listSort;
     private Filter Filter;
     private final OnClick onClick;
-    private OnClick1 onClick1;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         final TextView name;
@@ -52,12 +51,11 @@ public class PetAdapter extends RecyclerView.Adapter<PetAdapter.MyViewHolder> im
     }
 
 
-    public PetAdapter(Context mContext, List<Pet> albumList, OnClick onClick,OnClick1 onClick1) {
+    public PetAdapter(Context mContext, List<Pet> albumList, OnClick onClick) {
         this.context = mContext;
         this.list = albumList;
         this.listSort = albumList;
         this.onClick = onClick;
-        this.onClick1=onClick1;
     }
 
     @NonNull
@@ -149,7 +147,6 @@ public class PetAdapter extends RecyclerView.Adapter<PetAdapter.MyViewHolder> im
                     list.clear();
                     list = petDAO.getAllPet();
                     notifyDataSetChanged();
-                    onClick1.onItemClickClicked(position);
                     return true;
                 default:
             }

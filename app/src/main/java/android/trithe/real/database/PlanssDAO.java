@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.trithe.real.model.Planss;
 import android.util.Log;
 
+import java.sql.Time;
 import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -54,7 +55,8 @@ public class PlanssDAO {
 
     public List<Planss> getAllPlanssAsc() {
         List<Planss> dsPlanss = new ArrayList<>();
-        String selectQuery = "SELECT  * FROM " + TABLE_NAME + " ORDER BY " + Date1 + " ASC ,  " + Time1 + " ASC ";
+//        String selectQuery = "SELECT  * FROM " + TABLE_NAME + " ORDER BY " + Date1 + " ASC ,  " + Time1 + " ASC ";
+        String selectQuery = "SELECT  * FROM " + TABLE_NAME + " ORDER BY " + Date1 + " , " + Time1 + " ASC ";
         Cursor c = db.rawQuery(selectQuery, null);
         c.moveToFirst();
         while (!c.isAfterLast()) {

@@ -24,7 +24,7 @@
                 android:layout_height="@dimen/album_cover_height"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:clickable="true"
-                android:scaleType="fitXY"
+                android:scaleType="centerCrop"
                 android:focusable="true"
                 android:contentDescription="@string/todo" />
 

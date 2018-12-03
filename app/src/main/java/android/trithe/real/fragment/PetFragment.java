@@ -103,18 +103,6 @@ public class PetFragment extends Fragment {
                 getActivity().finish();
 
             }
-        }, new OnClick1() {
-            @Override
-            public void onItemClickClicked(int position) {
-                if (petDAO.getAllPet().size() == 0) {
-                    constraintLayout.setVisibility(View.VISIBLE);
-                    recyclerView.setVisibility(View.GONE);
-                    Log.e("abc", String.valueOf(petDAO.getAllPet().size()));
-                } else {
-                    constraintLayout.setVisibility(View.GONE);
-                }
-
-            }
         });
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 2);
         recyclerView.setLayoutManager(mLayoutManager);

@@ -59,7 +59,7 @@ public class PetsActivity extends AppCompatActivity {
     private final int CAPTURE_PHOTO = 102;
     private RadioGroup rg;
     private String idupdate;
-//    String value;
+    //    String value;
     private RadioButton radioButton, radioButtonfe;
     private final List<Pet> list = new ArrayList<>();
 //    final private int REQUEST_CODE_WRITE_STORAGE = 1;
@@ -142,14 +142,10 @@ public class PetsActivity extends AppCompatActivity {
                 iconimage.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
-
-                            Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-                            photoPickerIntent.setType("image/*");
-                            startActivityForResult(photoPickerIntent, SELECT_PHOTO);
-                            dialog1.dismiss();
-
-
+                        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+                        photoPickerIntent.setType("image/*");
+                        startActivityForResult(photoPickerIntent, SELECT_PHOTO);
+                        dialog1.dismiss();
                     }
                 });
                 iconcamera.setOnClickListener(new View.OnClickListener() {
@@ -195,7 +191,7 @@ public class PetsActivity extends AppCompatActivity {
 
                             Toast.makeText(getApplicationContext(), getString(R.string.alertsuccessfully), Toast.LENGTH_SHORT).show();
                             finish();
-                            startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
                         }
                     }
                 }
@@ -212,7 +208,7 @@ public class PetsActivity extends AppCompatActivity {
                         if (petDAO.insertPet(pet) > 0) {
                             Toast.makeText(getApplicationContext(), getString(R.string.alertsuccessfully) + " " + gender, Toast.LENGTH_SHORT).show();
                             finish();
-                            startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
                             Log.d("a", list.toString());
                         }
                     }
@@ -326,14 +322,14 @@ public class PetsActivity extends AppCompatActivity {
 
 
     public void back(View view) {
-      finish();
-      startActivity(new Intent(getApplicationContext(),MainActivity.class));
+        finish();
+        startActivity(new Intent(getApplicationContext(), MainActivity.class));
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         finish();
-        startActivity(new Intent(getApplicationContext(),MainActivity.class));
+        startActivity(new Intent(getApplicationContext(), MainActivity.class));
     }
 }

@@ -53,7 +53,7 @@ public class HistoryDAO {
 
     public List<History> getAllHistoryAsc() {
         List<History> dsPlanss = new ArrayList<>();
-        String selectQuery = "SELECT  * FROM " + TABLE_NAME + " ORDER BY " + Date1 + " ASC, " + Time1 + " ASC ";
+        String selectQuery = "SELECT  * FROM " + TABLE_NAME + " ORDER BY " + Date1 + " , " + Time1 + " ASC ";
         Cursor c = db.rawQuery(selectQuery, null);
         c.moveToFirst();
         while (!c.isAfterLast()) {
