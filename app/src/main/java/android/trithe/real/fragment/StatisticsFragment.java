@@ -37,6 +37,7 @@ public class StatisticsFragment extends Fragment {
     private ArrayList<String> PieEntryLabels;
     private CardView cardView;
     ConstraintLayout constraintLayout;
+    private PetDAO petDAO;
 
     @Nullable
     @Override
@@ -48,7 +49,7 @@ public class StatisticsFragment extends Fragment {
         cardView = view.findViewById(R.id.cvs);
         constraintLayout = view.findViewById(R.id.lls);
         HistoryDAO historyDAO = new HistoryDAO(getContext());
-        PetDAO petDAO = new PetDAO(getContext());
+        petDAO = new PetDAO(getContext());
         List<History> listhistory = historyDAO.getAllHistoryAsc();
         HistoryAdapter historyAdapter = new HistoryAdapter(getContext(), listhistory);
         recyclerView.setAdapter(historyAdapter);
@@ -122,10 +123,15 @@ public class StatisticsFragment extends Fragment {
 
 
     private void AddValuesToPieEntryLabels() {
-
+        if (petDAO.getKhoe() != 0) {
         PieEntryLabels.add("Strong");
-        PieEntryLabels.add("Normal");
-        PieEntryLabels.add("Weak");
+        }
+        if (petDAO.getBT() != 0) {
+            PieEntryLabels.add("Normal");
+        }
+        if (petDAO.getYeu() != 0) {
+            PieEntryLabels.add("Weak");
+        }
 
     }
 
