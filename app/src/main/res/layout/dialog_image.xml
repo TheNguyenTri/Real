@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="5dp"
+    android:orientation="vertical">
+    <LinearLayout
+        android:id="@+id/iconcamera"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:padding="3dp"
+        android:background="@drawable/selector_listview_one"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="50.0dip"
+            android:layout_height="50.0dip"
+            android:layout_marginLeft="15dp"
+            android:src="@drawable/camera"
+            android:layout_marginStart="15dp"
+            android:contentDescription="@string/todo" />
+
+        <TextView
+            android:layout_width="0.0dip"
+            android:layout_height="50.0dip"
+            android:layout_marginLeft="10.0dip"
+            android:layout_weight="1.0"
+            android:gravity="center_vertical"
+            android:text="@string/camera"
+            android:textColor="#ff000000"
+            android:textSize="18sp"
+            android:layout_marginStart="10.0dip" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1.0dip"
+        android:background="#ffcdcdcd" />
+
+    <LinearLayout
+        android:id="@+id/iconimage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:padding="3dp"
+        android:background="@drawable/selector_listview_one"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="50.0dip"
+            android:layout_height="50.0dip"
+            android:layout_marginLeft="15dp"
+            android:src="@drawable/image"
+            android:layout_marginStart="15dp"
+            android:contentDescription="@string/todo" />
+
+        <TextView
+            android:layout_width="0.0dip"
+            android:layout_height="50.0dip"
+            android:layout_marginLeft="10.0dip"
+            android:layout_weight="1.0"
+            android:gravity="center_vertical"
+            android:text="@string/image"
+            android:textColor="#ff000000"
+            android:textSize="18sp"
+            android:layout_marginStart="10.0dip" />
+    </LinearLayout>
+
+</LinearLayout>
