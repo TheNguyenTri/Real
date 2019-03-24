@@ -2,9 +2,104 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="220dp"
+        android:fitsSystemWindows="true"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/coll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            app:contentScrim="?attr/colorPrimary"
+            app:expandedTitleMarginEnd="64dp"
+            app:expandedTitleMarginStart="48dp"
+            app:expandedTitleTextAppearance="@android:color/transparent"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+            <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/backdrop"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/todo"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:fitsSystemWindows="true"
+                    android:scaleType="centerCrop"
+                    app:layout_collapseMode="parallax" />
+                <android.support.design.widget.TabLayout
+                    app:tabGravity="center"
+                    android:id="@+id/indicator"
+                    app:tabBackground="@drawable/indicator_selector"
+                    app:tabIndicatorHeight="0dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+            </android.support.constraint.ConstraintLayout>
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbarmain"
+                android:layout_marginLeft="-10dp"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent">
+
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/avatar"
+                            android:layout_width="40dp"
+                            app:civ_border_color="#FF000000"
+                            app:civ_border_width="1dp"
+                            android:layout_height="40dp"
+                            android:layout_marginLeft="5dp"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="10dp"></de.hdodenhof.circleimageview.CircleImageView>
+                        <EditText
+                            android:id="@+id/textNamePust"
+                            android:layout_marginTop="10dp"
+                            android:focusable="false"
+                            android:layout_toRightOf="@id/avatar"
+                            android:layout_marginRight="8dp"
+                            android:visibility="invisible"
+                            android:text="What do you thinking ?"
+                            android:layout_centerVertical="true"
+                            android:textColor="#878995"
+                            android:textSize="15sp"
+                            android:layout_toLeftOf="@id/notifi"
+                            android:background="@drawable/textinput"
+                            android:layout_width="match_parent"
+                            android:paddingLeft="20dp"
+                            android:layout_height="40dp" />
+                        <ImageView
+                            android:id="@+id/notifi"
+                            android:layout_centerVertical="true"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_marginTop="-6dp"
+                            android:layout_marginRight="8dp"
+                            android:layout_alignParentRight="true"
+                            android:src="@drawable/white_notifi"/>
+                    </RelativeLayout>
+            </android.support.v7.widget.Toolbar>
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
     <FrameLayout
         android:id="@+id/frameLayout"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
     <android.support.design.widget.BottomNavigationView
@@ -12,66 +107,10 @@
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
         android:layout_gravity="bottom"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:id="@+id/navi"
         app:menu="@menu/navi"
         app:itemTextColor="#FFF"
         app:itemIconTint="#fff"
       />
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fabpet"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/navi"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="bottom|right"
-        android:layout_marginRight="30dp"
-        android:layout_marginBottom="90dp"
-        android:src="@drawable/ic_add_black_24dp"
-        android:layout_marginEnd="30dp" />
 </android.support.design.widget.CoordinatorLayout>
-    <!--<android.support.design.widget.AppBarLayout-->
-    <!--android:id="@+id/appbar"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="220dp"-->
-    <!--android:fitsSystemWindows="true"-->
-    <!--android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">-->
-
-    <!--<android.support.design.widget.CollapsingToolbarLayout-->
-    <!--android:id="@+id/collapsing_toolbar"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:fitsSystemWindows="true"-->
-    <!--app:contentScrim="?attr/colorPrimary"-->
-    <!--app:expandedTitleMarginEnd="64dp"-->
-    <!--app:expandedTitleMarginStart="48dp"-->
-    <!--app:expandedTitleTextAppearance="@android:color/transparent"-->
-    <!--app:layout_scrollFlags="scroll|exitUntilCollapsed">-->
-
-    <!--<RelativeLayout-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content">-->
-
-    <!--<ImageView-->
-    <!--android:id="@+id/backdrop"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:fitsSystemWindows="true"-->
-    <!--android:scaleType="centerCrop"-->
-    <!--app:layout_collapseMode="parallax" />-->
-
-    <!--</RelativeLayout>-->
-
-    <!--<android.support.v7.widget.Toolbar-->
-    <!--android:id="@+id/toolbar1"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="?attr/actionBarSize"-->
-    <!--app:layout_collapseMode="pin"-->
-    <!--app:popupTheme="@style/ThemeOverlay.AppCompat.Light" >-->
-    <!--</android.support.v7.widget.Toolbar>-->
-
-    <!--</android.support.design.widget.CollapsingToolbarLayout>-->
-
-    <!--</android.support.design.widget.AppBarLayout>-->
-    <!--<include layout="@layout/content_main" />-->

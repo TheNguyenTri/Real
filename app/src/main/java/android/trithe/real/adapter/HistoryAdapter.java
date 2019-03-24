@@ -29,7 +29,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
         final TextView planss;
         final TextView day;
         final ImageView avatar;
-        final CheckBox checkBox;
         final RelativeLayout viewBackground;
         final RelativeLayout viewForeground;
 
@@ -39,7 +38,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
             planss = view.findViewById(R.id.tvplanpet);
             day = view.findViewById(R.id.tvday);
             avatar = view.findViewById(R.id.avatar);
-            checkBox = view.findViewById(R.id.cbo);
             viewBackground = view.findViewById(R.id.view_background);
             viewForeground = view.findViewById(R.id.view_foreground);
         }

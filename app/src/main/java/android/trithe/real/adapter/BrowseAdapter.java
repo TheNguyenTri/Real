@@ -25,11 +25,13 @@ public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.MyViewHold
     public class MyViewHolder extends RecyclerView.ViewHolder {
         final TextView name;
         final ImageView avatar;
+        final TextView timeline;
 
         MyViewHolder(View view) {
             super(view);
             name = view.findViewById(R.id.itemname);
             avatar = view.findViewById(R.id.itemimg);
+            timeline = view.findViewById(R.id.weight);
         }
     }
 
@@ -61,6 +63,7 @@ public class BrowseAdapter extends RecyclerView.Adapter<BrowseAdapter.MyViewHold
                 onClick.onItemClickClicked(position);
             }
         });
+        holder.timeline.setText(browse.getTimeline());
         Glide.with(context).load(browse.getImage()).into(holder.avatar);
     }
 

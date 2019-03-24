@@ -6,6 +6,7 @@ android {
         applicationId "android.trithe.real"
         minSdkVersion 16
         targetSdkVersion 28
+        multiDexEnabled true
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -34,7 +35,19 @@ dependencies {
     implementation 'org.jsoup:jsoup:1.10.2'
     implementation 'com.github.PhilJay:MPAndroidChart:v2.2.4'
     implementation 'de.hdodenhof:circleimageview:2.1.0'
+    implementation 'com.google.firebase:firebase-database:16.0.5'
+    implementation 'com.google.firebase:firebase-auth:16.1.0'
+    implementation 'com.theartofdev.edmodo:android-image-cropper:2.6.+'
+    implementation 'com.google.android.gms:play-services-auth:16.0.1'
+    implementation 'com.google.firebase:firebase-storage:11.8.0'
+    implementation 'com.google.firebase:firebase-firestore:11.8.0'
+    implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
+    implementation 'com.google.firebase:firebase-messaging:17.3.4'
+    implementation 'id.zelory:compressor:2.1.0'
+    implementation 'com.android.support:multidex:1.0.3'
+
 }
 repositories {
     maven { url "https://jitpack.io" }
 }
+apply plugin: 'com.google.gms.google-services'

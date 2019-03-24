@@ -79,7 +79,8 @@ public class PlanssAdapter extends RecyclerView.Adapter<PlanssAdapter.MyViewHold
         final Planss planss = list.get(position);
         holder.name.setText(planss.getIdpet());
         holder.planss.setText(planss.getName());
-        holder.day.setText(planss.getTime() + " | " + sdf.format(planss.getDay()));
+//        holder.day.setText(planss.getTime() + " | " + sdf.format(planss.getDay()));
+        holder.day.setText(sdf.format(planss.getDay()));
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -94,15 +95,16 @@ public class PlanssAdapter extends RecyclerView.Adapter<PlanssAdapter.MyViewHold
                     historyDAO = new HistoryDAO(context);
                     Random random = new Random();
                     String id = String.valueOf(random.nextInt());
-                    History histories = new History(id, planss.getName(), planss.getIdpet(), planss.getDay(), planss.getTime());
-                    if (historyDAO.insertHistory(histories) > 0) {
+                    final History histories = new History(id, planss.getName(), planss.getIdpet(), planss.getDay(), planss.getTime());
                         final android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(context);
                         builder.setTitle("Message");
                         builder.setMessage("Have you completed this plan yet ?");
                         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                onClick1.onItemClickClicked(position);
+                                if (historyDAO.insertHistory(histories) > 0) {
+                                    onClick1.onItemClickClicked(position);
+                                }
                             }
                         });
                         builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -115,7 +117,7 @@ public class PlanssAdapter extends RecyclerView.Adapter<PlanssAdapter.MyViewHold
                     }
 
                 }
-            }
+
         });
         holder.checkBox.setChecked(false);
         switch (planss.getName()) {

@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <color name="colorPrimary">#f76666</color>
-    <color name="colorPrimaryDark">#fd4247</color>
+    <!--<color name="colorPrimary">#f76666</color>-->
+    <!--<color name="colorPrimaryDark">#fd4247</color>-->
+    <!--<color name="colorAccent">#1cd2a2</color>-->
+    <color name="colorPrimary">#070C2E</color>
+    <color name="colorPrimaryDark">#0E0124</color>
     <color name="colorAccent">#1cd2a2</color>
     <color name="white" tools:keep="@color/white">#fff</color>
     <color name="album_title">#4c4c4c</color>

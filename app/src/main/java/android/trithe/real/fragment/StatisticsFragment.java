@@ -67,34 +67,6 @@ public class StatisticsFragment extends Fragment {
 
 
         /////
-        final CollapsingToolbarLayout collapsingToolbar = view.findViewById(R.id.coll);
-        collapsingToolbar.setTitle(" ");
-        AppBarLayout appBarLayout = view.findViewById(R.id.appbar);
-        appBarLayout.setExpanded(true);
-
-        // hiding & showing the title when toolbar expanded & collapsed
-        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            boolean isShow = false;
-            int scrollRange = -1;
-
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                if (scrollRange == -1) {
-                    scrollRange = appBarLayout.getTotalScrollRange();
-                }
-                if (scrollRange + verticalOffset == 0) {
-                    collapsingToolbar.setTitle(getString(R.string.app_name));
-                    isShow = true;
-                } else if (isShow) {
-                    collapsingToolbar.setTitle(" ");
-                    isShow = false;
-                }
-            }
-        });
-        Glide.with(getContext()).load(R.drawable.pet).into((ImageView) view.findViewById(R.id.backdrop));
-        ///
-
-
         PieChart pieChart = view.findViewById(R.id.chart1);
         ArrayList<Entry> entries = new ArrayList<>();
         PieEntryLabels = new ArrayList<>();
