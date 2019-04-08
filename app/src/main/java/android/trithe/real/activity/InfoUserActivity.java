@@ -6,17 +6,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.trithe.real.NewPostActivity;
 import android.trithe.real.R;
 import android.trithe.real.adapter.BlogAdapter;
-import android.trithe.real.adapter.InfoPostUserAdapter;
-import android.trithe.real.database.PetDAO;
-import android.trithe.real.database.TypeDAO;
 import android.trithe.real.model.BlogPost;
-import android.trithe.real.model.InfoUserPost;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,10 +27,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
@@ -47,7 +40,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -56,24 +48,22 @@ public class InfoUserActivity extends AppCompatActivity {
     private CircleImageView imgInfo;
     private TextView infoName;
     private TextView infoStatus;
-    private Button btnSend,btnMessage;
+    private Button btnSend, btnMessage;
     private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth mAuth;
     private FirebaseUser mCurrent_user;
     private DatabaseReference mRootRef;
-    private String user_id,userImage,username;
-    private List<InfoUserPost> info_list = new ArrayList<>();
-    private InfoPostUserAdapter infoPostUserAdapter;
+    private String user_id, userImage, username;
+    private List<BlogPost> info_list = new ArrayList<>();
+    private BlogAdapter infoPostUserAdapter;
+    private LinearLayout ll;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_info_user);
-        firebaseFirestore = FirebaseFirestore.getInstance();
-        mAuth = FirebaseAuth.getInstance();
-        mCurrent_user = FirebaseAuth.getInstance().getCurrentUser();
-        mRootRef = FirebaseDatabase.getInstance().getReference();
-        user_id = getIntent().getStringExtra("user_id");
+        initFirebase();
         initView();
         getInfo();
         getPosts();
@@ -81,7 +71,7 @@ public class InfoUserActivity extends AppCompatActivity {
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               xulysend();
+                xulysend();
             }
         });
         btnMessage.setOnClickListener(new View.OnClickListener() {
@@ -97,7 +87,16 @@ public class InfoUserActivity extends AppCompatActivity {
 
 
     }
-    private void xulysend(){
+
+    private void initFirebase() {
+        firebaseFirestore = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+        mCurrent_user = FirebaseAuth.getInstance().getCurrentUser();
+        mRootRef = FirebaseDatabase.getInstance().getReference();
+        user_id = getIntent().getStringExtra("user_id");
+    }
+
+    private void xulysend() {
         final String currentDate = DateFormat.getDateTimeInstance().format(new Date());
         Map followMap = new HashMap();
         followMap.put("Follows/" + user_id + "/" + mCurrent_user.getUid() + "/date", currentDate);
@@ -105,25 +104,28 @@ public class InfoUserActivity extends AppCompatActivity {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                 if (databaseError == null) {
-                    btnSend.setText("Unfollow");
+                    if (databaseReference != null) {
+                        btnSend.setText("Unfollow");
+                    }
                 } else {
                     Toast.makeText(getApplicationContext(), databaseError.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
-    private void getPosts(){
+
+    private void getPosts() {
         info_list.clear();
-        Query firstQuery = firebaseFirestore.collection("Posts").orderBy("timestamp", Query.Direction.DESCENDING);
+        Query firstQuery = firebaseFirestore.collection("Posts").whereEqualTo("user_id", user_id)
+                .orderBy("timestamp", Query.Direction.DESCENDING);
         firstQuery.addSnapshotListener(this, new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(QuerySnapshot queryDocumentSnapshots, FirebaseFirestoreException e) {
                 if (queryDocumentSnapshots != null) {
-//                    lastVisible = queryDocumentSnapshots.getDocuments().get(queryDocumentSnapshots.size() - 1);
                     for (DocumentChange doc : queryDocumentSnapshots.getDocumentChanges()) {
                         if (doc.getType() == DocumentChange.Type.ADDED) {
                             String infoPostUserId = doc.getDocument().getId();
-                            InfoUserPost blogPost = doc.getDocument().toObject(InfoUserPost.class).withId(infoPostUserId);
+                            BlogPost blogPost = doc.getDocument().toObject(BlogPost.class).withId(infoPostUserId);
                             info_list.add(blogPost);
                             infoPostUserAdapter.notifyDataSetChanged();
                         }
@@ -131,19 +133,19 @@ public class InfoUserActivity extends AppCompatActivity {
 
                 }
             }
-
         });
         RecyclerView.LayoutManager manager = new LinearLayoutManager(this);
         listInfo.setLayoutManager(manager);
         listInfo.setAdapter(infoPostUserAdapter);
     }
+
     private void getInfo() {
         firebaseFirestore.collection("Users").document(user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     username = task.getResult().getString("name");
-                  userImage = task.getResult().getString("image");
+                    userImage = task.getResult().getString("image");
                     String userStatus = task.getResult().getString("status");
                     infoName.setText(username);
                     infoStatus.setText(userStatus);
@@ -154,10 +156,10 @@ public class InfoUserActivity extends AppCompatActivity {
             }
         });
         if (user_id.equals(mAuth.getCurrentUser().getUid())) {
-            btnSend.setVisibility(View.GONE);
-            btnMessage.setVisibility(View.GONE);
+            ll.setVisibility(View.GONE);
         }
     }
+
     private void getFollow() {
         mRootRef.child("Follows/" + user_id + "/" + mCurrent_user.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
@@ -211,14 +213,16 @@ public class InfoUserActivity extends AppCompatActivity {
             }
         });
     }
+
     private void initView() {
+        ll = (LinearLayout) findViewById(R.id.ll);
         imgInfo = (CircleImageView) findViewById(R.id.imgInfo);
         infoName = (TextView) findViewById(R.id.infoName);
         infoStatus = (TextView) findViewById(R.id.infoStatus);
         btnSend = (Button) findViewById(R.id.btnSend);
         listInfo = (RecyclerView) findViewById(R.id.listInfo);
         btnMessage = (Button) findViewById(R.id.btnMessage);
-        infoPostUserAdapter = new InfoPostUserAdapter(info_list, this);
+        infoPostUserAdapter = new BlogAdapter(info_list, this);
     }
 
 }

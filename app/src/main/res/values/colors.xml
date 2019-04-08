@@ -8,4 +8,5 @@
     <color name="colorAccent">#1cd2a2</color>
     <color name="white" tools:keep="@color/white">#fff</color>
     <color name="album_title">#4c4c4c</color>
+    <color name="album_new">#C0A03336</color>
 </resources>

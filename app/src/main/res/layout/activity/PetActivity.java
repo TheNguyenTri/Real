@@ -13,8 +13,6 @@ import android.support.v7.widget.Toolbar;
 import android.trithe.real.R;
 import android.trithe.real.database.PetDAO;
 import android.trithe.real.database.TypeDAO;
-import android.trithe.real.model.Pet;
-import android.trithe.real.model.TypePet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;

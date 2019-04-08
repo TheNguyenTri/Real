@@ -1,13 +1,10 @@
 package android.trithe.real.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.trithe.real.LoginActivity;
 import android.trithe.real.R;
 import android.trithe.real.inter.OnClick;
-import android.trithe.real.model.Configuration;
 import android.trithe.real.model.Logout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
 

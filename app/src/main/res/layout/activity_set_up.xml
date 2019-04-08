@@ -6,53 +6,59 @@
     android:layout_height="match_parent"
     android:background="@drawable/color"
     tools:context=".activity.SetUpActivity">
+
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:indeterminate="true"
-        android:visibility="invisible"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:indeterminate="true"
+        android:visibility="invisible" />
+
     <RelativeLayout
         android:layout_width="match_parent"
-        android:gravity="center"
-        android:layout_height="match_parent">
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/image"
-        android:layout_width="150dp"
-        app:civ_border_color="#000000"
-        app:civ_border_width="1dp"
-        android:layout_height="150dp"
-        android:layout_centerHorizontal="true"
-        android:src="@drawable/profile" />
+        android:layout_height="match_parent"
+        android:gravity="center">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/image"
-        android:layout_margin="45dp"
-        android:orientation="vertical">
-        <EditText
-            android:id="@+id/textName"
-            android:background="@drawable/textinput"
-            android:layout_width="match_parent"
-            android:paddingLeft="25dp"
-            android:layout_marginBottom="10dp"
-            android:layout_height="50dp"
-            android:hint="Name"/>
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/image"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/profile"
+            app:civ_border_color="#000000"
+            app:civ_border_width="1dp" />
 
-        <Button
-            android:id="@+id/btn"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Save profile"
-            android:background="@drawable/border_bottom"
-            android:textColor="#fff"
-            android:textAllCaps="false"
-            android:layout_alignParentBottom="true"
-            android:layout_marginTop="15dp" />
-    </LinearLayout>
+            android:layout_below="@id/image"
+            android:layout_margin="45dp"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/textName"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/textinput"
+                android:hint="Name"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:paddingLeft="25dp" />
+
+            <Button
+                android:id="@+id/btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/border_bottom"
+                android:text="Save profile"
+                android:textAllCaps="false"
+                android:textColor="#fff" />
+        </LinearLayout>
     </RelativeLayout>
 </RelativeLayout>

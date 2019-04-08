@@ -3,91 +3,97 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@drawable/bg_design"
     android:layout_height="match_parent"
+    android:background="@drawable/bg_design"
     android:orientation="vertical"
     tools:context=".activity.InfoUserActivity">
+
+
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:layout_height="match_parent">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_width="150dp"
-            android:layout_marginTop="40dp"
-            android:layout_height="150sp"
-            android:layout_gravity="center"
-            android:src="@drawable/profile"
-            app:civ_border_color="@color/white"
-            app:civ_border_width="0.5dp"
-            android:scaleType="centerCrop"
-            android:id="@+id/imgInfo"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-    <TextView
-        android:text="Name"
-        android:id="@+id/infoName"
-        android:textSize="26sp"
-        android:textColor="#fff"
-        android:textStyle="bold"
-        android:layout_marginTop="10dp"
-        android:gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-    <TextView
-        android:text="Name"
-        android:id="@+id/infoStatus"
-        android:textSize="18sp"
-        android:layout_marginTop="5sp"
-        android:textColor="#fff"
-        android:gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="10dp"
-    android:orientation="horizontal">
-    <Button
-        android:id="@+id/btnSend"
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="wrap_content"
-        android:text="Follow"
-        android:layout_marginRight="10dp"
-        android:background="@drawable/border_bottom"
-        android:textColor="#fff"
-        android:textAllCaps="false"
-        android:layout_alignParentBottom="true"
-   />
-    <Button
-        android:id="@+id/btnMessage"
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="wrap_content"
-        android:text="Send Message"
-        android:background="@drawable/border_bottom"
-        android:textColor="#fff"
-        android:textAllCaps="false"
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/imgInfo"
+                    android:layout_width="150dp"
+                    android:layout_height="150sp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="40dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/profile"
+                    app:civ_border_color="@color/white"
+                    app:civ_border_width="0.5dp" />
 
-        android:layout_alignParentBottom="true"/>
+                <TextView
+                    android:id="@+id/infoName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    android:text="Name"
+                    android:textColor="#fff"
+                    android:textSize="25sp"
+                    android:textStyle="bold" />
 
-</LinearLayout>
-    </LinearLayout>
-    <android.support.v7.widget.RecyclerView
-        android:layout_below="@id/recycler_view"
-        android:id="@+id/listInfo"
-        android:layout_margin="10dp"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        ></android.support.v7.widget.RecyclerView>
-    </LinearLayout>
+                <TextView
+                    android:id="@+id/infoStatus"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Name"
+                    android:textColor="#fff"
+                    android:textSize="16sp" />
+
+                <LinearLayout
+                    android:id="@+id/ll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="15dp">
+
+                    <Button
+                        android:id="@+id/btnSend"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginRight="10dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/border_bottom"
+                        android:text="Follow"
+                        android:textAllCaps="false"
+                        android:textColor="#fff" />
+
+                    <Button
+                        android:id="@+id/btnMessage"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_weight="1"
+                        android:background="@drawable/border_bottom"
+                        android:text="Send Message"
+                        android:textAllCaps="false"
+
+                        android:textColor="#fff" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/listInfo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/recycler_view"
+                android:layout_margin="10dp"></android.support.v7.widget.RecyclerView>
+        </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 </android.support.design.widget.CoordinatorLayout>

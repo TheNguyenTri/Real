@@ -6,9 +6,9 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
-import android.trithe.real.CommentsActivity;
-import android.trithe.real.LikeActivity;
+import android.trithe.real.activity.LikeActivity;
 import android.trithe.real.R;
+import android.trithe.real.activity.InfoPostActivity;
 import android.trithe.real.model.BlogPost;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +22,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -46,6 +50,9 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.MyViewHolder> 
     private Context context;
     private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth firebaseAuth;
+    private DatabaseReference mRootRef;
+    String currentUserId;
+
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         final TextView desc;
@@ -90,6 +97,7 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.MyViewHolder> 
                 .inflate(R.layout.item_blog_new, parent, false);
         firebaseFirestore = FirebaseFirestore.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
+        mRootRef = FirebaseDatabase.getInstance().getReference();
         return new MyViewHolder(itemView);
     }
 
@@ -98,7 +106,7 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.MyViewHolder> 
         holder.setIsRecyclable(false);
         final BlogPost planss = list.get(position);
         final String blogPostId = planss.BlogPostId;
-        final String currentUserId = firebaseAuth.getCurrentUser().getUid();
+        currentUserId = firebaseAuth.getCurrentUser().getUid();
         holder.desc.setText(planss.getDesc());
         try {
             String dateString = android.text.format.DateFormat.format("HH:ss dd/MM/yyyy", new Date(planss.getTimestamp().getTime())).toString();
@@ -165,7 +173,6 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.MyViewHolder> 
                     if (documentSnapshot != null) {
                         try {
                             if (documentSnapshot.exists()) {
-//               holder.blogLike.setImageDrawable(context.getDrawable(R.drawable.love));
                                 Glide.with(context).load(R.drawable.love).into(holder.blogLike);
                             } else {
                                 Glide.with(context).load(R.drawable.chua_like).into(holder.blogLike);
@@ -186,6 +193,23 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.MyViewHolder> 
                             Map<String, Object> likesMap = new HashMap<>();
                             likesMap.put("timestamp", FieldValue.serverTimestamp());
                             firebaseFirestore.collection("Posts/" + blogPostId + "/Likes").document(currentUserId).set(likesMap);
+                            if (!currentUserId.equals(planss.getUser_id())) {
+                                String current_user_ref = "Nofications/" + planss.getUser_id();
+                                DatabaseReference user_notifi_push = mRootRef.child("Nofications").child(planss.getUser_id()).push();
+                                String push_id = user_notifi_push.getKey();
+                                Map notiMap = new HashMap();
+                                notiMap.put("body", "đã thích ảnh của bạn");
+                                notiMap.put("blog_id", blogPostId);
+                                notiMap.put("timestamp", ServerValue.TIMESTAMP);
+                                notiMap.put("from", currentUserId);
+                                Map messageUserMap = new HashMap();
+                                messageUserMap.put(current_user_ref + "/" + push_id, notiMap);
+                                mRootRef.updateChildren(messageUserMap, new DatabaseReference.CompletionListener() {
+                                    @Override
+                                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                    }
+                                });
+                            }
                         } else {
                             firebaseFirestore.collection("Posts/" + blogPostId + "/Likes").document(currentUserId).delete();
 
@@ -196,7 +220,7 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.MyViewHolder> 
                                         int count = queryDocumentSnapshots.size();
                                         if (count == 0) {
                                             holder.blogTextLike.setText("Like");
-                                        } else  if (count != 1) {
+                                        } else if (count != 1) {
                                             holder.blogTextLike.setText(count + " Likes");
                                         } else if (count == 1) {
                                             for (DocumentChange doc : queryDocumentSnapshots.getDocumentChanges()) {
@@ -223,37 +247,27 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.MyViewHolder> 
                 });
             }
         });
-//        holder.blogComment.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                Intent commentIntent = new Intent(context, CommentsActivity.class);
-//                commentIntent.putExtra("blog_post_id", blogPostId);
-//                context.startActivity(commentIntent);
-//            }
-//        });
-//        holder.blogTextComment.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent commentIntent = new Intent(context, CommentsActivity.class);
-//                commentIntent.putExtra("blog_post_id", blogPostId);
-//                context.startActivity(commentIntent);
-//            }
-//        });
-        holder.blogCountComment.setOnClickListener(new View.OnClickListener() {
+
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent commentIntent = new Intent(context, CommentsActivity.class);
-                commentIntent.putExtra("blog_post_id", blogPostId);
+                DateFormat dateFormat = SimpleDateFormat.getDateInstance(DateFormat.MEDIUM, Locale.US);
+                String creationDate = dateFormat.format(planss.getTimestamp().getTime());
+                Intent commentIntent = new Intent(context, InfoPostActivity.class);
+                //fake lấy blog_id
+                commentIntent.putExtra("user_id", blogPostId);
+                //
                 context.startActivity(commentIntent);
             }
         });
+
         holder.blogTextLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent commentIntent = new Intent(context, LikeActivity.class);
-                commentIntent.putExtra("blog_post_id", blogPostId);
-                context.startActivity(commentIntent);
+                Intent likeIntent = new Intent(context, InfoPostActivity.class);
+                //fake lấy blog_id
+                likeIntent.putExtra("user_id", blogPostId);
+                context.startActivity(likeIntent);
             }
         });
         //get count

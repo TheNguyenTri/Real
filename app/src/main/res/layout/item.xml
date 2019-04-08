@@ -10,6 +10,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:elevation="3dp"
+        android:layout_margin="5dp"
         card_view:cardCornerRadius="@dimen/card_album_radius"
         tools:targetApi="lollipop">
 
@@ -35,6 +36,9 @@
                 android:paddingLeft="@dimen/album_title_padding"
                 android:paddingRight="@dimen/album_title_padding"
                 android:paddingTop="@dimen/album_title_padding"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:maxLength="30"
                 android:textColor="@color/album_title"
                 android:textSize="@dimen/album_title" />
             <TextView
@@ -43,6 +47,9 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/title"
                 android:paddingBottom="5dp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:maxLength="30"
                 android:paddingLeft="@dimen/album_title_padding"
                 android:paddingRight="@dimen/album_title_padding"
                 android:textSize="12sp" />

@@ -3,9 +3,7 @@ package android.trithe.real.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.trithe.real.LoginActivity;
 import android.trithe.real.R;
-import android.trithe.real.RegisterActivity;
 
 import java.util.Timer;
 import java.util.TimerTask;

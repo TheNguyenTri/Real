@@ -1,30 +1,19 @@
 package android.trithe.real.adapter;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.trithe.real.R;
-import android.trithe.real.database.HistoryDAO;
-import android.trithe.real.database.PlanssDAO;
-import android.trithe.real.inter.OnClick;
-import android.trithe.real.inter.OnClick1;
 import android.trithe.real.model.Configuration;
-import android.trithe.real.model.History;
-import android.trithe.real.model.Planss;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Random;
 
 public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.MyViewHolder> {
 

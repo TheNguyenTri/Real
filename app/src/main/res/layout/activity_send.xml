@@ -5,93 +5,120 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.SendActivity">
-<android.support.v7.widget.Toolbar
-    android:id="@+id/toolbar"
-    android:layout_width="match_parent"
-    android:background="@color/colorPrimary"
-    android:layout_height="wrap_content">
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <ImageView
-            android:layout_gravity="center"
-            android:onClick="out"
-            android:layout_width="wrap_content"
-            android:layout_marginRight="15dp"
-            android:layout_height="wrap_content"
-            android:src="@drawable/back_white"/>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:orientation="vertical"
-            android:layout_height="wrap_content">
-            <TextView
-                android:textSize="20sp"
-                android:id="@+id/name_user_chat"
-                android:textColor="#fff"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="Name"/>
-            <TextView
-                android:id="@+id/time_online_chat"
-                android:textSize="12sp"
-                android:textColor="#fff"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="Name"/>
-        </LinearLayout>
-    </LinearLayout>
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/image_user_chat"
-            android:layout_width="35dp"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="20sp"
-            app:civ_border_width="0.1dp"
-            app:civ_border_color="@color/white"
-            android:layout_centerInParent="true"
-            android:layout_height="35dp"
-            android:src="@drawable/profile"/>
-    </RelativeLayout>
-</android.support.v7.widget.Toolbar>
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view_chat"
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/toolbar"
-        android:layout_above="@+id/ll"></android.support.v7.widget.RecyclerView>
+        android:background="@color/colorPrimary">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="15dp"
+                    android:onClick="out"
+                    android:src="@drawable/back_white" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/name_user_chat"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="Name"
+                        android:textColor="#fff"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:id="@+id/time_online_chat"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="Online"
+                        android:textColor="#fff"
+                        android:textSize="12sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/image_user_chat"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerInParent="true"
+                android:layout_marginRight="20sp"
+                android:src="@drawable/profile"
+                app:civ_border_color="@color/white"
+                app:civ_border_width="0.1dp" />
+        </RelativeLayout>
+    </android.support.v7.widget.Toolbar>
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/view"
+        android:layout_below="@+id/toolbar">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view_chat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@+id/ll"
+        android:background="@android:color/darker_gray" />
 
     <LinearLayout
         android:id="@+id/ll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
         android:layout_alignParentBottom="true"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="10dp">
+
         <ImageView
             android:id="@+id/btnAddImage"
             android:layout_width="0dp"
-            android:layout_weight="0.5"
             android:layout_height="match_parent"
-            android:src="@drawable/ic_image_black_24dp"/>
+            android:layout_weight="0.5"
+            android:src="@drawable/image_opacity" />
+
         <EditText
             android:id="@+id/edSend"
             android:layout_width="0dp"
-            android:layout_weight="5"
+            android:layout_height="50dp"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
-            android:layout_height="50dp"
+            android:layout_weight="5"
             android:background="@drawable/input"
             android:hint="Message"
+            android:imeOptions="actionGo"
+            android:inputType="text"
             android:paddingLeft="20dp" />
+
         <ImageView
             android:id="@+id/btnSend"
             android:layout_width="0dp"
-            android:layout_weight="0.5"
             android:layout_height="match_parent"
-            android:src="@drawable/ic_send_black_24dp"/>
+            android:layout_weight="0.5"
+            android:src="@drawable/send" />
 
     </LinearLayout>
 </RelativeLayout>

@@ -57,10 +57,7 @@ public class SetUpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_up);
         initView();
-        firebaseAuth = FirebaseAuth.getInstance();
-        firebaseFirestore = FirebaseFirestore.getInstance();
-        storageReference = FirebaseStorage.getInstance().getReference();
-        user_id = firebaseAuth.getCurrentUser().getUid();
+        initFirebase();
         image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,40 +77,51 @@ public class SetUpActivity extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String username = textName.getText().toString();
-                if (!username.equals("") && mainImageURI != null) {
-                    pDialog = new ProgressDialog(SetUpActivity.this);
-                    pDialog.setMessage("Please wait...");
-                    pDialog.setCancelable(false);
-                    pDialog.show();
-//nếu thay đổi
-                    if (isChanged) {
-                        user_id = firebaseAuth.getCurrentUser().getUid();
-                        StorageReference image_path = storageReference.child("profile_images").child(user_id + ".jpg");
-                        image_path.putFile(mainImageURI).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    storeFirebase(task, username);
-                                } else {
-                                    Toast.makeText(getApplicationContext(), "Upload Error", Toast.LENGTH_SHORT).show();
-                                    if (pDialog.isShowing())
-                                        pDialog.dismiss();
-                                }
-                            }
-                        });
-                    } else {
-                        storeFirebase(null, username);
-                    }
-                }
+                setUp();
             }
         });
     }
 
+    private void setUp() {
+        final String username = textName.getText().toString();
+        if (!username.equals("") && mainImageURI != null) {
+            pDialog = new ProgressDialog(SetUpActivity.this);
+            pDialog.setMessage("Please wait...");
+            pDialog.setCancelable(false);
+            pDialog.show();
+//nếu thay đổi
+            if (isChanged) {
+                user_id = firebaseAuth.getCurrentUser().getUid();
+                StorageReference image_path = storageReference.child("profile_images").child(user_id + ".jpg");
+                image_path.putFile(mainImageURI).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            storeFirebase(task, username);
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Upload Error", Toast.LENGTH_SHORT).show();
+                            if (pDialog.isShowing())
+                                pDialog.dismiss();
+                        }
+                    }
+                });
+            } else {
+                storeFirebase(null, username);
+            }
+        }
+    }
+
     private void initView() {
-        image = (CircleImageView) findViewById(R.id.image);
-        textName = (EditText) findViewById(R.id.textName);
-        btn = (Button) findViewById(R.id.btn);
+        image = findViewById(R.id.image);
+        textName = findViewById(R.id.textName);
+        btn = findViewById(R.id.btn);
+    }
+
+    private void initFirebase() {
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseFirestore = FirebaseFirestore.getInstance();
+        storageReference = FirebaseStorage.getInstance().getReference();
+        user_id = firebaseAuth.getCurrentUser().getUid();
     }
 
     private void BringImagePicker() {
@@ -146,25 +154,26 @@ public class SetUpActivity extends AppCompatActivity {
         } else {
             download_uri = mainImageURI;
         }
-                String token_id = FirebaseInstanceId.getInstance().getToken();
-                Map<String, String> userMap = new HashMap<>();
-                userMap.put("name", username);
-                userMap.put("image", String.valueOf(download_uri));
-                userMap.put("token_id",token_id);
-                firebaseFirestore.collection("Users").document(user_id).set(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(getApplicationContext(), "Updated", Toast.LENGTH_SHORT).show();
-                            finish();
-                            startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                        } else {
-                            Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                        if (pDialog.isShowing())
-                            pDialog.dismiss();
-                    }
-                });
+        String token_id = FirebaseInstanceId.getInstance().getToken();
+        Map<String, String> userMap = new HashMap<>();
+        userMap.put("name", username);
+        userMap.put("status", "Mới tới");
+        userMap.put("image", String.valueOf(download_uri));
+        userMap.put("token_id", token_id);
+        firebaseFirestore.collection("Users").document(user_id).set(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(getApplicationContext(), "Updated", Toast.LENGTH_SHORT).show();
+                    finish();
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                } else {
+                    Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                }
+                if (pDialog.isShowing())
+                    pDialog.dismiss();
+            }
+        });
     }
 
 

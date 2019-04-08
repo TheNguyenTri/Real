@@ -27,21 +27,18 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.MyViewHolder
 
     private final Context context;
     private List<Users> list;
-    private FirebaseAuth mAuth;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         final TextView name;
-        //        final TextView status;
+        final TextView status;
         final ImageView avatar;
-        final CircleImageView overflow;
 
 
         MyViewHolder(View view) {
             super(view);
             name = view.findViewById(R.id.title);
             avatar = view.findViewById(R.id.thumbnail);
-//            status = view.findViewById(R.id.weight);
-            overflow = (CircleImageView) view.findViewById(R.id.overflow);
+            status = view.findViewById(R.id.weight);
         }
     }
 
@@ -55,25 +52,31 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.MyViewHolder
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.itemnew, parent, false);
-
+                .inflate(R.layout.item, parent, false);
         return new MyViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
-        mAuth = FirebaseAuth.getInstance();
         final Users planss = list.get(position);
         holder.name.setText(planss.getName());
+        holder.status.setText(planss.getStatus());
         Glide.with(context).load(planss.getImage()).into(holder.avatar);
-        Glide.with(context).load(planss.getImage()).into(holder.overflow);
         final String user_id = planss.userId;
         holder.avatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    Intent intent = new Intent(context, InfoUserActivity.class);
-                    intent.putExtra("user_id", user_id);
-                    context.startActivity(intent);
+                Intent intent = new Intent(context, InfoUserActivity.class);
+                intent.putExtra("user_id", user_id);
+                context.startActivity(intent);
+            }
+        });
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, InfoUserActivity.class);
+                intent.putExtra("user_id", user_id);
+                context.startActivity(intent);
             }
         });
 

@@ -16,34 +16,29 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.trithe.real.NewPostActivity;
-import android.trithe.real.NotificationActivity;
-import android.trithe.real.ProfileActivity;
 import android.trithe.real.R;
 import android.trithe.real.adapter.SlidePaperAdapter;
-import android.trithe.real.fragment.BrowseFragment;
-import android.trithe.real.fragment.PetFragment;
-import android.trithe.real.fragment.PlanFragment;
-import android.trithe.real.fragment.SapChieuFragment;
-import android.trithe.real.fragment.StatisticsFragment;
+import android.trithe.real.fragment.NotificationFragment;
+import android.trithe.real.fragment.PostFragment;
+import android.trithe.real.fragment.ChatFragment;
 import android.trithe.real.helper.BottomNavigationBehavior;
 import android.trithe.real.model.Slide;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ViewFlipper;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.theartofdev.edmodo.cropper.CropImage;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -52,12 +47,10 @@ import java.util.TimerTask;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class MainActivity extends AppCompatActivity{
-    private PlanFragment planFragment;
-    private BrowseFragment browseFragment;
-    private PetFragment petFragment;
-    private StatisticsFragment statisticsFragment;
-    //    private CircleImageView avatar;
+public class MainActivity extends AppCompatActivity {
+    private ChatFragment planFragment;
+    private NotificationFragment notificationFragment;
+    private PostFragment postFragment;
     private Toolbar toolbar;
     private FirebaseAuth firebaseAuth;
     private CircleImageView avatar;
@@ -69,30 +62,20 @@ public class MainActivity extends AppCompatActivity{
     private ViewPager backdrop;
     private SlidePaperAdapter paperAdapter;
     private TabLayout indicator;
-    private ImageView notifi;
+    private ImageView more;
+    private BottomNavigationView bottomNavigationView;
+    private DatabaseReference mUserRef;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        firebaseAuth = FirebaseAuth.getInstance();
-        user_id = firebaseAuth.getCurrentUser().getUid();
-        firebaseFirestore = FirebaseFirestore.getInstance();
-        toolbar = findViewById(R.id.toolbarmain);
-        avatar = (CircleImageView) findViewById(R.id.avatar);
-        notifi = (ImageView) findViewById(R.id.notifi);
-
+        initFirebase();
+        initView();
         setSupportActionBar(toolbar);
-
-        BottomNavigationView bottomNavigationView = findViewById(R.id.navi);
-        statisticsFragment = new StatisticsFragment();
+        getInfoCurrent();
         initCollapsingToolbar();
-        planFragment = new PlanFragment();
-        petFragment = new PetFragment();
-        browseFragment = new BrowseFragment();
-        loadFragment(petFragment);
-        textNamePust = (EditText) findViewById(R.id.textNamePust);
         textNamePust.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,6 +83,95 @@ public class MainActivity extends AppCompatActivity{
                 startActivity(new Intent(getApplicationContext(), NewPostActivity.class));
             }
         });
+        CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) bottomNavigationView.getLayoutParams();
+        layoutParams.setBehavior(new BottomNavigationBehavior());
+        bottomView();
+        slide();
+        gettimerSlide();
+        more.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, AboutActivity.class));
+            }
+        });
+    }
+
+    private void initFirebase() {
+        firebaseAuth = FirebaseAuth.getInstance();
+        user_id = firebaseAuth.getCurrentUser().getUid();
+        firebaseFirestore = FirebaseFirestore.getInstance();
+        mUserRef = FirebaseDatabase.getInstance().getReference().child("TimeOnline").child(user_id);
+    }
+
+    private void initView() {
+        toolbar = findViewById(R.id.toolbarmain);
+        avatar = (CircleImageView) findViewById(R.id.avatar);
+        more = (ImageView) findViewById(R.id.notifi);
+        bottomNavigationView = findViewById(R.id.navi);
+        textNamePust = (EditText) findViewById(R.id.textNamePust);
+        backdrop = (ViewPager) findViewById(R.id.backdrop);
+        indicator = (TabLayout) findViewById(R.id.indicator);
+        planFragment = new ChatFragment();
+        postFragment = new PostFragment();
+        notificationFragment = new NotificationFragment();
+        loadFragment(postFragment);
+    }
+
+    private void bottomView() {
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @SuppressLint("RestrictedApi")
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.home:
+                        loadFragment(postFragment);
+                        return true;
+                    case R.id.browse:
+                        loadFragment(notificationFragment);
+                        return true;
+                    case R.id.plan:
+                        loadFragment(planFragment);
+                        return true;
+                }
+                return false;
+            }
+        });
+        avatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+                startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
+            }
+        });
+    }
+
+    private void gettimerSlide() {
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new SliderTimer(), 4000, 6000);
+        indicator.setupWithViewPager(backdrop, true);
+        paperAdapter = new SlidePaperAdapter(this, slideList);
+        backdrop.setAdapter(paperAdapter);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (user_id != null) {
+            firebaseFirestore.collection("Users").document(user_id).update("online", true);
+            mUserRef.child("online").setValue(true);
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (user_id != null) {
+            firebaseFirestore.collection("Users").document(user_id).update("online", false);
+            mUserRef.child("online").setValue(ServerValue.TIMESTAMP);
+        }
+    }
+
+    private void getInfoCurrent() {
         firebaseFirestore.collection("Users").document(user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -114,72 +186,9 @@ public class MainActivity extends AppCompatActivity{
                 }
             }
         });
-
-        avatar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-                startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
-            }
-        });
-
-
-        CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) bottomNavigationView.getLayoutParams();
-        layoutParams.setBehavior(new BottomNavigationBehavior());
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @SuppressLint("RestrictedApi")
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.home:
-                        loadFragment(petFragment);
-                        textNamePust.setText("What are you thinking ?");
-                        textNamePust.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                finish();
-                                startActivity(new Intent(getApplicationContext(), NewPostActivity.class));
-                            }
-                        });
-                        return true;
-                    case R.id.browse:
-                        loadFragment(browseFragment);
-                        return true;
-                    case R.id.setting:
-                        loadFragment(statisticsFragment);
-                        textNamePust.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                finish();
-                                startActivity(new Intent(getApplicationContext(),NewTodoActivity.class));
-                            }
-                        });
-                        return true;
-                    case R.id.plan:
-                        loadFragment(planFragment);
-                        return true;
-                }
-                return false;
-            }
-        });
-        backdrop = (ViewPager) findViewById(R.id.backdrop);
-        indicator = (TabLayout) findViewById(R.id.indicator);
-        slide();
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new SliderTimer(),4000,6000);
-        indicator.setupWithViewPager(backdrop,true);
-        paperAdapter = new SlidePaperAdapter(this,slideList);
-        backdrop.setAdapter(paperAdapter);
-
-        notifi.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), NotificationActivity.class));
-            }
-        });
-
     }
-    private void slide(){
+
+    private void slide() {
         slideList.add(new Slide(R.drawable.alita));
         slideList.add(new Slide(R.drawable.alita2));
         slideList.add(new Slide(R.drawable.alita3));
@@ -190,9 +199,9 @@ public class MainActivity extends AppCompatActivity{
 
     private void initCollapsingToolbar() {
         final CollapsingToolbarLayout collapsingToolbar =
-                (CollapsingToolbarLayout) findViewById(R.id.coll);
+                findViewById(R.id.coll);
         collapsingToolbar.setTitle(" ");
-        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
+        AppBarLayout appBarLayout = findViewById(R.id.appbar);
         appBarLayout.setExpanded(true);
 
         // hiding & showing the title when toolbar expanded & collapsed
@@ -226,51 +235,21 @@ public class MainActivity extends AppCompatActivity{
     }
 
     private void loadFragment(Fragment fragment) {
-        // load fragment
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.frameLayout, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.main2,menu);
-//        return super.onCreateOptionsMenu(menu);
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        startActivity(new Intent(getApplicationContext(), AboutActivity.class));
-//        return super.onOptionsItemSelected(item);
-//    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            if (resultCode == RESULT_OK) {
-                mainImageURI = result.getUri();
-                avatar.setImageURI(mainImageURI);
-            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                Exception error = result.getError();
-            }
-        }
-    }
     class SliderTimer extends TimerTask {
-
-
         @Override
         public void run() {
 
             MainActivity.this.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (backdrop.getCurrentItem()<slideList.size()-1) {
-                        backdrop.setCurrentItem(backdrop.getCurrentItem()+1);
-                    }
-                    else
+                    if (backdrop.getCurrentItem() < slideList.size() - 1) {
+                        backdrop.setCurrentItem(backdrop.getCurrentItem() + 1);
+                    } else
                         backdrop.setCurrentItem(0);
                 }
             });

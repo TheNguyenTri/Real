@@ -28,7 +28,7 @@ public class FirebaseMessageService extends FirebaseMessagingService {
 
             Intent resultIntent = new Intent(click_action);
             resultIntent.putExtra("dataMessage", dataMessage);
-            resultIntent.putExtra("dataFrom", dataFrom);
+            resultIntent.putExtra("user_id", dataFrom);
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             mBuilder.setContentIntent(pendingIntent);
             int mNoficationId = (int) System.currentTimeMillis();
