@@ -127,11 +127,11 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void initView() {
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-        editTextUsername = (EditText) findViewById(R.id.et_username);
-        editTextPassword = (EditText) findViewById(R.id.et_password);
-        btnFacebook = (Button) findViewById(R.id.btnFacebook);
-        btnGoogle = (Button) findViewById(R.id.btnGoogle);
+        fab = findViewById(R.id.fab);
+        editTextUsername = findViewById(R.id.et_username);
+        editTextPassword = findViewById(R.id.et_password);
+        btnFacebook = findViewById(R.id.btnFacebook);
+        btnGoogle = findViewById(R.id.btnGoogle);
     }
 
 
@@ -207,7 +207,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
-//            sendtoMain();
+            sendtoMain();
         }
     }
 

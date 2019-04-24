@@ -1,5 +1,7 @@
+
 package android.trithe.real.activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -21,6 +23,10 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -40,11 +46,11 @@ import java.util.UUID;
 import id.zelory.compressor.Compressor;
 
 public class NewPostActivity extends AppCompatActivity {
+    private ProgressDialog pDialog;
     private ImageView newPostImage;
     private EditText textNamePust;
     private Button btnPust;
     private Uri postImageUri = null;
-    private ProgressBar newPostProgress;
     private StorageReference storageReference;
     private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth firebaseAuth;
@@ -80,6 +86,18 @@ public class NewPostActivity extends AppCompatActivity {
                 .start(NewPostActivity.this);
     }
 
+    private void showpDialog() {
+        pDialog = new ProgressDialog(NewPostActivity.this);
+        pDialog.setMessage("Please wait...");
+        pDialog.setCancelable(false);
+        pDialog.show();
+    }
+
+    private void hidepDialog() {
+        if (pDialog.isShowing())
+            pDialog.dismiss();
+    }
+
     private void initFirebase() {
         storageReference = FirebaseStorage.getInstance().getReference();
         firebaseFirestore = FirebaseFirestore.getInstance();
@@ -89,13 +107,9 @@ public class NewPostActivity extends AppCompatActivity {
 
     private void postBlog() {
         final String desc = textNamePust.getText().toString();
-
         if (!TextUtils.isEmpty(desc) && postImageUri != null) {
-
-            newPostProgress.setVisibility(View.VISIBLE);
-
+            showpDialog();
             final String randomName = UUID.randomUUID().toString();
-
             // PHOTO UPLOAD
             File newImageFile = new File(postImageUri.getPath());
             try {
@@ -140,6 +154,26 @@ public class NewPostActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                 String downloadthumbUri = taskSnapshot.getDownloadUrl().toString();
+
+//                                Map<String, Object> postMap = new HashMap<>();
+//                                postMap.put("image_url", downloadUri);
+//                                postMap.put("image_thumb", downloadthumbUri);
+//                                postMap.put("desc", desc);
+//                                postMap.put("user_id", current_user_id);
+//                                postMap.put("timestamp", FieldValue.serverTimestamp());
+//                                firebaseFirestore.collection("PostsImage").add(postMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+//                                    @Override
+//                                    public void onComplete(@NonNull Task<DocumentReference> task) {
+//                                        if (task.isSuccessful()) {
+//                                            hidepDialog();
+//                                            Toast.makeText(NewPostActivity.this, "Post was added", Toast.LENGTH_LONG).show();
+//                                            Intent mainIntent = new Intent(NewPostActivity.this, MainActivity.class);
+//                                            startActivity(mainIntent);
+//                                            finish();
+//                                        }
+//                                    }
+//                                });
+
                                 Map<String, Object> postMap = new HashMap<>();
                                 postMap.put("image_url", downloadUri);
                                 postMap.put("image_thumb", downloadthumbUri);
@@ -150,12 +184,12 @@ public class NewPostActivity extends AppCompatActivity {
                                     @Override
                                     public void onComplete(@NonNull Task<DocumentReference> task) {
                                         if (task.isSuccessful()) {
+                                            hidepDialog();
                                             Toast.makeText(NewPostActivity.this, "Post was added", Toast.LENGTH_LONG).show();
                                             Intent mainIntent = new Intent(NewPostActivity.this, MainActivity.class);
                                             startActivity(mainIntent);
                                             finish();
                                         }
-                                        newPostProgress.setVisibility(View.INVISIBLE);
                                     }
                                 });
                             }
@@ -164,8 +198,6 @@ public class NewPostActivity extends AppCompatActivity {
                             public void onFailure(@NonNull Exception e) {
                             }
                         });
-                    } else {
-                        newPostProgress.setVisibility(View.INVISIBLE);
                     }
                 }
             });
@@ -174,7 +206,6 @@ public class NewPostActivity extends AppCompatActivity {
 
 
     private void initView() {
-        newPostProgress = findViewById(R.id.new_post_progress);
         newPostImage = findViewById(R.id.new_post_image);
         textNamePust = findViewById(R.id.textNamePust);
         btnPust = findViewById(R.id.btnPust);

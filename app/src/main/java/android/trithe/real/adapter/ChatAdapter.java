@@ -96,7 +96,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> 
                     final String userName = task.getResult().getString("name");
                     final String userImage = task.getResult().getString("image");
                     boolean online = task.getResult().getBoolean("online");
-                    if (online == true) {
+                    if (online) {
                         viewHolder.online.setVisibility(View.VISIBLE);
                     } else {
                         viewHolder.online.setVisibility(View.INVISIBLE);

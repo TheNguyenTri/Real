@@ -1,5 +1,6 @@
 package android.trithe.real.fragment;
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -38,7 +39,6 @@ public class PostFragment extends Fragment {
     private FirebaseFirestore firebaseFirestore;
     private BlogAdapter blogAdapter;
     private ImageAdapter imageAdapter;
-    private DocumentSnapshot lastVisible;
 
 
     @Nullable
@@ -59,7 +59,7 @@ public class PostFragment extends Fragment {
         recyclerViewshop = view.findViewById(R.id.shop);
         blogAdapter = new BlogAdapter(blog_list, getActivity());
         imageAdapter = new ImageAdapter(image_post, getActivity());
-          }
+    }
 
     private void getDataPost() {
         blog_list.clear();
@@ -68,7 +68,6 @@ public class PostFragment extends Fragment {
             @Override
             public void onEvent(QuerySnapshot queryDocumentSnapshots, FirebaseFirestoreException e) {
                 if (queryDocumentSnapshots != null) {
-                    lastVisible = queryDocumentSnapshots.getDocuments().get(queryDocumentSnapshots.size() - 1);
                     for (DocumentChange doc : queryDocumentSnapshots.getDocumentChanges()) {
                         if (doc.getType() == DocumentChange.Type.ADDED) {
                             String blogPostId = doc.getDocument().getId();
@@ -77,7 +76,6 @@ public class PostFragment extends Fragment {
                             blogAdapter.notifyDataSetChanged();
                         }
                     }
-
                 }
             }
 
@@ -94,7 +92,6 @@ public class PostFragment extends Fragment {
             @Override
             public void onEvent(QuerySnapshot queryDocumentSnapshots, FirebaseFirestoreException e) {
                 if (queryDocumentSnapshots != null) {
-                    lastVisible = queryDocumentSnapshots.getDocuments().get(queryDocumentSnapshots.size() - 1);
                     for (DocumentChange doc : queryDocumentSnapshots.getDocumentChanges()) {
                         if (doc.getType() == DocumentChange.Type.ADDED) {
                             String blogPostId = doc.getDocument().getId();
@@ -112,38 +109,4 @@ public class PostFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(imageAdapter);
     }
-
-
-
-//    public void loadMorePost() {
-//        if (mAuth.getCurrentUser() != null) {
-//            Query nextQuery = firebaseFirestore.collection("Posts")
-//                    .orderBy("timestamp", Query.Direction.DESCENDING)
-//                    .startAfter(lastVisible);
-//            nextQuery.addSnapshotListener(getActivity(), new EventListener<QuerySnapshot>() {
-//                @Override
-//                public void onEvent(QuerySnapshot queryDocumentSnapshots, FirebaseFirestoreException e) {
-//                    if (isFirstPageFirstLoad) {
-//                        lastVisible = queryDocumentSnapshots.getDocuments().get(queryDocumentSnapshots.size()-1);
-//                        for (DocumentChange doc : queryDocumentSnapshots.getDocumentChanges()) {
-//                            if (doc.getType() == DocumentChange.Type.ADDED) {
-//                                String blogPostId = doc.getDocument().getId();
-//                                BlogPost blogPost = doc.getDocument().toObject(BlogPost.class).withId(blogPostId);
-//                                if (isFirstPageFirstLoad) {
-//                                    blog_list.add(blogPost);
-//                                    Toast.makeText(getContext(), "Pk", Toast.LENGTH_SHORT).show();
-//                                } else {
-//                                    blog_list.add(0, blogPost);
-//                                }
-//                                blogAdapter.notifyDataSetChanged();
-//                            }
-//
-//                        }
-//                        isFirstPageFirstLoad = false;
-//                    }
-//                }
-//            });
-//        }
-//    }
-
 }

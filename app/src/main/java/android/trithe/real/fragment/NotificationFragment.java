@@ -53,7 +53,6 @@ public class NotificationFragment extends Fragment {
                     NotificationsModel messages = dataSnapshot.getValue(NotificationsModel.class);
                     list.add(messages);
                     adapter = new NotificationAdapter(getActivity(), list);
-                    Log.d("abc",messages.getFrom());
                     recyclerViewass.setAdapter(adapter);
                     recyclerViewass.setHasFixedSize(true);
                     recyclerViewass.setLayoutManager(new LinearLayoutManager(getActivity()));

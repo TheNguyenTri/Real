@@ -31,9 +31,6 @@ dependencies {
     implementation 'com.android.support:cardview-v7:28.0.0'
     implementation 'com.android.support:recyclerview-v7:28.0.0'
     implementation 'com.github.bumptech.glide:glide:4.8.0'
-    implementation 'com.android.volley:volley:1.1.1'
-    implementation 'org.jsoup:jsoup:1.10.2'
-    implementation 'com.github.PhilJay:MPAndroidChart:v2.2.4'
     implementation 'de.hdodenhof:circleimageview:2.1.0'
     implementation 'com.google.firebase:firebase-database:16.0.5'
     implementation 'com.google.firebase:firebase-auth:16.1.0'
@@ -43,7 +40,6 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore:11.8.0'
     implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
     implementation 'com.google.firebase:firebase-messaging:17.3.4'
-    implementation 'com.firebaseui:firebase-ui-database:2.0.1'
     implementation 'id.zelory:compressor:2.1.0'
     implementation 'com.android.support:multidex:1.0.3'
 

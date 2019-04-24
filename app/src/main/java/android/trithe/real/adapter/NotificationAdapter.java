@@ -46,11 +46,11 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
         MyViewHolder(View view) {
             super(view);
-            avatar = (CircleImageView) view.findViewById(R.id.avatar);
-            itemNameUser = (TextView) view.findViewById(R.id.itemNameUser);
-            txtBody = (TextView) view.findViewById(R.id.txtBody);
-            itemTimeUser = (TextView) view.findViewById(R.id.itemTimeUser);
-            imgPost = (ImageView) view.findViewById(R.id.imgPost);
+            avatar = view.findViewById(R.id.avatar);
+            itemNameUser = view.findViewById(R.id.itemNameUser);
+            txtBody = view.findViewById(R.id.txtBody);
+            itemTimeUser = view.findViewById(R.id.itemTimeUser);
+            imgPost = view.findViewById(R.id.imgPost);
         }
     }
 
@@ -87,7 +87,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
         GetTimeAgo getTimeAgo = new GetTimeAgo();
         long lasttime = planss.getTimestamp();
-        holder.itemTimeUser.setText(getTimeAgo.getTimeAgo(lasttime, context));
+        holder.itemTimeUser.setText(GetTimeAgo.getTimeAgo(lasttime, context));
         holder.txtBody.setText(planss.getBody());
 
         firebaseFirestore.collection("Posts").document(planss.getBlog_id()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {

@@ -81,17 +81,21 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.MyViewHolder
             }
         });
         DateFormat dateFormat = SimpleDateFormat.getDateInstance(DateFormat.MEDIUM, Locale.US);
-        final String creationDate = dateFormat.format(planss.getTimestamp().getTime());
-        holder.imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, TinActivity.class);
-                intent.putExtra("user_id", user_id);
-                intent.putExtra("image", planss.getImage_url());
-                intent.putExtra("post_time", creationDate);
-                context.startActivity(intent);
-            }
-        });
+        try {
+            final String creationDate = dateFormat.format(planss.getTimestamp().getTime());
+            holder.imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, TinActivity.class);
+                    intent.putExtra("user_id", user_id);
+                    intent.putExtra("image", planss.getImage_url());
+                    intent.putExtra("post_time", creationDate);
+                    context.startActivity(intent);
+                }
+            });
+        }catch (Exception e){
+
+        }
     }
     @Override
     public int getItemCount() {

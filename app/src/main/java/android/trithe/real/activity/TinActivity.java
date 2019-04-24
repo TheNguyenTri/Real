@@ -50,7 +50,7 @@ public class TinActivity extends AppCompatActivity {
     private EditText edSend;
     private ImageView btnSend;
     private FirebaseFirestore firebaseFirestore;
-    private String user_id, mCurrentId, post_time, image_Post;
+    private String user_id, mCurrentId, post_time, image_Post, desc_post;
     private static final int GALLERY_PICK = 1;
     private LinearLayout ll;
 
@@ -89,6 +89,7 @@ public class TinActivity extends AppCompatActivity {
         user_id = getIntent().getStringExtra("user_id");
         post_time = getIntent().getStringExtra("post_time");
         image_Post = getIntent().getStringExtra("image");
+        desc_post = getIntent().getStringExtra("desc");
         mRootRef = FirebaseDatabase.getInstance().getReference();
         mImageStorage = FirebaseStorage.getInstance().getReference();
         mCurrentId = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -174,14 +175,14 @@ public class TinActivity extends AppCompatActivity {
     }
 
     private void initView() {
-        imgTin = (ImageView) findViewById(R.id.imgTin);
-        imageprofile = (CircleImageView) findViewById(R.id.imageprofile);
-        blogUserName = (TextView) findViewById(R.id.blog_user_name);
-        blogDate = (TextView) findViewById(R.id.blog_date);
-        btnAddImage = (ImageView) findViewById(R.id.btnAddImage);
-        edSend = (EditText) findViewById(R.id.edSend);
-        btnSend = (ImageView) findViewById(R.id.btnSend);
-        ll = (LinearLayout) findViewById(R.id.ll);
+        imgTin = findViewById(R.id.imgTin);
+        imageprofile = findViewById(R.id.imageprofile);
+        blogUserName = findViewById(R.id.blog_user_name);
+        blogDate = findViewById(R.id.blog_date);
+        btnAddImage = findViewById(R.id.btnAddImage);
+        edSend = findViewById(R.id.edSend);
+        btnSend = findViewById(R.id.btnSend);
+        ll = findViewById(R.id.ll);
     }
 
     @Override

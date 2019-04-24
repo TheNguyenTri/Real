@@ -105,12 +105,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void initView() {
         toolbar = findViewById(R.id.toolbarmain);
-        avatar = (CircleImageView) findViewById(R.id.avatar);
-        more = (ImageView) findViewById(R.id.notifi);
+        avatar = findViewById(R.id.avatar);
+        more = findViewById(R.id.notifi);
         bottomNavigationView = findViewById(R.id.navi);
-        textNamePust = (EditText) findViewById(R.id.textNamePust);
-        backdrop = (ViewPager) findViewById(R.id.backdrop);
-        indicator = (TabLayout) findViewById(R.id.indicator);
+        textNamePust = findViewById(R.id.textNamePust);
+        backdrop = findViewById(R.id.backdrop);
+        indicator = findViewById(R.id.indicator);
         planFragment = new ChatFragment();
         postFragment = new PostFragment();
         notificationFragment = new NotificationFragment();
