@@ -2,29 +2,34 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:card_view="http://schemas.android.com/tools"
-    card_view:cardCornerRadius="5dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="5dp">
+    android:layout_margin="5dp"
+    card_view:cardCornerRadius="5dp">
+
     <LinearLayout
-        android:paddingTop="10dp"
-        android:paddingLeft="15dp"
-        android:paddingRight="10dp"
-        android:paddingBottom="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingStart="15dp"
+        android:paddingLeft="15dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="10dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="10dp">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/avatar"
             android:layout_width="60dp"
-            app:civ_border_color="@android:color/black"
-            app:civ_border_width="0.2dp"
             android:layout_height="60dp"
-            android:src="@drawable/profile" />
+            android:src="@drawable/profile"
+            app:civ_border_color="@android:color/black"
+            app:civ_border_width="0.2dp" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
             android:layout_marginLeft="15dp"
             android:orientation="vertical">
 
@@ -32,14 +37,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                card_view:ignore="UseCompoundDrawables">
 
                 <TextView
                     android:id="@+id/itemNameUser"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="Username"
+                    android:text="@string/name"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -47,32 +53,38 @@
                     android:id="@+id/imgOnline"
                     android:layout_width="15dp"
                     android:layout_height="15dp"
-                    android:layout_marginTop="2dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/online"
+                    android:layout_marginStart="5dp"
                     android:layout_marginLeft="5dp"
+                    android:layout_marginTop="2dp"
+                    android:contentDescription="@string/todo"
+                    android:src="@drawable/online"
                     android:visibility="gone" />
             </LinearLayout>
+
             <RelativeLayout
                 android:layout_width="wrap_content"
-                android:layout_marginTop="3dp"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp">
+
                 <TextView
                     android:id="@+id/itemStatusUser"
                     android:layout_width="wrap_content"
-                    android:maxLines="1"
+                    android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:maxLength="30"
-                    android:layout_height="wrap_content"
-                    android:textSize="12sp"
-                    android:text="Status"/>
+                    android:maxLines="1"
+                    android:text="@string/message"
+                    android:textSize="12sp" />
+
                 <TextView
-                    android:layout_toRightOf="@+id/itemStatusUser"
                     android:id="@+id/itemTimeUser"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="12sp"
-                    android:text="Time"/>
+                    android:layout_toEndOf="@+id/itemStatusUser"
+                    android:layout_toRightOf="@+id/itemStatusUser"
+                    android:text="@string/justnow"
+                    android:textSize="12sp" />
             </RelativeLayout>
         </LinearLayout>
     </LinearLayout>

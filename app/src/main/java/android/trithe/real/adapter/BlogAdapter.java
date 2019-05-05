@@ -1,12 +1,14 @@
 package android.trithe.real.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
-import android.trithe.real.activity.LikeActivity;
 import android.trithe.real.R;
 import android.trithe.real.activity.InfoPostActivity;
 import android.trithe.real.model.BlogPost;
@@ -36,11 +38,11 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -51,19 +53,17 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.MyViewHolder> 
     private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth firebaseAuth;
     private DatabaseReference mRootRef;
-    String currentUserId;
+    private String currentUserId;
 
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    class MyViewHolder extends RecyclerView.ViewHolder {
         final TextView desc;
         final ImageView imageView;
         final TextView time;
         final TextView usertext;
         final CircleImageView imageUser;
         final ImageView blogLike;
-        final ImageView blogComment;
         final TextView blogTextLike;
-        final TextView blogTextComment;
         final TextView blogCountComment;
         final ImageView delete;
 
@@ -75,11 +75,9 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.MyViewHolder> 
             usertext = view.findViewById(R.id.blog_user_name);
             delete = view.findViewById(R.id.deleteicon);
             imageUser = view.findViewById(R.id.imageprofile);
-            blogLike = (ImageView) view.findViewById(R.id.blog_like);
-            blogComment = view.findViewById(R.id.blog_comment);
-            blogTextLike = (TextView) view.findViewById(R.id.blog_text_like);
-            blogTextComment = (TextView) view.findViewById(R.id.blog_text_comment);
-            blogCountComment = (TextView) view.findViewById(R.id.blog_count_comment);
+            blogLike = view.findViewById(R.id.blog_like);
+            blogTextLike = view.findViewById(R.id.blog_text_like);
+            blogCountComment = view.findViewById(R.id.blog_count_comment);
         }
     }
 
@@ -101,21 +99,23 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.MyViewHolder> 
         return new MyViewHolder(itemView);
     }
 
+    @SuppressLint("CheckResult")
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
-    public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final MyViewHolder holder, @SuppressLint("RecyclerView") final int position) {
         holder.setIsRecyclable(false);
         final BlogPost planss = list.get(position);
         final String blogPostId = planss.BlogPostId;
-        currentUserId = firebaseAuth.getCurrentUser().getUid();
+        currentUserId = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
         holder.desc.setText(planss.getDesc());
         try {
-            String dateString = android.text.format.DateFormat.format("HH:ss dd/MM/yyyy", new Date(planss.getTimestamp().getTime())).toString();
-
             DateFormat dateFormat = SimpleDateFormat.getDateInstance(DateFormat.MEDIUM, Locale.US);
             String creationDate = dateFormat.format(planss.getTimestamp().getTime());
             holder.time.setText(creationDate);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
+        final RequestOptions requestOptions = new RequestOptions();
+        requestOptions.placeholder(R.drawable.default_image);
         final String user_id = planss.getUser_id();
         firebaseFirestore.collection("Users").document(user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -124,47 +124,13 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.MyViewHolder> 
                     String username = task.getResult().getString("name");
                     String userImage = task.getResult().getString("image");
                     holder.usertext.setText(username);
-                    RequestOptions requestOptions = new RequestOptions();
-                    requestOptions.placeholder(R.drawable.default_image);
                     Glide.with(context).applyDefaultRequestOptions(requestOptions).load(userImage).into(holder.imageUser);
                 }
             }
         });
-        RequestOptions requestOptions = new RequestOptions();
-        requestOptions.placeholder(R.drawable.default_image);
         Glide.with(context).applyDefaultRequestOptions(requestOptions).load(planss.getImage_url()).thumbnail(Glide.with(context).load(planss.getImage_thumb())).into(holder.imageView);
-//textLike
-        if (firebaseAuth != null) {
-            firebaseFirestore.collection("Posts/" + blogPostId + "/Likes").addSnapshotListener(new EventListener<QuerySnapshot>() {
-                @Override
-                public void onEvent(QuerySnapshot queryDocumentSnapshots, FirebaseFirestoreException e) {
-                    if (queryDocumentSnapshots != null) {
-                        int count = queryDocumentSnapshots.size();
-                        if (count != 1) {
-                            holder.blogTextLike.setText(count + " Likes");
-                        } else if (count == 1) {
-                            for (DocumentChange doc : queryDocumentSnapshots.getDocumentChanges()) {
-
-                                if (doc.getType() == DocumentChange.Type.ADDED) {
-
-                                    String likeId = doc.getDocument().getId();
-                                    firebaseFirestore.collection("Users").document(likeId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                            if (task.isSuccessful()) {
-                                                String username = task.getResult().getString("name");
-                                                holder.blogTextLike.setText(username);
-                                            }
-                                        }
-                                    });
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-
-        }
+        //textLike
+        getTextLike(blogPostId, holder);
         //get like
         if (firebaseAuth != null) {
             firebaseFirestore.collection("Posts/" + blogPostId + "/Likes").document(currentUserId).addSnapshotListener(new EventListener<DocumentSnapshot>() {
@@ -177,7 +143,7 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.MyViewHolder> 
                             } else {
                                 Glide.with(context).load(R.drawable.chua_like).into(holder.blogLike);
                             }
-                        } catch (Exception a) {
+                        } catch (Exception ignored) {
                         }
                     }
                 }
@@ -197,12 +163,12 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.MyViewHolder> 
                                 String current_user_ref = "Nofications/" + planss.getUser_id();
                                 DatabaseReference user_notifi_push = mRootRef.child("Nofications").child(planss.getUser_id()).push();
                                 String push_id = user_notifi_push.getKey();
-                                Map notiMap = new HashMap();
+                                Map<String, Object> notiMap = new HashMap<>();
                                 notiMap.put("body", "đã thích ảnh của bạn");
                                 notiMap.put("blog_id", blogPostId);
                                 notiMap.put("timestamp", ServerValue.TIMESTAMP);
                                 notiMap.put("from", currentUserId);
-                                Map messageUserMap = new HashMap();
+                                Map<String, Object> messageUserMap = new HashMap<>();
                                 messageUserMap.put(current_user_ref + "/" + push_id, notiMap);
                                 mRootRef.updateChildren(messageUserMap, new DatabaseReference.CompletionListener() {
                                     @Override
@@ -212,36 +178,7 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.MyViewHolder> 
                             }
                         } else {
                             firebaseFirestore.collection("Posts/" + blogPostId + "/Likes").document(currentUserId).delete();
-
-                            firebaseFirestore.collection("Posts/" + blogPostId + "/Likes").addSnapshotListener(new EventListener<QuerySnapshot>() {
-                                @Override
-                                public void onEvent(QuerySnapshot queryDocumentSnapshots, FirebaseFirestoreException e) {
-                                    if (queryDocumentSnapshots != null) {
-                                        int count = queryDocumentSnapshots.size();
-                                        if (count == 0) {
-                                            holder.blogTextLike.setText("Like");
-                                        } else if (count != 1) {
-                                            holder.blogTextLike.setText(count + " Likes");
-                                        } else if (count == 1) {
-                                            for (DocumentChange doc : queryDocumentSnapshots.getDocumentChanges()) {
-                                                if (doc.getType() == DocumentChange.Type.ADDED) {
-                                                    String likeId = doc.getDocument().getId();
-                                                    firebaseFirestore.collection("Users").document(likeId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                                        @Override
-                                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                                            if (task.isSuccessful()) {
-                                                                String username = task.getResult().getString("name");
-                                                                holder.blogTextLike.setText(username);
-                                                            }
-                                                        }
-                                                    });
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            });
-
+                            getTextLike(blogPostId, holder);
                         }
                     }
                 });
@@ -251,12 +188,8 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.MyViewHolder> 
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DateFormat dateFormat = SimpleDateFormat.getDateInstance(DateFormat.MEDIUM, Locale.US);
-                String creationDate = dateFormat.format(planss.getTimestamp().getTime());
                 Intent commentIntent = new Intent(context, InfoPostActivity.class);
-                //fake lấy blog_id
                 commentIntent.putExtra("user_id", blogPostId);
-                //
                 context.startActivity(commentIntent);
             }
         });
@@ -265,7 +198,6 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.MyViewHolder> 
             @Override
             public void onClick(View v) {
                 Intent likeIntent = new Intent(context, InfoPostActivity.class);
-                //fake lấy blog_id
                 likeIntent.putExtra("user_id", blogPostId);
                 context.startActivity(likeIntent);
             }
@@ -279,7 +211,7 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.MyViewHolder> 
                         if (documentSnapshots != null) {
                             int count = documentSnapshots.size();
                             if (count == 0) {
-                                holder.blogCountComment.setText("Comment");
+                                holder.blogCountComment.setText(R.string.comment);
                             } else {
                                 holder.blogCountComment.setText(count + " Comments");
                             }
@@ -324,12 +256,41 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.MyViewHolder> 
         });
     }
 
+    private void getTextLike(String blogPostId, @NonNull final MyViewHolder holder) {
+        if (firebaseAuth != null) {
+            firebaseFirestore.collection("Posts/" + blogPostId + "/Likes").addSnapshotListener(new EventListener<QuerySnapshot>() {
+                @Override
+                public void onEvent(QuerySnapshot queryDocumentSnapshots, FirebaseFirestoreException e) {
+                    if (queryDocumentSnapshots != null) {
+                        int count = queryDocumentSnapshots.size();
+                        if (count == 0) {
+                            holder.blogTextLike.setText(R.string.like);
+                        } else if (count == 1) {
+                            for (DocumentChange doc : queryDocumentSnapshots.getDocumentChanges()) {
+                                if (doc.getType() == DocumentChange.Type.ADDED) {
+                                    String likeId = doc.getDocument().getId();
+                                    firebaseFirestore.collection("Users").document(likeId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                String username = task.getResult().getString("name");
+                                                holder.blogTextLike.setText(username);
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        } else {
+                            holder.blogTextLike.setText(count + " Likes");
+                        }
+                    }
+                }
+            });
+        }
+    }
 
     @Override
     public int getItemCount() {
         return list.size();
     }
-    /**
-     * Click listener for popup menu items
-     */
 }

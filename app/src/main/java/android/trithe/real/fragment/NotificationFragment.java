@@ -1,15 +1,16 @@
 package android.trithe.real.fragment;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.trithe.real.R;
 import android.trithe.real.adapter.NotificationAdapter;
 import android.trithe.real.model.NotificationsModel;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,19 +25,20 @@ import com.google.firebase.database.Query;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class NotificationFragment extends Fragment {
     private RecyclerView recyclerViewass;
     private DatabaseReference mRootRef;
-    private FirebaseAuth mAuth;
     private String mCurrent_id;
     private List<NotificationsModel> list = new ArrayList<>();
     private NotificationAdapter adapter;
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.notification_fragment, container, false);
+        final View view = inflater.inflate(R.layout.fragment_notification, container, false);
         setHasOptionsMenu(true);
         initView(view);
         getNotifi();
@@ -82,10 +84,11 @@ public class NotificationFragment extends Fragment {
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void initView(View view){
         mRootRef = FirebaseDatabase.getInstance().getReference();
-        mAuth = FirebaseAuth.getInstance();
-        mCurrent_id = mAuth.getCurrentUser().getUid();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        mCurrent_id = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
         recyclerViewass = view.findViewById(R.id.recycler_viewass);
     }
 }

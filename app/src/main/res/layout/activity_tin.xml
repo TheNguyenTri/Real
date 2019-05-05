@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@android:color/black"
     android:layout_height="match_parent"
+    android:background="@android:color/black"
     tools:context=".activity.TinActivity">
+
     <ImageView
         android:id="@+id/imgTin"
-        android:src="@drawable/bg_design"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
@@ -17,21 +16,27 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true" />
+        android:layout_alignParentBottom="true"
+        android:contentDescription="@string/todo"
+        android:src="@drawable/bg_design" />
 
     <ImageView
-        android:onClick="backMain"
         android:layout_width="35dp"
         android:layout_height="35dp"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_marginTop="32dp"
+        android:layout_marginEnd="15dp"
         android:layout_marginRight="15dp"
-        android:layout_alignParentEnd="true"
-        card_view:layout_constraintTop_toTopOf="parent"
-        android:src="@drawable/ic_close_black_24dp"/>
+        android:contentDescription="@string/todo"
+        android:onClick="backMain"
+        android:src="@drawable/ic_close_black_24dp"
+        card_view:layout_constraintTop_toTopOf="parent" />
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
@@ -44,6 +49,7 @@
             android:id="@+id/imageprofile"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:layout_marginStart="5dp"
             android:layout_marginLeft="5dp"
             android:layout_marginTop="5dp"
             android:src="@drawable/default_avata"
@@ -53,6 +59,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="5dp"
             android:orientation="vertical">
@@ -61,7 +68,7 @@
                 android:id="@+id/blog_user_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Name"
+                android:text="@string/name"
                 android:textColor="#fff"
                 android:textSize="15sp"
                 android:textStyle="bold" />
@@ -71,11 +78,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="1dp"
-                android:text="Just now"
+                android:text="@string/justnow"
                 android:textColor="#fff"
-                android:textSize="10sp" />
+                android:textSize="@dimen/margin_10" />
         </LinearLayout>
     </LinearLayout>
+
     <LinearLayout
         android:id="@+id/ll"
         android:layout_width="match_parent"
@@ -89,6 +97,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
+            android:contentDescription="@string/todo"
             android:src="@drawable/ic_image_black_24dp" />
 
         <EditText
@@ -99,18 +108,21 @@
             android:layout_marginRight="15dp"
             android:layout_weight="5"
             android:background="@drawable/input"
-            android:hint="Message"
-            android:textColorHint="@android:color/white"
-            android:textColor="@android:color/white"
+            android:hint="@string/message"
             android:imeOptions="actionGo"
             android:inputType="text"
-            android:paddingLeft="20dp" />
+            android:paddingStart="20dp"
+            android:paddingLeft="20dp"
+            android:textColor="@android:color/white"
+            android:textColorHint="@android:color/white"
+            tools:ignore="Autofill,RtlSymmetry" />
 
         <ImageView
             android:id="@+id/btnSend"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
+            android:contentDescription="@string/todo"
             android:src="@drawable/ic_send_black_24dp" />
 
     </LinearLayout>

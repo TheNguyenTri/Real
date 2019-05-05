@@ -10,6 +10,6 @@
     <ImageView
         android:layout_width="280dp"
         android:layout_height="280dp"
-        android:src="@drawable/logo"
-        android:contentDescription="@string/todo" />
+        android:contentDescription="@string/todo"
+        android:src="@drawable/logo" />
 </RelativeLayout>

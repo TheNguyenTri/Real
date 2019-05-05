@@ -1,7 +1,7 @@
 package android.trithe.real.model;
 
 public class Conv extends ConvId{
-    public boolean seen;
+    private boolean seen;
     private long timestamp;
 
     public Conv() {

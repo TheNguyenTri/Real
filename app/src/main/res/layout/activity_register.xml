@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@drawable/color"
     android:fitsSystemWindows="true"
-    tools:context=".activity.RegisterActivity"
-    android:layout_height="match_parent">
+    tools:context=".activity.RegisterActivity">
 
     <FrameLayout
         android:layout_width="320dp"
@@ -33,6 +33,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="50dp"
                     android:layout_marginLeft="50dp"
                     android:layout_marginTop="40dp"
                     android:layout_marginBottom="10dp"
@@ -46,8 +47,10 @@
                     android:layout_height="50dp"
                     android:layout_marginTop="10dp"
                     android:orientation="horizontal"
-                    android:paddingRight="30dp"
-                    android:paddingLeft="50dp">
+                    android:paddingStart="50dp"
+                    android:paddingLeft="50dp"
+                    android:paddingEnd="30dp"
+                    android:paddingRight="30dp">
 
                     <android.support.design.widget.TextInputLayout
                         android:layout_width="match_parent"
@@ -65,7 +68,8 @@
                             android:paddingBottom="2dp"
                             android:textColor="#f0f7f4"
                             android:textCursorDrawable="@drawable/bg_input_cursor_2"
-                            android:textSize="13sp" />
+                            android:textSize="13sp"
+                            tools:ignore="Autofill" />
                     </android.support.design.widget.TextInputLayout>
                 </LinearLayout>
 
@@ -75,8 +79,10 @@
                     android:layout_height="50dp"
                     android:layout_marginTop="10dp"
                     android:orientation="horizontal"
-                    android:paddingRight="30dp"
-                    android:paddingLeft="50dp">
+                    android:paddingStart="50dp"
+                    android:paddingLeft="50dp"
+                    android:paddingEnd="30dp"
+                    android:paddingRight="30dp">
 
                     <android.support.design.widget.TextInputLayout
                         android:layout_width="match_parent"
@@ -94,16 +100,20 @@
                             android:paddingBottom="2dp"
                             android:textColor="#f0f7f4"
                             android:textCursorDrawable="@drawable/bg_input_cursor_2"
-                            android:textSize="13sp" />
+                            android:textSize="13sp"
+                            tools:ignore="Autofill" />
                     </android.support.design.widget.TextInputLayout>
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_marginTop="10dp"
                     android:orientation="horizontal"
-                    android:paddingRight="30dp"
-                    android:paddingLeft="50dp">
+                    android:paddingStart="50dp"
+                    android:paddingLeft="50dp"
+                    android:paddingEnd="30dp"
+                    android:paddingRight="30dp">
 
                     <android.support.design.widget.TextInputLayout
                         android:layout_width="match_parent"
@@ -121,7 +131,8 @@
                             android:paddingBottom="2dp"
                             android:textColor="#f0f7f4"
                             android:textCursorDrawable="@drawable/bg_input_cursor_2"
-                            android:textSize="13sp" />
+                            android:textSize="13sp"
+                            tools:ignore="Autofill" />
                     </android.support.design.widget.TextInputLayout>
                 </LinearLayout>
 
@@ -133,10 +144,11 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="20dp"
                     android:background="@drawable/bt_shape_2"
+                    android:onClick="clickRegister"
                     android:stateListAnimator="@drawable/state_list_animator_z"
                     android:text="@string/go"
                     android:textColor="#2fa881"
-                    android:onClick="clickRegister"/>
+                    tools:targetApi="lollipop" />
 
             </LinearLayout>
         </android.support.v7.widget.CardView>
@@ -145,11 +157,12 @@
             android:id="@+id/fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/colorAccent"
             android:layout_gravity="center_horizontal|top"
+            android:backgroundTint="@color/colorAccent"
             android:src="@drawable/plus_x"
             android:transitionName="loginFab"
-            app:fabSize="normal" />
+            app:fabSize="normal"
+            tools:targetApi="lollipop" />
     </FrameLayout>
 
 </RelativeLayout>

@@ -1,5 +1,6 @@
 package android.trithe.real.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -22,7 +23,7 @@ public class LogoutAdapter extends RecyclerView.Adapter<LogoutAdapter.MyViewHold
     private List<Logout> list;
     private OnClick onClick;
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    class MyViewHolder extends RecyclerView.ViewHolder {
         final TextView name;
         final ImageView icon;
 
@@ -50,7 +51,7 @@ public class LogoutAdapter extends RecyclerView.Adapter<LogoutAdapter.MyViewHold
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final MyViewHolder holder, @SuppressLint("RecyclerView") final int position) {
         final Logout planss = list.get(position);
         holder.name.setText(planss.getLabel());
         Glide.with(context).load(planss.getIcon()).into(holder.icon);

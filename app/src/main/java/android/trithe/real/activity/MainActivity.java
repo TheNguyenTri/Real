@@ -2,9 +2,9 @@ package android.trithe.real.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -27,7 +27,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -37,10 +36,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -56,17 +55,16 @@ public class MainActivity extends AppCompatActivity {
     private CircleImageView avatar;
     private String user_id;
     private FirebaseFirestore firebaseFirestore;
-    private Uri mainImageURI = null;
     private EditText textNamePust;
     private List<Slide> slideList = new ArrayList<>();
     private ViewPager backdrop;
-    private SlidePaperAdapter paperAdapter;
     private TabLayout indicator;
     private ImageView more;
     private BottomNavigationView bottomNavigationView;
     private DatabaseReference mUserRef;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,9 +94,10 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void initFirebase() {
         firebaseAuth = FirebaseAuth.getInstance();
-        user_id = firebaseAuth.getCurrentUser().getUid();
+        user_id = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
         firebaseFirestore = FirebaseFirestore.getInstance();
         mUserRef = FirebaseDatabase.getInstance().getReference().child("TimeOnline").child(user_id);
     }
@@ -149,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new SliderTimer(), 4000, 6000);
         indicator.setupWithViewPager(backdrop, true);
-        paperAdapter = new SlidePaperAdapter(this, slideList);
+        SlidePaperAdapter paperAdapter = new SlidePaperAdapter(this, slideList);
         backdrop.setAdapter(paperAdapter);
     }
 
@@ -173,15 +172,15 @@ public class MainActivity extends AppCompatActivity {
 
     private void getInfoCurrent() {
         firebaseFirestore.collection("Users").document(user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     if (task.getResult().exists()) {
                         String image = task.getResult().getString("image");
-                        mainImageURI = Uri.parse(image);
                         Glide.with(MainActivity.this).load(image).into(avatar);
                     } else {
-                        Glide.with(MainActivity.this).load(firebaseAuth.getCurrentUser().getPhotoUrl()).into(avatar);
+                        Glide.with(MainActivity.this).load(Objects.requireNonNull(firebaseAuth.getCurrentUser()).getPhotoUrl()).into(avatar);
                     }
                 }
             }

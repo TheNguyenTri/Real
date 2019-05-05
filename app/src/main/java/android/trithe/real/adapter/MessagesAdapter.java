@@ -2,7 +2,9 @@ package android.trithe.real.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 
@@ -13,22 +15,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -37,13 +34,10 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyView
     private final Context context;
     private List<Messages> list;
     private FirebaseAuth mAuth;
-    private FirebaseFirestore firebaseFirestore;
-    private DatabaseReference mCovDisDatabase;
-    private String mCurrent_user_id;
-    public static final int MES_TYPE_LEFT = 0;
-    public static final int MES_TYPE_RIGHT = 1;
+    private static final int MES_TYPE_LEFT = 0;
+    private static final int MES_TYPE_RIGHT = 1;
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    class MyViewHolder extends RecyclerView.ViewHolder {
         final TextView message;
         final TextView timesago;
         final CardView card_view;
@@ -80,12 +74,12 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyView
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
         mAuth = FirebaseAuth.getInstance();
-        mCurrent_user_id = mAuth.getCurrentUser().getUid();
-        firebaseFirestore = FirebaseFirestore.getInstance();
-        String current_user_id = mAuth.getCurrentUser().getUid();
+        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+        String current_user_id = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
         Messages messages = list.get(position);
         String from_user = messages.getFrom();
         String message_type = messages.getType();
@@ -113,9 +107,8 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyView
             });
         }
         long times = messages.getTime();
-        GetTimeAgo getTimeAgo = new GetTimeAgo();
         long lasttime = Long.parseLong(String.valueOf(times));
-        String lastSeentime = getTimeAgo.getTimeAgo(lasttime, context);
+        String lastSeentime = GetTimeAgo.getTimeAgo(lasttime, context);
         holder.timesago.setText(lastSeentime);
 
         if (message_type.equals("text")) {
@@ -141,12 +134,13 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyView
         notifyDataSetChanged();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public int getItemViewType(int position) {
         mAuth = FirebaseAuth.getInstance();
         Messages messages = list.get(position);
         String from_user = messages.getFrom();
-        String current_user_id = mAuth.getCurrentUser().getUid();
+        String current_user_id = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
         if (from_user.equals(current_user_id)) {
             return MES_TYPE_RIGHT;
         } else {

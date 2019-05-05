@@ -1,9 +1,10 @@
 package android.trithe.real.fragment;
 
-import android.app.ProgressDialog;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,11 +16,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -28,10 +27,10 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class PostFragment extends Fragment {
     DatabaseReference mData;
-    private FirebaseAuth mAuth;
     private RecyclerView recyclerViewshop;
     private RecyclerView recyclerView;
     private List<BlogPost> blog_list = new ArrayList<>();
@@ -41,10 +40,11 @@ public class PostFragment extends Fragment {
     private ImageAdapter imageAdapter;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.post_fragment, container, false);
+        final View view = inflater.inflate(R.layout.fragment_post, container, false);
         initView(view);
         getImagePost();
         getDataPost();
@@ -52,7 +52,6 @@ public class PostFragment extends Fragment {
     }
 
     private void initView(View view) {
-        mAuth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
         mData = FirebaseDatabase.getInstance().getReference();
         recyclerView = view.findViewById(R.id.recycler_view);
@@ -61,10 +60,11 @@ public class PostFragment extends Fragment {
         imageAdapter = new ImageAdapter(image_post, getActivity());
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void getDataPost() {
         blog_list.clear();
         Query firstQuery = firebaseFirestore.collection("Posts").orderBy("timestamp", Query.Direction.DESCENDING);
-        firstQuery.addSnapshotListener(getActivity(), new EventListener<QuerySnapshot>() {
+        firstQuery.addSnapshotListener(Objects.requireNonNull(getActivity()), new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(QuerySnapshot queryDocumentSnapshots, FirebaseFirestoreException e) {
                 if (queryDocumentSnapshots != null) {
@@ -85,10 +85,11 @@ public class PostFragment extends Fragment {
         recyclerViewshop.setAdapter(blogAdapter);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void getImagePost() {
         image_post.clear();
         Query firstQuery = firebaseFirestore.collection("Posts").orderBy("timestamp", Query.Direction.DESCENDING);
-        firstQuery.addSnapshotListener(getActivity(), new EventListener<QuerySnapshot>() {
+        firstQuery.addSnapshotListener(Objects.requireNonNull(getActivity()), new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(QuerySnapshot queryDocumentSnapshots, FirebaseFirestoreException e) {
                 if (queryDocumentSnapshots != null) {

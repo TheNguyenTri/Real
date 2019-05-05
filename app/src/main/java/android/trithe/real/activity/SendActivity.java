@@ -3,8 +3,10 @@ package android.trithe.real.activity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,17 +17,13 @@ import android.trithe.real.adapter.MessagesAdapter;
 import android.trithe.real.helper.GetTimeAgo;
 import android.trithe.real.model.Messages;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -36,9 +34,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -48,6 +43,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -75,6 +71,7 @@ public class SendActivity extends AppCompatActivity {
     private SwipeRefreshLayout swipeRefresh;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,11 +114,12 @@ public class SendActivity extends AppCompatActivity {
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void initFirebase() {
         firebaseFirestore = FirebaseFirestore.getInstance();
         mRootRef = FirebaseDatabase.getInstance().getReference();
         mImageStorage = FirebaseStorage.getInstance().getReference();
-        mCurrentId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        mCurrentId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         mUserRef = FirebaseDatabase.getInstance().getReference().child("TimeOnline").child(mCurrentId);
         mCovDatabase = FirebaseDatabase.getInstance().getReference().child("Chats").child(mCurrentId);
         mDisCovDatabase = FirebaseDatabase.getInstance().getReference().child("Chats").child(id);
@@ -139,11 +137,11 @@ public class SendActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (!dataSnapshot.hasChild(id)) {
-                    Map chatAddMap = new HashMap();
+                    Map<String, Object> chatAddMap = new HashMap<>();
                     chatAddMap.put("seen", false);
                     chatAddMap.put("timestamp", ServerValue.TIMESTAMP);
 
-                    Map chatUserMap = new HashMap();
+                    Map<String, Object> chatUserMap = new HashMap<>();
                     chatUserMap.put("Chats/" + mCurrentId + "/" + id, chatAddMap);
                     chatUserMap.put("Chats/" + id + "/" + mCurrentId, chatAddMap);
 
@@ -168,10 +166,11 @@ public class SendActivity extends AppCompatActivity {
         Query messageQuery = messageRef.limitToLast(mCurrentPage * TOTAL_ITEMS_TO_LOAD);
 
         messageQuery.addChildEventListener(new ChildEventListener() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 String id = dataSnapshot.getKey();
-                Messages messages = dataSnapshot.getValue(Messages.class).withId(id);
+                Messages messages = Objects.requireNonNull(dataSnapshot.getValue(Messages.class)).withId(id);
                 list.add(messages);
                 adapter = new MessagesAdapter(getApplicationContext(), list);
                 recyclerViewChat.setAdapter(adapter);
@@ -210,14 +209,14 @@ public class SendActivity extends AppCompatActivity {
             DatabaseReference user_message_push = mRootRef.child("Messages").child(mCurrentId).child(id).push();
             String push_id = user_message_push.getKey();
 
-            Map messageMap = new HashMap();
+            Map<String, Object> messageMap = new HashMap<>();
             messageMap.put("message", message);
             messageMap.put("seen", false);
             messageMap.put("type", "text");
             messageMap.put("time", ServerValue.TIMESTAMP);
             messageMap.put("from", mCurrentId);
 
-            Map messageUserMap = new HashMap();
+            Map<String, Object> messageUserMap = new HashMap<>();
             messageUserMap.put(current_user_ref + "/" + push_id, messageMap);
             messageUserMap.put(chat_user_ref + "/" + push_id, messageMap);
 
@@ -233,16 +232,16 @@ public class SendActivity extends AppCompatActivity {
 
     private void getTimeUser() {
         mRootRef.child("TimeOnline").child(id).addValueEventListener(new ValueEventListener() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    String online = dataSnapshot.child("online").getValue().toString();
+                    String online = Objects.requireNonNull(dataSnapshot.child("online").getValue()).toString();
                     if (online.equals("true")) {
-                        timeOnlineChat.setText("Online");
+                        timeOnlineChat.setText(R.string.online);
                     } else {
-                        GetTimeAgo getTimeAgo = new GetTimeAgo();
                         long lasttime = Long.parseLong(online);
-                        String lastSeentime = getTimeAgo.getTimeAgo(lasttime, getApplicationContext());
+                        String lastSeentime = GetTimeAgo.getTimeAgo(lasttime, getApplicationContext());
                         timeOnlineChat.setText(lastSeentime);
                     }
                 }
@@ -295,11 +294,12 @@ public class SendActivity extends AppCompatActivity {
         finish();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == GALLERY_PICK && resultCode == RESULT_OK) {
-            Uri imageUri = data.getData();
+            Uri imageUri = Objects.requireNonNull(data).getData();
             final String current_user_ref = "Messages/" + mCurrentId + "/" + id;
             final String chat_user_ref = "Messages/" + id + "/" + mCurrentId;
 
@@ -307,19 +307,19 @@ public class SendActivity extends AppCompatActivity {
             final String push_id = user_message_push.getKey();
 
             StorageReference filepath = mImageStorage.child("message_images").child(push_id + ".jpg");
-            filepath.putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+            filepath.putFile(Objects.requireNonNull(imageUri)).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                     if (task.isSuccessful()) {
-                        String download_uri = task.getResult().getDownloadUrl().toString();
-                        Map messageMap = new HashMap();
+                        String download_uri = Objects.requireNonNull(task.getResult().getDownloadUrl()).toString();
+                        Map<String, Object> messageMap = new HashMap<>();
                         messageMap.put("message", download_uri);
                         messageMap.put("seen", false);
                         messageMap.put("type", "image");
                         messageMap.put("time", ServerValue.TIMESTAMP);
                         messageMap.put("from", mCurrentId);
 
-                        Map messageUserMap = new HashMap();
+                        Map<String, Object> messageUserMap = new HashMap<>();
                         messageUserMap.put(current_user_ref + "/" + push_id, messageMap);
                         messageUserMap.put(chat_user_ref + "/" + push_id, messageMap);
                         mRootRef.updateChildren(messageUserMap, new DatabaseReference.CompletionListener() {

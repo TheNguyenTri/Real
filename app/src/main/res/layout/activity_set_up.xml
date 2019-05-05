@@ -44,19 +44,20 @@
                 android:layout_height="50dp"
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/textinput"
-                android:hint="Name"
+                android:hint="@string/name"
                 android:imeOptions="actionDone"
                 android:inputType="text"
-                android:paddingLeft="25dp" />
+                android:paddingStart="25dp"
+                android:paddingLeft="25dp"
+                tools:ignore="Autofill,RtlSymmetry" />
 
             <Button
                 android:id="@+id/btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
                 android:layout_marginTop="15dp"
                 android:background="@drawable/border_bottom"
-                android:text="Save profile"
+                android:text="@string/save"
                 android:textAllCaps="false"
                 android:textColor="#fff" />
         </LinearLayout>

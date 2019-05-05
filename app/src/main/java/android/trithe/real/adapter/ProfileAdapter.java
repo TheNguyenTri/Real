@@ -20,7 +20,7 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.MyViewHo
     private final Context context;
     private List<Configuration> list;
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    class MyViewHolder extends RecyclerView.ViewHolder {
         final TextView name;
         final TextView email;
         final ImageView icon;

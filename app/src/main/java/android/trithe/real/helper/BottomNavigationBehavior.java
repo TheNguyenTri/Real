@@ -12,29 +12,22 @@ import android.widget.FrameLayout;
  */
 
 public class BottomNavigationBehavior extends CoordinatorLayout.Behavior<BottomNavigationView> {
-
     public BottomNavigationBehavior() {
         super();
     }
 
-// --Commented out by Inspection START (17/11/2018 2:47 CH):
-//    public BottomNavigationBehavior(Context context, AttributeSet attrs) {
-//        super(context, attrs);
-//    }
-// --Commented out by Inspection STOP (17/11/2018 2:47 CH)
-
     @Override
-    public boolean layoutDependsOn(@NonNull CoordinatorLayout parent, BottomNavigationView child, View dependency) {
+    public boolean layoutDependsOn(@NonNull CoordinatorLayout parent, @NonNull BottomNavigationView child, @NonNull View dependency) {
         return dependency instanceof FrameLayout;
     }
 
     @Override
-    public boolean onStartNestedScroll(CoordinatorLayout coordinatorLayout, BottomNavigationView child, View directTargetChild, View target, int nestedScrollAxes) {
+    public boolean onStartNestedScroll(@NonNull CoordinatorLayout coordinatorLayout, @NonNull BottomNavigationView child, @NonNull View directTargetChild, View target, int nestedScrollAxes) {
         return nestedScrollAxes == ViewCompat.SCROLL_AXIS_VERTICAL;
     }
 
     @Override
-    public void onNestedPreScroll(CoordinatorLayout coordinatorLayout, BottomNavigationView child, View target, int dx, int dy, int[] consumed) {
+    public void onNestedPreScroll(@NonNull CoordinatorLayout coordinatorLayout, @NonNull BottomNavigationView child, @NonNull View target, int dx, int dy, int[] consumed) {
         if (dy < 0) {
             showBottomNavigationView(child);
         } else if (dy > 0) {

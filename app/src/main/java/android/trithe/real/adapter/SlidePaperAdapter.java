@@ -1,5 +1,6 @@
 package android.trithe.real.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
@@ -27,7 +28,7 @@ public class SlidePaperAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
         LayoutInflater inflater= (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View slideLayout = inflater.inflate(R.layout.item_slide,null);
+        @SuppressLint("InflateParams") View slideLayout = inflater.inflate(R.layout.item_slide,null);
         ImageView slideImage = slideLayout.findViewById(R.id.img_flit);
         Glide.with(context).load(slideList.get(position).getImage()).into(slideImage);
         container.addView(slideLayout);

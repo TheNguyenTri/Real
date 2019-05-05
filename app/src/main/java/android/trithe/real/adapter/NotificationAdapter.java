@@ -17,15 +17,10 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -33,10 +28,9 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     private final Context context;
     private List<NotificationsModel> list;
-    private FirebaseAuth mAuth;
     private FirebaseFirestore firebaseFirestore;
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    class MyViewHolder extends RecyclerView.ViewHolder {
         final CircleImageView avatar;
         final TextView itemNameUser;
         final TextView txtBody;
@@ -65,7 +59,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_noti, parent, false);
-        mAuth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
         return new MyViewHolder(itemView);
     }
@@ -84,8 +77,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 }
             }
         });
-
-        GetTimeAgo getTimeAgo = new GetTimeAgo();
         long lasttime = planss.getTimestamp();
         holder.itemTimeUser.setText(GetTimeAgo.getTimeAgo(lasttime, context));
         holder.txtBody.setText(planss.getBody());

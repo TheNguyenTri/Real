@@ -1,7 +1,7 @@
 package android.trithe.real.model;
 
 public class BlogPost extends BlogPostId{
-    public String user_id, image_url, desc, image_thumb;
+    private String user_id, image_url, desc, image_thumb;
     public java.util.Date timestamp;
     public BlogPost() {
     }

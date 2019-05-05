@@ -1,11 +1,14 @@
 package android.trithe.real.adapter;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.trithe.real.R;
@@ -35,6 +38,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> {
     private OnClick onClick;
@@ -43,11 +47,10 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> 
     private List<Conv> list;
     private DatabaseReference mCovDatabase;
     private DatabaseReference mMessageDatabase;
-    private FirebaseAuth mAuth;
     private String mCurrent_user_id;
     private FirebaseFirestore firebaseFirestore;
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    class MyViewHolder extends RecyclerView.ViewHolder {
         final TextView name;
         final TextView status;
         final ImageView avatar;
@@ -72,13 +75,14 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> 
         this.onClick1 = onClick1;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_user, parent, false);
-        mAuth = FirebaseAuth.getInstance();
-        mCurrent_user_id = mAuth.getCurrentUser().getUid();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        mCurrent_user_id = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
         firebaseFirestore = FirebaseFirestore.getInstance();
         mCovDatabase = FirebaseDatabase.getInstance().getReference().child("Chats").child(mCurrent_user_id);
         mMessageDatabase = FirebaseDatabase.getInstance().getReference().child("Messages").child(mCurrent_user_id);
@@ -87,7 +91,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final MyViewHolder viewHolder, final int position) {
+    public void onBindViewHolder(@NonNull final MyViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
         final Conv planss = list.get(position);
         firebaseFirestore.collection("Users").document(planss.userId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -138,38 +142,32 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> 
         converstationQuery.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-//                String id = dataSnapshot.getKey();
                 Query lastMessageQuery = mMessageDatabase.child(planss.userId).limitToLast(1);
                 lastMessageQuery.addChildEventListener(new ChildEventListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
                     public void onChildAdded(final DataSnapshot dataSnapshot, String s) {
-                        final String user = dataSnapshot.child("from").getValue().toString();
-                        String time = dataSnapshot.child("time").getValue().toString();
-//                        final GetTimeAgo getTimeAgo = new GetTimeAgo();
-//                        final long lasttime = Long.parseLong(time);
-
-                        long times = Long.parseLong(dataSnapshot.child("time").getValue().toString());
-                        final GetTimeAgo getTimeAgo = new GetTimeAgo();
+                        final String user = Objects.requireNonNull(dataSnapshot.child("from").getValue()).toString();
+                        long times = Long.parseLong(Objects.requireNonNull(dataSnapshot.child("time").getValue()).toString());
                         final long lasttime = Long.parseLong(String.valueOf(times));
-                        final String lastSeentime = getTimeAgo.getTimeAgo(lasttime, context);
+                        final String lastSeentime = GetTimeAgo.getTimeAgo(lasttime, context);
                         firebaseFirestore.collection("Users").document(user).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @SuppressLint("SetTextI18n")
                             @Override
                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                 if (task.isSuccessful()) {
-                                    //settim
-                                    //
                                     final String userName = task.getResult().getString("name");
-                                    if (dataSnapshot.child("type").getValue().toString().equals("text")) {
+                                    if (Objects.requireNonNull(dataSnapshot.child("type").getValue()).toString().equals("text")) {
                                         if (mCurrent_user_id.equals(user)) {
-                                            viewHolder.status.setText("Bạn : " + dataSnapshot.child("message").getValue().toString());
+                                            viewHolder.status.setText("Bạn : " + Objects.requireNonNull(dataSnapshot.child("message").getValue()).toString());
                                             viewHolder.time.setText(" - " + lastSeentime);
                                         } else {
-                                            viewHolder.status.setText(dataSnapshot.child("message").getValue().toString());
+                                            viewHolder.status.setText(Objects.requireNonNull(dataSnapshot.child("message").getValue()).toString());
                                             viewHolder.time.setText(" - " + lastSeentime);
-                                            if (planss.isSeen() == false) {
-                                                viewHolder.status.setTypeface(viewHolder.status.getTypeface(), Typeface.BOLD);
-                                            } else {
+                                            if (planss.isSeen()) {
                                                 viewHolder.status.setTypeface(viewHolder.status.getTypeface(), Typeface.NORMAL);
+                                            } else {
+                                                viewHolder.status.setTypeface(viewHolder.status.getTypeface(), Typeface.BOLD);
                                             }
                                         }
                                     } else {
@@ -179,10 +177,10 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> 
                                         } else {
                                             viewHolder.status.setText(userName + " đã gửi 1 ảnh ");
                                             viewHolder.time.setText(" - " + lastSeentime);
-                                            if (planss.isSeen() == false) {
-                                                viewHolder.status.setTypeface(viewHolder.status.getTypeface(), Typeface.BOLD);
-                                            } else {
+                                            if (planss.isSeen()) {
                                                 viewHolder.status.setTypeface(viewHolder.status.getTypeface(), Typeface.NORMAL);
+                                            } else {
+                                                viewHolder.status.setTypeface(viewHolder.status.getTypeface(), Typeface.BOLD);
                                             }
                                         }
                                     }

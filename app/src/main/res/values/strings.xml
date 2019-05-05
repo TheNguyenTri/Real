@@ -59,4 +59,20 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_user">UserActivity</string>
+    <string name="unfollow">Unfollow</string>
+    <string name="follow">Follow</string>
+    <string name="hello">Welcome to Socail app</string>
+    <string name="online">Online</string>
+    <string name="comment">Comment</string>
+    <string name="like">Like</string>
+    <string name="name">Name</string>
+    <string name="message">Message</string>
+    <string name="sendmessage">Send Message</string>
+    <string name="loginfb">Login with Facebook</string>
+    <string name="logingg">Login with Google</string>
+    <string name="thinking">What do you thinking ?</string>
+    <string name="write">Write something...</string>
+    <string name="post">Post</string>
+    <string name="justnow">Just now</string>
+    <string name="change">Enter a new change</string>
 </resources>

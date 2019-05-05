@@ -1,8 +1,10 @@
 package android.trithe.real.helper;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
 
+@SuppressLint("Registered")
 public class GetTimeAgo extends Application {
     private static final int SECOND_MILLIS = 1000;
     private static final int MINUTE_MILLIS = 60 * SECOND_MILLIS;

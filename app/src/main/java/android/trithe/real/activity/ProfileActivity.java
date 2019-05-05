@@ -1,6 +1,7 @@
 package android.trithe.real.activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -8,6 +9,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -28,7 +30,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -47,6 +48,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -56,8 +58,6 @@ public class ProfileActivity extends AppCompatActivity {
     private RecyclerView infoRecyclerView, recyclerViewlogout;
     private List<Configuration> listConfig = new ArrayList<>();
     private List<Logout> listLogout = new ArrayList<>();
-    private ProfileAdapter profileAdapter;
-    private LogoutAdapter logoutAdapter;
     private boolean isChanged = false;
     private FirebaseAuth firebaseAuth;
     private Uri mainImageURI = null;
@@ -68,6 +68,7 @@ public class ProfileActivity extends AppCompatActivity {
     private String name, status;
     private TextView tvStatus;
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,9 +107,10 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void initFirebase() {
         firebaseAuth = FirebaseAuth.getInstance();
-        user_id = firebaseAuth.getCurrentUser().getUid();
+        user_id = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
         email = firebaseAuth.getCurrentUser().getEmail();
         firebaseFirestore = FirebaseFirestore.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference();
@@ -116,6 +118,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void getInfo() {
         firebaseFirestore.collection("Users").document(user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
@@ -127,17 +130,15 @@ public class ProfileActivity extends AppCompatActivity {
                         tvUsername.setText(name);
                         tvStatus.setText(status);
                         if (tvStatus.getText().equals("")) {
-                            tvStatus.setText("Hello there , Welcome to Chat App");
+                            tvStatus.setText(R.string.hello);
                         }
-                        RequestOptions requestOptions = new RequestOptions();
-                        requestOptions.placeholder(R.drawable.profile);
-                        Glide.with(ProfileActivity.this).setDefaultRequestOptions(requestOptions).load(image).into(imgAvatar);
+                        Glide.with(ProfileActivity.this).load(image).into(imgAvatar);
                     } else {
-                        tvUsername.setText(firebaseAuth.getCurrentUser().getDisplayName());
+                        tvUsername.setText(Objects.requireNonNull(firebaseAuth.getCurrentUser()).getDisplayName());
                         Glide.with(getApplicationContext()).load(firebaseAuth.getCurrentUser().getPhotoUrl()).into(imgAvatar);
                     }
                 } else {
-                    Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                 }
                 progressBar.setVisibility(View.INVISIBLE);
             }
@@ -147,8 +148,8 @@ public class ProfileActivity extends AppCompatActivity {
     private void setDataRecy() {
         listConfig.add(new Configuration("Email", email, R.drawable.ic_email_black_24dp));
         listLogout.add(new Logout("Signout", R.drawable.ic_settings_power_black_24dp));
-        profileAdapter = new ProfileAdapter(this, listConfig);
-        logoutAdapter = new LogoutAdapter(this, listLogout, new OnClick() {
+        ProfileAdapter profileAdapter = new ProfileAdapter(this, listConfig);
+        LogoutAdapter logoutAdapter = new LogoutAdapter(this, listLogout, new OnClick() {
             @Override
             public void onItemClickClicked(int position) {
                 final AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
@@ -190,13 +191,14 @@ public class ProfileActivity extends AppCompatActivity {
 
 
     private void status(final TextView textView) {
-        View view = getLayoutInflater().inflate(R.layout.dialog_edit_username, null);
+        @SuppressLint("InflateParams") View view = getLayoutInflater().inflate(R.layout.dialog_edit_username, null);
         final EditText input = view.findViewById(R.id.edit_username);
         final AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
         builder.setTitle("Edit Info");
         builder.setView(view);
         input.setText(textView.getText());
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 String newStatus = input.getText().toString();
@@ -213,6 +215,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void changge() {
         final String username = tvUsername.getText().toString();
         final String status = tvStatus.getText().toString();
@@ -220,7 +223,7 @@ public class ProfileActivity extends AppCompatActivity {
             progressBar.setVisibility(View.VISIBLE);
             //nếu thay đổi
             if (isChanged) {
-                user_id = firebaseAuth.getCurrentUser().getUid();
+                user_id = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
                 StorageReference image_path = storageReference.child("profile_images").child(user_id + ".jpg");
                 image_path.putFile(mainImageURI).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                     @Override
@@ -260,12 +263,13 @@ public class ProfileActivity extends AppCompatActivity {
         userMap.put("status", status);
         userMap.put("image", String.valueOf(download_uri));
         firebaseFirestore.collection("Users").document(user_id).set(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
                     Toast.makeText(getApplicationContext(), "The user are updated", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                 }
                 progressBar.setVisibility(View.INVISIBLE);
             }
@@ -278,13 +282,14 @@ public class ProfileActivity extends AppCompatActivity {
         changge();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
-                mainImageURI = result.getUri();
+                mainImageURI = Objects.requireNonNull(result).getUri();
                 imgAvatar.setImageURI(mainImageURI);
                 isChanged = true;
                 changge();

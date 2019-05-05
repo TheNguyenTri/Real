@@ -46,12 +46,13 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 
 public class LoginActivity extends AppCompatActivity {
     FloatingActionButton fab;
     private GoogleSignInClient mGoogleSignInClient;
-    int RC_SIGN_IN = 001;
+    int RC_SIGN_IN = 1;
     private EditText editTextUsername, editTextPassword;
     private FirebaseAuth mAuth;
     private Button btnFacebook;
@@ -172,16 +173,17 @@ public class LoginActivity extends AppCompatActivity {
         } else {
             showpDialog();
             mAuth.signInWithEmailAndPassword(emails, pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
-                        mAuth.getCurrentUser().getIdToken(true).addOnSuccessListener(new OnSuccessListener<GetTokenResult>() {
+                        Objects.requireNonNull(mAuth.getCurrentUser()).getIdToken(true).addOnSuccessListener(new OnSuccessListener<GetTokenResult>() {
                             @Override
                             public void onSuccess(GetTokenResult getTokenResult) {
                                 String token_id = getTokenResult.getToken();
                                 String current_id = mAuth.getCurrentUser().getUid();
                                 Map<String, Object> tokenMap = new HashMap<>();
-                                tokenMap.put("token_id", token_id);
+                                tokenMap.put("token_id", Objects.requireNonNull(token_id));
                                 firebaseFirestore.collection("Users").document(current_id).update(tokenMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
@@ -193,7 +195,7 @@ public class LoginActivity extends AppCompatActivity {
                             }
                         });
                     } else {
-                        String errorMessage = task.getException().getMessage();
+                        String errorMessage = Objects.requireNonNull(task.getException()).getMessage();
                         Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
                     }
                     showDispDialog();
@@ -239,11 +241,12 @@ public class LoginActivity extends AppCompatActivity {
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
                     public void onComplete(@NonNull final Task<AuthResult> tasks) {
                         final String name = tasks.getResult().getUser().getDisplayName();
                         if (tasks.isSuccessful()) {
-                            user_id = mAuth.getCurrentUser().getUid();
+                            user_id = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
                             firebaseFirestore.collection("Users").document(user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -252,7 +255,7 @@ public class LoginActivity extends AppCompatActivity {
                                             String token_id = FirebaseInstanceId.getInstance().getToken();
                                             String current_id = mAuth.getCurrentUser().getUid();
                                             Map<String, Object> tokenMap = new HashMap<>();
-                                            tokenMap.put("token_id", token_id);
+                                            tokenMap.put("token_id", Objects.requireNonNull(token_id));
 
                                             firebaseFirestore.collection("Users").document(current_id).update(tokenMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
@@ -274,13 +277,14 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void GoogleAndFaceBookLogin(String name) {
         // nếu đã được dùng up token k được dùng tạo luôn token
         String token_id = FirebaseInstanceId.getInstance().getToken();
         Map<String, String> userMap = new HashMap<>();
         userMap.put("name", name);
-        userMap.put("image", String.valueOf(mAuth.getCurrentUser().getPhotoUrl()));
-        userMap.put("token_id", token_id);
+        userMap.put("image", String.valueOf(Objects.requireNonNull(mAuth.getCurrentUser()).getPhotoUrl()));
+        userMap.put("token_id", Objects.requireNonNull(token_id));
         firebaseFirestore.collection("Users").document(user_id).set(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -288,7 +292,7 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "The user are updated", Toast.LENGTH_SHORT).show();
                     sendtoMain();
                 } else {
-                    Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -300,11 +304,12 @@ public class LoginActivity extends AppCompatActivity {
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
                     public void onComplete(@NonNull final Task<AuthResult> tasks) {
                         final String name = tasks.getResult().getUser().getDisplayName();
                         if (tasks.isSuccessful()) {
-                            user_id = mAuth.getCurrentUser().getUid();
+                            user_id = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
                             firebaseFirestore.collection("Users").document(user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -313,7 +318,7 @@ public class LoginActivity extends AppCompatActivity {
                                             String token_id = FirebaseInstanceId.getInstance().getToken();
                                             String current_id = mAuth.getCurrentUser().getUid();
                                             Map<String, Object> tokenMap = new HashMap<>();
-                                            tokenMap.put("token_id", token_id);
+                                            tokenMap.put("token_id", Objects.requireNonNull(token_id));
 
                                             firebaseFirestore.collection("Users").document(current_id).update(tokenMap).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override

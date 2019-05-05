@@ -12,35 +12,41 @@
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
-        app:titleTextColor="#ffff"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:titleTextColor="#ffff">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            tools:ignore="UseCompoundDrawables">
+
             <ImageView
-                android:onClick="backlike"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:src="@drawable/back_white"/>
+                android:contentDescription="@string/todo"
+                android:onClick="backlike"
+                android:src="@drawable/back_white" />
 
             <TextView
                 android:id="@+id/titlelike"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
                 android:layout_marginLeft="20dp"
-                android:text="Like"
+                android:text="@string/like"
                 android:textColor="#fff"
                 android:textSize="18sp"
                 android:textStyle="bold" />
         </LinearLayout>
 
     </android.support.v7.widget.Toolbar>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/like_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-      android:layout_below="@id/like_toolbar" />
+        android:layout_below="@id/like_toolbar" />
 
 </RelativeLayout>

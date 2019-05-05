@@ -1,7 +1,9 @@
 package android.trithe.real.activity;
 
 import android.content.Intent;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,7 +18,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -40,6 +41,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -59,6 +61,7 @@ public class InfoUserActivity extends AppCompatActivity {
     private LinearLayout ll;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,14 +101,14 @@ public class InfoUserActivity extends AppCompatActivity {
 
     private void xulysend() {
         final String currentDate = DateFormat.getDateTimeInstance().format(new Date());
-        Map followMap = new HashMap();
+        Map<String, Object> followMap = new HashMap<>();
         followMap.put("Follows/" + user_id + "/" + mCurrent_user.getUid() + "/date", currentDate);
         mRootRef.updateChildren(followMap, new DatabaseReference.CompletionListener() {
             @Override
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                 if (databaseError == null) {
                     if (databaseReference != null) {
-                        btnSend.setText("Unfollow");
+                        btnSend.setText(R.string.unfollow);
                     }
                 } else {
                     Toast.makeText(getApplicationContext(), databaseError.getMessage(), Toast.LENGTH_SHORT).show();
@@ -139,6 +142,7 @@ public class InfoUserActivity extends AppCompatActivity {
         listInfo.setAdapter(infoPostUserAdapter);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void getInfo() {
         firebaseFirestore.collection("Users").document(user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -149,13 +153,11 @@ public class InfoUserActivity extends AppCompatActivity {
                     String userStatus = task.getResult().getString("status");
                     infoName.setText(username);
                     infoStatus.setText(userStatus);
-                    RequestOptions requestOptions = new RequestOptions();
-                    requestOptions.placeholder(R.drawable.default_image);
-                    Glide.with(getApplicationContext()).applyDefaultRequestOptions(requestOptions).load(userImage).into(imgInfo);
+                    Glide.with(getApplicationContext()).load(userImage).into(imgInfo);
                 }
             }
         });
-        if (user_id.equals(mAuth.getCurrentUser().getUid())) {
+        if (user_id.equals(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())) {
             ll.setVisibility(View.GONE);
         }
     }
@@ -165,28 +167,28 @@ public class InfoUserActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    btnSend.setText("Unfollow");
+                    btnSend.setText(R.string.unfollow);
                     btnSend.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Map unfollowMap = new HashMap();
+                            Map<String, Object> unfollowMap = new HashMap<>();
                             unfollowMap.put("Follows/" + user_id + "/" + mCurrent_user.getUid(), null);
                             mRootRef.updateChildren(unfollowMap, new DatabaseReference.CompletionListener() {
                                 @Override
                                 public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                                     if (databaseError == null) {
-                                        btnSend.setText("Follow");
+                                        btnSend.setText(R.string.follow);
                                         btnSend.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View v) {
                                                 final String currentDate = DateFormat.getDateTimeInstance().format(new Date());
-                                                Map followMap = new HashMap();
+                                                Map<String, Object> followMap = new HashMap<>();
                                                 followMap.put("Follows/" + user_id + "/" + mCurrent_user.getUid() + "/date", currentDate);
                                                 mRootRef.updateChildren(followMap, new DatabaseReference.CompletionListener() {
                                                     @Override
                                                     public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                                                         if (databaseError == null) {
-                                                            btnSend.setText("Unfollow");
+                                                            btnSend.setText(R.string.unfollow);
                                                         } else {
                                                             Toast.makeText(getApplicationContext(), databaseError.getMessage(), Toast.LENGTH_SHORT).show();
                                                         }
@@ -203,7 +205,7 @@ public class InfoUserActivity extends AppCompatActivity {
                         }
                     });
                 } else {
-                    btnSend.setText("Follow");
+                    btnSend.setText(R.string.follow);
                 }
             }
 
@@ -215,13 +217,13 @@ public class InfoUserActivity extends AppCompatActivity {
     }
 
     private void initView() {
-        ll = (LinearLayout) findViewById(R.id.ll);
-        imgInfo = (CircleImageView) findViewById(R.id.imgInfo);
-        infoName = (TextView) findViewById(R.id.infoName);
-        infoStatus = (TextView) findViewById(R.id.infoStatus);
-        btnSend = (Button) findViewById(R.id.btnSend);
-        listInfo = (RecyclerView) findViewById(R.id.listInfo);
-        btnMessage = (Button) findViewById(R.id.btnMessage);
+        ll = findViewById(R.id.ll);
+        imgInfo = findViewById(R.id.imgInfo);
+        infoName = findViewById(R.id.infoName);
+        infoStatus = findViewById(R.id.infoStatus);
+        btnSend = findViewById(R.id.btnSend);
+        listInfo = findViewById(R.id.listInfo);
+        btnMessage = findViewById(R.id.btnMessage);
         infoPostUserAdapter = new BlogAdapter(info_list, this);
     }
 

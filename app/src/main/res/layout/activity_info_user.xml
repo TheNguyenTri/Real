@@ -8,7 +8,6 @@
     android:orientation="vertical"
     tools:context=".activity.InfoUserActivity">
 
-
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -40,7 +39,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:gravity="center"
-                    android:text="Name"
+                    android:text="@string/name"
                     android:textColor="#fff"
                     android:textSize="25sp"
                     android:textStyle="bold" />
@@ -50,7 +49,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="Name"
+                    android:text="@string/name"
                     android:textColor="#fff"
                     android:textSize="16sp" />
 
@@ -65,25 +64,26 @@
                         android:id="@+id/btnSend"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
+                        android:layout_marginEnd="10dp"
                         android:layout_marginRight="10dp"
                         android:layout_weight="1"
                         android:background="@drawable/border_bottom"
-                        android:text="Follow"
+                        android:text="@string/follow"
                         android:textAllCaps="false"
-                        android:textColor="#fff" />
+                        android:textColor="#fff"
+                        tools:ignore="ButtonStyle" />
 
                     <Button
                         android:id="@+id/btnMessage"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
                         android:layout_weight="1"
                         android:background="@drawable/border_bottom"
-                        android:text="Send Message"
+                        android:text="@string/sendmessage"
                         android:textAllCaps="false"
 
-                        android:textColor="#fff" />
+                        android:textColor="#fff"
+                        tools:ignore="ButtonStyle" />
 
                 </LinearLayout>
             </LinearLayout>
@@ -92,8 +92,7 @@
                 android:id="@+id/listInfo"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@id/recycler_view"
-                android:layout_margin="10dp"></android.support.v7.widget.RecyclerView>
+                android:layout_margin="10dp" />
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 </android.support.design.widget.CoordinatorLayout>

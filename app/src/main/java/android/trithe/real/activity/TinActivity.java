@@ -2,8 +2,10 @@ package android.trithe.real.activity;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.trithe.real.R;
@@ -15,7 +17,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,6 +34,7 @@ import com.google.firebase.storage.UploadTask;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -43,17 +45,20 @@ public class TinActivity extends AppCompatActivity {
     private TextView blogDate;
     private ImageView btnAddImage;
     private DatabaseReference mRootRef;
-    private DatabaseReference mCovDatabase;
     private DatabaseReference mDisCovDatabase;
     private StorageReference mImageStorage;
     private DatabaseReference mUserRef;
     private EditText edSend;
     private ImageView btnSend;
     private FirebaseFirestore firebaseFirestore;
-    private String user_id, mCurrentId, post_time, image_Post, desc_post;
+    private String user_id;
+    private String mCurrentId;
+    private String post_time;
+    private String image_Post;
     private static final int GALLERY_PICK = 1;
     private LinearLayout ll;
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,17 +89,16 @@ public class TinActivity extends AppCompatActivity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void initFirebase() {
         firebaseFirestore = FirebaseFirestore.getInstance();
         user_id = getIntent().getStringExtra("user_id");
         post_time = getIntent().getStringExtra("post_time");
         image_Post = getIntent().getStringExtra("image");
-        desc_post = getIntent().getStringExtra("desc");
         mRootRef = FirebaseDatabase.getInstance().getReference();
         mImageStorage = FirebaseStorage.getInstance().getReference();
-        mCurrentId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        mCurrentId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         mUserRef = FirebaseDatabase.getInstance().getReference().child("TimeOnline").child(mCurrentId);
-        mCovDatabase = FirebaseDatabase.getInstance().getReference().child("Chats").child(mCurrentId);
         mDisCovDatabase = FirebaseDatabase.getInstance().getReference().child("Chats").child(user_id);
     }
 
@@ -103,10 +107,10 @@ public class TinActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (!dataSnapshot.hasChild(user_id)) {
-                    Map chatAddMap = new HashMap();
+                    Map<String, Object> chatAddMap = new HashMap<>();
                     chatAddMap.put("seen", false);
                     chatAddMap.put("timestamp", ServerValue.TIMESTAMP);
-                    Map chatUserMap = new HashMap();
+                    Map<String, Object> chatUserMap = new HashMap<>();
                     chatUserMap.put("Chats/" + mCurrentId + "/" + user_id, chatAddMap);
                     chatUserMap.put("Chats/" + user_id + "/" + mCurrentId, chatAddMap);
                     mRootRef.updateChildren(chatUserMap, new DatabaseReference.CompletionListener() {
@@ -135,14 +139,14 @@ public class TinActivity extends AppCompatActivity {
             DatabaseReference user_message_push = mRootRef.child("Messages").child(mCurrentId).child(user_id).push();
             String push_id = user_message_push.getKey();
 
-            Map messageMap = new HashMap();
+            Map<String, Object> messageMap = new HashMap<>();
             messageMap.put("message", message);
             messageMap.put("seen", false);
             messageMap.put("type", "text");
             messageMap.put("time", ServerValue.TIMESTAMP);
             messageMap.put("from", mCurrentId);
 
-            Map messageUserMap = new HashMap();
+            Map<String, Object> messageUserMap = new HashMap<>();
             messageUserMap.put(current_user_ref + "/" + push_id, messageMap);
             messageUserMap.put(chat_user_ref + "/" + push_id, messageMap);
 
@@ -169,9 +173,7 @@ public class TinActivity extends AppCompatActivity {
             }
         });
         blogDate.setText(post_time);
-        RequestOptions requestOptions = new RequestOptions();
-        requestOptions.placeholder(R.drawable.default_image);
-        Glide.with(this).applyDefaultRequestOptions(requestOptions).load(image_Post).into(imgTin);
+        Glide.with(this).load(image_Post).into(imgTin);
     }
 
     private void initView() {
@@ -211,11 +213,12 @@ public class TinActivity extends AppCompatActivity {
         finish();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == GALLERY_PICK && resultCode == RESULT_OK) {
-            Uri imageUri = data.getData();
+            Uri imageUri = Objects.requireNonNull(data).getData();
             uploadImage(imageUri);
         }
     }
@@ -227,17 +230,18 @@ public class TinActivity extends AppCompatActivity {
         final String push_id = user_message_push.getKey();
         StorageReference filepath = mImageStorage.child("message_images").child(push_id + ".jpg");
         filepath.putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                 if (task.isSuccessful()) {
-                    String download_uri = task.getResult().getDownloadUrl().toString();
-                    Map messageMap = new HashMap();
+                    String download_uri = Objects.requireNonNull(task.getResult().getDownloadUrl()).toString();
+                    Map<String, Object> messageMap = new HashMap<>();
                     messageMap.put("message", download_uri);
                     messageMap.put("seen", false);
                     messageMap.put("type", "image");
                     messageMap.put("time", ServerValue.TIMESTAMP);
                     messageMap.put("from", mCurrentId);
-                    Map messageUserMap = new HashMap();
+                    Map<String, Object> messageUserMap = new HashMap<>();
                     messageUserMap.put(current_user_ref + "/" + push_id, messageMap);
                     messageUserMap.put(chat_user_ref + "/" + push_id, messageMap);
                     mRootRef.updateChildren(messageUserMap, new DatabaseReference.CompletionListener() {

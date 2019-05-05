@@ -1,11 +1,11 @@
 package android.trithe.real.fragment;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.trithe.real.R;
@@ -35,44 +35,36 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 public class ChatFragment extends Fragment {
-    private ConstraintLayout constraintLayout;
     private List<Conv> list = new ArrayList<>();
     private List<Users> listUser = new ArrayList<>();
     private ChatAdapter adapter;
     private RecyclerView recyclerView;
     private FirebaseAuth mAuth;
     private DatabaseReference mCovDatabase;
-    private String mCurrent_user_id;
-    private SwipeRefreshLayout swipeRefresh;
-    private int mCurrentPage = 1;
     private RecyclerView recyclerViewUser;
     private UsersAdapter useradapter;
     private FirebaseFirestore firebaseFirestore;
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.chat_fragment, container, false);
+        final View view = inflater.inflate(R.layout.fragment_chat, container, false);
         initFirebase();
         initView(view);
-        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                mCurrentPage++;
-                xulyAdapter();
-            }
-        });
         getUser();
         xulyAdapter();
         return view;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void initFirebase() {
         mAuth = FirebaseAuth.getInstance();
-        mCurrent_user_id = mAuth.getCurrentUser().getUid();
+        String mCurrent_user_id = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
         firebaseFirestore = FirebaseFirestore.getInstance();
         mCovDatabase = FirebaseDatabase.getInstance().getReference().child("Chats").child(mCurrent_user_id);
         mCovDatabase.keepSynced(true);
@@ -106,30 +98,27 @@ public class ChatFragment extends Fragment {
     private void initView(View view) {
         recyclerViewUser = view.findViewById(R.id.recycler_view);
         recyclerView = view.findViewById(R.id.recycler_viewass);
-        constraintLayout = view.findViewById(R.id.ll);
-        swipeRefresh = view.findViewById(R.id.swipe_refresh);
     }
 
     private void xulyAdapter() {
         list.clear();
         Query converstationQuery = mCovDatabase.orderByChild("timestamp");
         converstationQuery.addChildEventListener(new ChildEventListener() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 if (dataSnapshot.exists()) {
-                    constraintLayout.setVisibility(View.GONE);
                     String id = dataSnapshot.getKey();
-                    Conv messages = dataSnapshot.getValue(Conv.class).withId(id);
+                    Conv messages = Objects.requireNonNull(dataSnapshot.getValue(Conv.class)).withId(id);
                     list.add(messages);
                     adapter = new ChatAdapter(getContext(), list, new OnClick() {
                         @Override
                         public void onItemClickClicked(int position) {
-                            getActivity().finish();
+                            Objects.requireNonNull(getActivity()).finish();
                         }
                     }, new OnClick1() {
                         @Override
                         public void onItemClickClicked(int position) {
-                            mCurrentPage++;
                             list.clear();
                             xulyAdapter();
                         }
@@ -140,9 +129,6 @@ public class ChatFragment extends Fragment {
                     linearLayoutManager.setStackFromEnd(true);
                     recyclerView.setHasFixedSize(true);
                     recyclerView.setLayoutManager(linearLayoutManager);
-                    swipeRefresh.setRefreshing(false);
-                } else {
-                    constraintLayout.setVisibility(View.VISIBLE);
                 }
             }
 

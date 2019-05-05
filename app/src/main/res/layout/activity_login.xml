@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".activity.LoginActivity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@drawable/color"
     android:fitsSystemWindows="true"
-    android:layout_height="match_parent">
+    tools:context=".activity.LoginActivity">
+
     <android.support.v7.widget.CardView
         android:id="@+id/cv"
         android:layout_width="300dp"
@@ -29,6 +30,7 @@
                 <View
                     android:layout_width="8dp"
                     android:layout_height="match_parent"
+                    android:layout_alignParentStart="true"
                     android:layout_alignParentLeft="true"
                     android:background="#2fa881" />
 
@@ -36,6 +38,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
+                    android:layout_marginStart="50dp"
                     android:layout_marginLeft="50dp"
                     android:text="@string/logins"
                     android:textColor="#FFCC00"
@@ -48,14 +51,16 @@
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
                 android:orientation="horizontal"
-                android:paddingRight="30dp"
-                android:paddingLeft="50dp">
+                android:paddingStart="50dp"
+                android:paddingLeft="50dp"
+                android:paddingEnd="30dp"
+                android:paddingRight="30dp">
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:theme="@style/TextLabel1"
-                    android:textColorHint="#c5c5c5">
+                    android:textColorHint="#c5c5c5"
+                    android:theme="@style/TextLabel1">
 
                     <EditText
                         android:id="@+id/et_username"
@@ -67,22 +72,26 @@
                         android:paddingBottom="2dp"
                         android:textColor="#2fa881"
                         android:textCursorDrawable="@drawable/bg_input_cursor"
-                        android:textSize="13sp" />
+                        android:textSize="13sp"
+                        tools:ignore="Autofill" />
                 </android.support.design.widget.TextInputLayout>
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
                 android:orientation="horizontal"
-                android:paddingRight="30dp"
-                android:paddingLeft="50dp">
+                android:paddingStart="50dp"
+                android:paddingLeft="50dp"
+                android:paddingEnd="30dp"
+                android:paddingRight="30dp">
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:theme="@style/TextLabel1"
-                    android:textColorHint="#c5c5c5">
+                    android:textColorHint="#c5c5c5"
+                    android:theme="@style/TextLabel1">
 
                     <EditText
                         android:id="@+id/et_password"
@@ -94,7 +103,8 @@
                         android:paddingBottom="2dp"
                         android:textColor="#2fa881"
                         android:textCursorDrawable="@drawable/bg_input_cursor"
-                        android:textSize="13sp" />
+                        android:textSize="13sp"
+                        tools:ignore="Autofill" />
                 </android.support.design.widget.TextInputLayout>
             </LinearLayout>
 
@@ -110,10 +120,11 @@
                     android:layout_width="150dp"
                     android:layout_height="50dp"
                     android:background="@drawable/bt_shape"
+                    android:onClick="clickLogin"
                     android:stateListAnimator="@drawable/state_list_animator_z"
                     android:text="@string/go"
                     android:textColor="#d3d3d3"
-                    android:onClick="clickLogin"/>
+                    tools:targetApi="lollipop" />
             </RelativeLayout>
 
             <TextView
@@ -123,8 +134,7 @@
                 android:layout_marginTop="5dp"
                 android:text="@string/forgot_your_password"
                 android:textColor="#9a9a9a"
-                android:textSize="12sp"
-              />
+                android:textSize="12sp" />
         </LinearLayout>
     </android.support.v7.widget.CardView>
 
@@ -132,55 +142,46 @@
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignRight="@id/cv"
         android:layout_alignTop="@id/cv"
-        android:layout_marginRight="-20dp"
+        android:layout_alignEnd="@id/cv"
+        android:layout_alignRight="@id/cv"
         android:layout_marginTop="25dp"
+        android:layout_marginEnd="-20dp"
+        android:layout_marginRight="-20dp"
+        android:backgroundTint="@color/colorAccent"
         android:onClick="clickRegisterLayout"
         android:src="@drawable/ic_signup"
-       android:backgroundTint="@color/colorAccent"
         android:transitionName="loginFab"
-        app:fabSize="normal" />
+        app:fabSize="normal"
+        tools:targetApi="lollipop" />
 
-    <!--<ProgressBar-->
-        <!--android:id="@+id/progressBar"-->
-        <!--style="?android:attr/progressBarStyleHorizontal"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:indeterminate="true"-->
-        <!--android:visibility="invisible"-->
-        <!--android:layout_alignParentTop="true"-->
-        <!--android:layout_centerHorizontal="true" />-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-   android:layout_marginBottom="30sp"
-        android:layout_marginTop="60dp"
+        android:layout_alignParentBottom="true"
         android:layout_marginLeft="60dp"
+        android:layout_marginTop="60dp"
         android:layout_marginRight="60dp"
-        android:orientation="vertical"
-        android:layout_alignParentBottom="true">
+        android:layout_marginBottom="30sp"
+        android:orientation="vertical">
+
         <Button
             android:id="@+id/btnFacebook"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
             android:background="@drawable/button_corner_facebook"
-            android:text="Login with Facebook"
+            android:text="@string/loginfb"
             android:textAllCaps="false"
             android:textColor="#fff" />
+
         <Button
             android:id="@+id/btnGoogle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/button_corner_google"
-            android:text="Login with Google"
+            android:text="@string/logingg"
             android:textAllCaps="false"
             android:textColor="#FF0000" />
-        <!--<com.google.android.gms.common.SignInButton-->
-            <!--android:id="@+id/sign_in_button"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_alignParentBottom="true"/>-->
     </LinearLayout>
 </RelativeLayout>

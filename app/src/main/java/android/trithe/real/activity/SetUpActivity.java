@@ -2,14 +2,13 @@ package android.trithe.real.activity;
 
 import android.Manifest;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -18,17 +17,11 @@ import android.trithe.real.R;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.GetTokenResult;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.storage.FirebaseStorage;
@@ -39,6 +32,7 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -54,6 +48,7 @@ public class SetUpActivity extends AppCompatActivity {
     private String user_id;
     private boolean isChanged = false;
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +79,7 @@ public class SetUpActivity extends AppCompatActivity {
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void setUp() {
         final String username = textName.getText().toString();
         if (!username.equals("") && mainImageURI != null) {
@@ -93,7 +89,7 @@ public class SetUpActivity extends AppCompatActivity {
             pDialog.show();
 //nếu thay đổi
             if (isChanged) {
-                user_id = firebaseAuth.getCurrentUser().getUid();
+                user_id = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
                 StorageReference image_path = storageReference.child("profile_images").child(user_id + ".jpg");
                 image_path.putFile(mainImageURI).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                     @Override
@@ -119,11 +115,12 @@ public class SetUpActivity extends AppCompatActivity {
         btn = findViewById(R.id.btn);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void initFirebase() {
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference();
-        user_id = firebaseAuth.getCurrentUser().getUid();
+        user_id = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
     }
 
     private void BringImagePicker() {
@@ -133,22 +130,22 @@ public class SetUpActivity extends AppCompatActivity {
                 .start(SetUpActivity.this);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
-                mainImageURI = result.getUri();
+                mainImageURI = Objects.requireNonNull(result).getUri();
                 image.setImageURI(mainImageURI);
                 isChanged = true;
-            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                Exception error = result.getError();
             }
         }
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void storeFirebase(@NonNull Task<UploadTask.TaskSnapshot> task, final String username) {
         final Uri download_uri;
         if (task != null) {
@@ -161,7 +158,7 @@ public class SetUpActivity extends AppCompatActivity {
         userMap.put("name", username);
         userMap.put("status", "Mới tới");
         userMap.put("image", String.valueOf(download_uri));
-        userMap.put("token_id", token_id);
+        userMap.put("token_id", Objects.requireNonNull(token_id));
         firebaseFirestore.collection("Users").document(user_id).set(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -170,7 +167,7 @@ public class SetUpActivity extends AppCompatActivity {
                     finish();
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 } else {
-                    Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                 }
                 if (pDialog.isShowing())
                     pDialog.dismiss();

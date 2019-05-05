@@ -2,7 +2,9 @@ package android.trithe.real.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -10,7 +12,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.trithe.real.R;
-import android.trithe.real.adapter.CommentsRecyclerAdapter;
+import android.trithe.real.adapter.CommentsAdapter;
 import android.trithe.real.model.Comments;
 import android.util.Log;
 import android.view.View;
@@ -20,7 +22,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -45,6 +46,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -62,7 +64,7 @@ public class InfoPostActivity extends AppCompatActivity {
     private EditText edSend;
     private ImageView btnSend;
     private String blog_id, user_id, current_user_id;
-    private CommentsRecyclerAdapter commentsRecyclerAdapter;
+    private CommentsAdapter commentsAdapter;
     private List<Comments> commentsList;
     private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth firebaseAuth;
@@ -70,6 +72,7 @@ public class InfoPostActivity extends AppCompatActivity {
     private CircleImageView imageusersend;
     private ConstraintLayout lls;
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,34 +105,33 @@ public class InfoPostActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     String userImage = task.getResult().getString("image");
-                    RequestOptions requestOptions = new RequestOptions();
-                    requestOptions.placeholder(R.drawable.default_image);
-                    Glide.with(InfoPostActivity.this).applyDefaultRequestOptions(requestOptions).load(userImage).into(imageusersend);
+                    Glide.with(InfoPostActivity.this).load(userImage).into(imageusersend);
 
                 }
             }
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void initFirebase() {
         firebaseFirestore = FirebaseFirestore.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
         mRootRef = FirebaseDatabase.getInstance().getReference();
-        current_user_id = firebaseAuth.getCurrentUser().getUid();
+        current_user_id = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
     }
 
 
-    private void pushNotification(String id, String body) {
+    private void pushNotification(String id) {
         String current_user_ref = "Nofications/" + id;
         DatabaseReference user_notifi_push = mRootRef.child("Nofications").child(id).push();
         String push_id = user_notifi_push.getKey();
 
-        Map notiMap = new HashMap();
-        notiMap.put("body", body);
+        Map<String, Object> notiMap = new HashMap<>();
+        notiMap.put("body", " đã bình luận bài viết của bạn");
         notiMap.put("blog_id", blog_id);
         notiMap.put("timestamp", ServerValue.TIMESTAMP);
         notiMap.put("from", current_user_id);
-        Map messageUserMap = new HashMap();
+        Map<String, Object> messageUserMap = new HashMap<>();
         messageUserMap.put(current_user_ref + "/" + push_id, notiMap);
         mRootRef.updateChildren(messageUserMap, new DatabaseReference.CompletionListener() {
             @Override
@@ -161,9 +163,7 @@ public class InfoPostActivity extends AppCompatActivity {
                                 String username = task.getResult().getString("name");
                                 String userImage = task.getResult().getString("image");
                                 blogUserName.setText(username);
-                                RequestOptions requestOptions = new RequestOptions();
-                                requestOptions.placeholder(R.drawable.default_image);
-                                Glide.with(InfoPostActivity.this).applyDefaultRequestOptions(requestOptions).load(userImage).into(imageprofile);
+                                Glide.with(InfoPostActivity.this).load(userImage).into(imageprofile);
 
                             }
                         }
@@ -174,7 +174,6 @@ public class InfoPostActivity extends AppCompatActivity {
 
     }
 
-
     ////LIKE
     private void getTextLike() {
         firebaseFirestore.collection("Posts/" + blog_id + "/Likes").addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -182,9 +181,8 @@ public class InfoPostActivity extends AppCompatActivity {
             public void onEvent(QuerySnapshot queryDocumentSnapshots, FirebaseFirestoreException e) {
                 if (queryDocumentSnapshots != null) {
                     int count = queryDocumentSnapshots.size();
-                    if (count != 1) {
+                    if (count == 1) {
                         blogTextLike.setText(count + " Likes");
-                    } else if (count == 1) {
                         for (DocumentChange doc : queryDocumentSnapshots.getDocumentChanges()) {
 
                             if (doc.getType() == DocumentChange.Type.ADDED) {
@@ -202,11 +200,14 @@ public class InfoPostActivity extends AppCompatActivity {
                             }
                         }
                         logtoInfoLike(blog_id);
+                    } else {
+                        blogTextLike.setText(count + " Likes");
                     }
                 }
             }
         });
     }
+
 
     private void logtoInfoLike(final String blogId) {
         blogTextLike.setOnClickListener(new View.OnClickListener() {
@@ -230,7 +231,7 @@ public class InfoPostActivity extends AppCompatActivity {
                         } else {
                             Glide.with(InfoPostActivity.this).load(R.drawable.chua_like).into(blogLike);
                         }
-                    } catch (Exception a) {
+                    } catch (Exception ignored) {
                     }
                 }
             }
@@ -249,12 +250,12 @@ public class InfoPostActivity extends AppCompatActivity {
                         String current_user_ref = "Nofications/" + user_id;
                         DatabaseReference user_notifi_push = mRootRef.child("Nofications").child(user_id).push();
                         String push_id = user_notifi_push.getKey();
-                        Map notiMap = new HashMap();
+                        Map<String, Object> notiMap = new HashMap<>();
                         notiMap.put("body", "đã thích ảnh của bạn");
                         notiMap.put("blog_id", blog_id);
                         notiMap.put("timestamp", ServerValue.TIMESTAMP);
                         notiMap.put("from", current_user_id);
-                        Map messageUserMap = new HashMap();
+                        Map<String, Object> messageUserMap = new HashMap<>();
                         messageUserMap.put(current_user_ref + "/" + push_id, notiMap);
                         mRootRef.updateChildren(messageUserMap, new DatabaseReference.CompletionListener() {
                             @Override
@@ -264,36 +265,8 @@ public class InfoPostActivity extends AppCompatActivity {
                     }
                 } else {
                     firebaseFirestore.collection("Posts/" + blog_id + "/Likes").document(current_user_id).delete();
-
-                    firebaseFirestore.collection("Posts/" + blog_id + "/Likes").addSnapshotListener(new EventListener<QuerySnapshot>() {
-                        @Override
-                        public void onEvent(QuerySnapshot queryDocumentSnapshots, FirebaseFirestoreException e) {
-                            if (queryDocumentSnapshots != null) {
-                                int count = queryDocumentSnapshots.size();
-                                if (count == 0) {
-                                    blogTextLike.setText("Like");
-                                } else if (count != 1) {
-                                    blogTextLike.setText(count + " Likes");
-                                } else if (count == 1) {
-                                    for (DocumentChange doc : queryDocumentSnapshots.getDocumentChanges()) {
-                                        if (doc.getType() == DocumentChange.Type.ADDED) {
-                                            String likeId = doc.getDocument().getId();
-                                            firebaseFirestore.collection("Users").document(likeId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                                    if (task.isSuccessful()) {
-                                                        String username = task.getResult().getString("name");
-                                                        blogTextLike.setText(username);
-                                                    }
-                                                }
-                                            });
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    });
-
+                    getTextLike();
+                    getImageLike();
                 }
             }
         });
@@ -355,10 +328,10 @@ public class InfoPostActivity extends AppCompatActivity {
 
     private void getDataComment() {
         commentsList = new ArrayList<>();
-        commentsRecyclerAdapter = new CommentsRecyclerAdapter(commentsList);
+        commentsAdapter = new CommentsAdapter(commentsList);
         recyclerViewComment.setHasFixedSize(true);
         recyclerViewComment.setLayoutManager(new LinearLayoutManager(this));
-        recyclerViewComment.setAdapter(commentsRecyclerAdapter);
+        recyclerViewComment.setAdapter(commentsAdapter);
 
 
         firebaseFirestore.collection("Posts/" + blog_id + "/Comments").addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -369,7 +342,7 @@ public class InfoPostActivity extends AppCompatActivity {
                         if (doc.getType() == DocumentChange.Type.ADDED) {
                             Comments comments = doc.getDocument().toObject(Comments.class);
                             commentsList.add(comments);
-                            commentsRecyclerAdapter.notifyDataSetChanged();
+                            commentsAdapter.notifyDataSetChanged();
                         }
                         if (commentsList.size() == 0) {
                             lls.setVisibility(View.VISIBLE);
@@ -390,44 +363,43 @@ public class InfoPostActivity extends AppCompatActivity {
 
     private void sendComment() {
         String comment_message = edSend.getText().toString();
-        if (comment_message != null) {
-            Map<String, Object> commentsMap = new HashMap<>();
-            commentsMap.put("message", comment_message);
-            commentsMap.put("user_id", current_user_id);
-            commentsMap.put("timestamp", FieldValue.serverTimestamp());
-            firebaseFirestore.collection("Posts/" + blog_id + "/Comments").add(commentsMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentReference> task) {
-                    if (!task.isSuccessful()) {
-                        Toast.makeText(InfoPostActivity.this, "Error Posting Comment : " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                    } else {
-                        edSend.setText("");
-                        lls.setVisibility(View.GONE);
-                        if (!current_user_id.equals(user_id)) {
-                            pushNotification(user_id, " đã bình luận bài viết của bạn");
-                        }
+        Map<String, Object> commentsMap = new HashMap<>();
+        commentsMap.put("message", comment_message);
+        commentsMap.put("user_id", current_user_id);
+        commentsMap.put("timestamp", FieldValue.serverTimestamp());
+        firebaseFirestore.collection("Posts/" + blog_id + "/Comments").add(commentsMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+            @Override
+            public void onComplete(@NonNull Task<DocumentReference> task) {
+                if (!task.isSuccessful()) {
+                    Toast.makeText(InfoPostActivity.this, "Error Posting Comment : " + Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
+                } else {
+                    edSend.setText("");
+                    lls.setVisibility(View.GONE);
+                    if (!current_user_id.equals(user_id)) {
+                        pushNotification(user_id);
                     }
-
                 }
-            });
-        }
+
+            }
+        });
     }
 
 
     private void initView() {
-        recyclerViewComment = (RecyclerView) findViewById(R.id.recycler_view_comment);
-        blogImage = (ImageView) findViewById(R.id.blog_image);
-        imageprofile = (CircleImageView) findViewById(R.id.imageprofile);
-        blogUserName = (TextView) findViewById(R.id.blog_user_name);
-        blogDate = (TextView) findViewById(R.id.blog_date);
-        deleteicon = (ImageView) findViewById(R.id.deleteicon);
-        blogLike = (ImageView) findViewById(R.id.blog_like);
-        blogDesc = (TextView) findViewById(R.id.blog_desc);
-        blogTextLike = (TextView) findViewById(R.id.blog_text_like);
-        blogCountComment = (TextView) findViewById(R.id.blog_count_comment);
-        edSend = (EditText) findViewById(R.id.edSend);
-        btnSend = (ImageView) findViewById(R.id.btnSend);
-        imageusersend = (CircleImageView) findViewById(R.id.imageusersend);
-        lls = (ConstraintLayout) findViewById(R.id.lls);
+        recyclerViewComment = findViewById(R.id.recycler_view_comment);
+        blogImage = findViewById(R.id.blog_image);
+        imageprofile = findViewById(R.id.imageprofile);
+        blogUserName = findViewById(R.id.blog_user_name);
+        blogDate = findViewById(R.id.blog_date);
+        deleteicon = findViewById(R.id.deleteicon);
+        blogLike = findViewById(R.id.blog_like);
+        blogDesc = findViewById(R.id.blog_desc);
+        blogTextLike = findViewById(R.id.blog_text_like);
+        blogCountComment = findViewById(R.id.blog_count_comment);
+        edSend = findViewById(R.id.edSend);
+        btnSend = findViewById(R.id.btnSend);
+        imageusersend = findViewById(R.id.imageusersend);
+        lls = findViewById(R.id.lls);
     }
 }
