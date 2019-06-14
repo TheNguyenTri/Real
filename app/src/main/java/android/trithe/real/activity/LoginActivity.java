@@ -32,6 +32,7 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
@@ -59,8 +60,6 @@ public class LoginActivity extends AppCompatActivity {
     private CallbackManager callbackManager;
     private Button btnGoogle;
     private ProgressDialog pDialog;
-
-
     private FirebaseFirestore firebaseFirestore;
     private String user_id;
 
@@ -69,6 +68,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         initView();
+        FirebaseApp.initializeApp(LoginActivity.this);
         mAuth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
         register();
@@ -90,7 +90,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void register() {
         FacebookSdk.sdkInitialize(getApplicationContext());
-        AppEventsLogger.activateApp(this);
+        AppEventsLogger.activateApp(LoginActivity.this);
         callbackManager = CallbackManager.Factory.create();
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -121,7 +121,6 @@ public class LoginActivity extends AppCompatActivity {
         );
     }
 
-
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
@@ -134,7 +133,6 @@ public class LoginActivity extends AppCompatActivity {
         btnFacebook = findViewById(R.id.btnFacebook);
         btnGoogle = findViewById(R.id.btnGoogle);
     }
-
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void clickRegisterLayout(View view) {
@@ -237,7 +235,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -298,7 +295,6 @@ public class LoginActivity extends AppCompatActivity {
         });
         Toast.makeText(getApplicationContext(), "Đã Upload", Toast.LENGTH_SHORT).show();
     }
-
 
     private void handleFacebookAccessToken(AccessToken token) {
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
