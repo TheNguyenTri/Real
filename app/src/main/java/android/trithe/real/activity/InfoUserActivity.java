@@ -60,7 +60,6 @@ public class InfoUserActivity extends AppCompatActivity {
     private BlogAdapter infoPostUserAdapter;
     private LinearLayout ll;
 
-
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,8 +86,6 @@ public class InfoUserActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-
     }
 
     private void initFirebase() {

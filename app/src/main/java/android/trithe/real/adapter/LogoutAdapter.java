@@ -5,7 +5,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.trithe.real.R;
-import android.trithe.real.inter.OnClick;
+import android.trithe.real.callback.OnClick;
 import android.trithe.real.model.Logout;
 import android.view.LayoutInflater;
 import android.view.View;

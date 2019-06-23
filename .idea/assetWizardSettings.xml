@@ -51,7 +51,7 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="scalingPercent" value="93" />
+                                                <entry key="scalingPercent" value="69" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -61,7 +61,7 @@
                                   </option>
                                   <option name="values">
                                     <map>
-                                      <entry key="foregroundImage" value="C:\Users\Kuzuki\Desktop\img\pikachu.png" />
+                                      <entry key="foregroundImage" value="C:\Users\Kuzuki\Desktop\icon_logo.jpg" />
                                     </map>
                                   </option>
                                 </PersistentState>

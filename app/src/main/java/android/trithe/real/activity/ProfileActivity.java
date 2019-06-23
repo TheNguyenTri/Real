@@ -20,7 +20,7 @@ import android.support.v7.widget.RecyclerView;
 import android.trithe.real.R;
 import android.trithe.real.adapter.LogoutAdapter;
 import android.trithe.real.adapter.ProfileAdapter;
-import android.trithe.real.inter.OnClick;
+import android.trithe.real.callback.OnClick;
 import android.trithe.real.model.Configuration;
 import android.trithe.real.model.Logout;
 import android.view.View;

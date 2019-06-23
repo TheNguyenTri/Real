@@ -120,7 +120,6 @@ public class InfoPostActivity extends AppCompatActivity {
         current_user_id = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
     }
 
-
     private void pushNotification(String id) {
         String current_user_ref = "Nofications/" + id;
         DatabaseReference user_notifi_push = mRootRef.child("Nofications").child(id).push();
@@ -171,9 +170,7 @@ public class InfoPostActivity extends AppCompatActivity {
                 }
             }
         });
-
     }
-
     ////LIKE
     private void getTextLike() {
         firebaseFirestore.collection("Posts/" + blog_id + "/Likes").addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -357,8 +354,6 @@ public class InfoPostActivity extends AppCompatActivity {
 
             }
         });
-
-
     }
 
     private void sendComment() {
@@ -384,7 +379,6 @@ public class InfoPostActivity extends AppCompatActivity {
             }
         });
     }
-
 
     private void initView() {
         recyclerViewComment = findViewById(R.id.recycler_view_comment);
