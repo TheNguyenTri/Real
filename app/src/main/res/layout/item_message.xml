@@ -27,10 +27,11 @@
             android:id="@+id/text_chat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/message_text_background"
+            android:background="@drawable/border_text_left"
+            android:maxWidth="250dp"
             android:padding="10dp"
             android:text="@string/name"
-            android:textColor="#fff"
+            android:textColor="@android:color/black"
             android:textSize="14sp" />
 
         <android.support.v7.widget.CardView
@@ -50,6 +51,7 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:contentDescription="@string/todo"
+                android:maxWidth="200dp"
                 android:scaleType="fitCenter" />
         </android.support.v7.widget.CardView>
 

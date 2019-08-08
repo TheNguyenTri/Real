@@ -15,9 +15,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
@@ -37,7 +34,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         final TextView itemTimeUser;
         final ImageView imgPost;
 
-
         MyViewHolder(View view) {
             super(view);
             avatar = view.findViewById(R.id.avatar);
@@ -47,7 +43,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             imgPost = view.findViewById(R.id.imgPost);
         }
     }
-
 
     public NotificationAdapter(Context mContext, List<NotificationsModel> listss) {
         this.list = listss;
@@ -66,38 +61,28 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
         final NotificationsModel planss = list.get(position);
-        firebaseFirestore.collection("Users").document(planss.getFrom()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    final String userName = task.getResult().getString("name");
-                    final String userImage = task.getResult().getString("image");
-                    holder.itemNameUser.setText(userName);
-                    Glide.with(context).load(userImage).into(holder.avatar);
-                }
+        firebaseFirestore.collection("Users").document(planss.getFrom()).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                final String userName = task.getResult().getString("name");
+                final String userImage = task.getResult().getString("image");
+                holder.itemNameUser.setText(userName);
+                Glide.with(context).load(userImage).into(holder.avatar);
             }
         });
-        long lasttime = planss.getTimestamp();
-        holder.itemTimeUser.setText(GetTimeAgo.getTimeAgo(lasttime, context));
+
+        holder.itemTimeUser.setText(GetTimeAgo.getTimeAgo( planss.getTimestamp(), context));
         holder.txtBody.setText(planss.getBody());
-
-        firebaseFirestore.collection("Posts").document(planss.getBlog_id()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    final String PostImage = task.getResult().getString("image_url");
-                    Glide.with(context).load(PostImage).into(holder.imgPost);
-                }
+        firebaseFirestore.collection("Posts").document(planss.getBlog_id()).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                final String PostImage = task.getResult().getString("image_url");
+                Glide.with(context).load(PostImage).into(holder.imgPost);
             }
         });
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent commentIntent = new Intent(context, InfoPostActivity.class);
-                commentIntent.putExtra("user_id", planss.getBlog_id());
-                context.startActivity(commentIntent);
-            }
+        holder.itemView.setOnClickListener(v -> {
+            Intent commentIntent = new Intent(context, InfoPostActivity.class);
+            commentIntent.putExtra("user_id", planss.getBlog_id());
+            context.startActivity(commentIntent);
         });
     }
 
@@ -105,6 +90,4 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     public int getItemCount() {
         return list.size();
     }
-
-
 }

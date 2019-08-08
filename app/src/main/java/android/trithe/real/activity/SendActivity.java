@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -23,8 +22,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -37,7 +34,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,10 +43,10 @@ import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class SendActivity extends AppCompatActivity {
+public class SendActivity extends AppCompatActivity implements View.OnClickListener {
     private EditText edSend;
     private ImageView btnSend;
-    private String id, name;
+    private String id;
     private String mCurrentId;
     private FirebaseFirestore firebaseFirestore;
     private DatabaseReference mRootRef;
@@ -66,10 +62,11 @@ public class SendActivity extends AppCompatActivity {
     private ImageView btnAddImage;
     private static final int GALLERY_PICK = 1;
     private int mCurrentPage = 1;
-    private static final int TOTAL_ITEMS_TO_LOAD = 10;
+    private static final int TOTAL_ITEMS_TO_LOAD = 8;
     private MessagesAdapter adapter;
     private SwipeRefreshLayout swipeRefresh;
-
+    private ImageView imgBack;
+    private boolean lastMessage = true;
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @SuppressLint("RestrictedApi")
@@ -78,44 +75,35 @@ public class SendActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_send);
         initView();
-        id = getIntent().getStringExtra("user_id");
-        name = getIntent().getStringExtra("user_name");
-        initFirebase();
+        initFireBase();
+        setUpAdapter();
         getInfo();
         getTimeUser();
         loadMessages();
-        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                mCurrentPage++;
-                list.clear();
-                loadMessages();
-            }
+        swipeRefresh.setOnRefreshListener(() -> {
+            mCurrentPage++;
+            lastMessage = false;
+            list.clear();
+            loadMessages();
         });
-        btnSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mCovDatabase.child(id).child("seen").setValue(true);
-                sendMessage();
-                edSend.setText("");
-                adapter = new MessagesAdapter(getApplicationContext(), list);
-                adapter.changeDataset(list);
-                chatseen();
-            }
-        });
-        btnAddImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent, "SELECT IMAGE"), GALLERY_PICK);
-            }
-        });
+        listener();
+    }
+
+    private void setUpAdapter() {
+        adapter = new MessagesAdapter(getApplicationContext(), list);
+        recyclerViewChat.setAdapter(adapter);
+        recyclerViewChat.setHasFixedSize(true);
+        recyclerViewChat.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+    }
+
+    private void listener() {
+        btnSend.setOnClickListener(this);
+        btnAddImage.setOnClickListener(this);
+        imgBack.setOnClickListener(this);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private void initFirebase() {
+    private void initFireBase() {
         firebaseFirestore = FirebaseFirestore.getInstance();
         mRootRef = FirebaseDatabase.getInstance().getReference();
         mImageStorage = FirebaseStorage.getInstance().getReference();
@@ -123,16 +111,18 @@ public class SendActivity extends AppCompatActivity {
         mUserRef = FirebaseDatabase.getInstance().getReference().child("TimeOnline").child(mCurrentId);
         mCovDatabase = FirebaseDatabase.getInstance().getReference().child("Chats").child(mCurrentId);
         mDisCovDatabase = FirebaseDatabase.getInstance().getReference().child("Chats").child(id);
-
     }
 
     private void getInfo() {
-        nameUserChat.setText(name);
-        Glide.with(SendActivity.this).load(getIntent().getStringExtra("user_image")).into(imageUserChat);
+        firebaseFirestore.collection("Users").document(id).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Glide.with(SendActivity.this).load(task.getResult().getString("image")).into(imageUserChat);
+                nameUserChat.setText(task.getResult().getString("name"));
+            }
+        });
     }
 
-
-    private void chatseen() {
+    private void seenMessage() {
         mRootRef.child("Chats").child(mCurrentId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -145,10 +135,7 @@ public class SendActivity extends AppCompatActivity {
                     chatUserMap.put("Chats/" + mCurrentId + "/" + id, chatAddMap);
                     chatUserMap.put("Chats/" + id + "/" + mCurrentId, chatAddMap);
 
-                    mRootRef.updateChildren(chatUserMap, new DatabaseReference.CompletionListener() {
-                        @Override
-                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                        }
+                    mRootRef.updateChildren(chatUserMap, (databaseError, databaseReference) -> {
                     });
                 }
             }
@@ -162,9 +149,7 @@ public class SendActivity extends AppCompatActivity {
 
     private void loadMessages() {
         DatabaseReference messageRef = mRootRef.child("Messages").child(mCurrentId).child(id);
-
         Query messageQuery = messageRef.limitToLast(mCurrentPage * TOTAL_ITEMS_TO_LOAD);
-
         messageQuery.addChildEventListener(new ChildEventListener() {
             @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
@@ -172,11 +157,11 @@ public class SendActivity extends AppCompatActivity {
                 String id = dataSnapshot.getKey();
                 Messages messages = Objects.requireNonNull(dataSnapshot.getValue(Messages.class)).withId(id);
                 list.add(messages);
-                adapter = new MessagesAdapter(getApplicationContext(), list);
-                recyclerViewChat.setAdapter(adapter);
-                recyclerViewChat.setHasFixedSize(true);
-                recyclerViewChat.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                adapter.notifyDataSetChanged();
                 swipeRefresh.setRefreshing(false);
+                if (lastMessage) {
+                    recyclerViewChat.scrollToPosition(list.size() - 1);
+                }
             }
 
             @Override
@@ -220,12 +205,9 @@ public class SendActivity extends AppCompatActivity {
             messageUserMap.put(current_user_ref + "/" + push_id, messageMap);
             messageUserMap.put(chat_user_ref + "/" + push_id, messageMap);
 
-            mRootRef.updateChildren(messageUserMap, new DatabaseReference.CompletionListener() {
-                @Override
-                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                    mDisCovDatabase.child(mCurrentId).child("seen").setValue(false);
-                    Toast.makeText(SendActivity.this, "Gửi thành công", Toast.LENGTH_SHORT).show();
-                }
+            mRootRef.updateChildren(messageUserMap, (databaseError, databaseReference) -> {
+                mDisCovDatabase.child(mCurrentId).child("seen").setValue(false);
+                Toast.makeText(SendActivity.this, "Gửi thành công", Toast.LENGTH_SHORT).show();
             });
         }
     }
@@ -240,9 +222,9 @@ public class SendActivity extends AppCompatActivity {
                     if (online.equals("true")) {
                         timeOnlineChat.setText(R.string.online);
                     } else {
-                        long lasttime = Long.parseLong(online);
-                        String lastSeentime = GetTimeAgo.getTimeAgo(lasttime, getApplicationContext());
-                        timeOnlineChat.setText(lastSeentime);
+                        long lastTime = Long.parseLong(online);
+                        String lastSeenTime = GetTimeAgo.getTimeAgo(lastTime, getApplicationContext());
+                        timeOnlineChat.setText(lastSeenTime);
                     }
                 }
             }
@@ -257,34 +239,34 @@ public class SendActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        checkOnline();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        checkOnline();
+    }
+
+    private void checkOnline() {
         if (mCurrentId != null) {
             firebaseFirestore.collection("Users").document(mCurrentId).update("online", true);
             mUserRef.child("online").setValue(true);
         }
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (mCurrentId != null) {
-            firebaseFirestore.collection("Users").document(mCurrentId).update("online", false);
-            mUserRef.child("online").setValue(ServerValue.TIMESTAMP);
-        }
-    }
-
     private void initView() {
         edSend = findViewById(R.id.edSend);
         btnSend = findViewById(R.id.btnSend);
-        nameUserChat =  findViewById(R.id.name_user_chat);
-        timeOnlineChat =  findViewById(R.id.time_online_chat);
-        imageUserChat =  findViewById(R.id.image_user_chat);
-        recyclerViewChat =  findViewById(R.id.recycler_view_chat);
-        btnAddImage =findViewById(R.id.btnAddImage);
-        swipeRefresh =  findViewById(R.id.swipe_refresh);
-    }
+        nameUserChat = findViewById(R.id.name_user_chat);
+        timeOnlineChat = findViewById(R.id.time_online_chat);
+        imageUserChat = findViewById(R.id.image_user_chat);
+        recyclerViewChat = findViewById(R.id.recycler_view_chat);
+        btnAddImage = findViewById(R.id.btnAddImage);
+        swipeRefresh = findViewById(R.id.swipe_refresh);
+        imgBack = findViewById(R.id.imgBack);
 
-    public void out(View view) {
-        onBackPressed();
+        id = getIntent().getStringExtra("user_id");
     }
 
     @Override
@@ -294,44 +276,62 @@ public class SendActivity extends AppCompatActivity {
         finish();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == GALLERY_PICK && resultCode == RESULT_OK) {
-            Uri imageUri = Objects.requireNonNull(data).getData();
-            final String current_user_ref = "Messages/" + mCurrentId + "/" + id;
-            final String chat_user_ref = "Messages/" + id + "/" + mCurrentId;
+            setUploadImage(data);
+        }
+    }
 
-            DatabaseReference user_message_push = mRootRef.child("Messages").child(mCurrentId).child(id).push();
-            final String push_id = user_message_push.getKey();
+    private void setUploadImage(Intent data) {
+        Uri imageUri = Objects.requireNonNull(data).getData();
+        final String current_user_ref = "Messages/" + mCurrentId + "/" + id;
+        final String chat_user_ref = "Messages/" + id + "/" + mCurrentId;
+        DatabaseReference user_message_push = mRootRef.child("Messages").child(mCurrentId).child(id).push();
+        final String push_id = user_message_push.getKey();
+        StorageReference filepath = mImageStorage.child("message_images").child(push_id + ".jpg");
+        filepath.putFile(Objects.requireNonNull(imageUri)).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                String download_uri = Objects.requireNonNull(task.getResult().getDownloadUrl()).toString();
+                Map<String, Object> messageMap = new HashMap<>();
+                messageMap.put("message", download_uri);
+                messageMap.put("seen", false);
+                messageMap.put("type", "image");
+                messageMap.put("time", ServerValue.TIMESTAMP);
+                messageMap.put("from", mCurrentId);
 
-            StorageReference filepath = mImageStorage.child("message_images").child(push_id + ".jpg");
-            filepath.putFile(Objects.requireNonNull(imageUri)).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                    if (task.isSuccessful()) {
-                        String download_uri = Objects.requireNonNull(task.getResult().getDownloadUrl()).toString();
-                        Map<String, Object> messageMap = new HashMap<>();
-                        messageMap.put("message", download_uri);
-                        messageMap.put("seen", false);
-                        messageMap.put("type", "image");
-                        messageMap.put("time", ServerValue.TIMESTAMP);
-                        messageMap.put("from", mCurrentId);
+                Map<String, Object> messageUserMap = new HashMap<>();
+                messageUserMap.put(current_user_ref + "/" + push_id, messageMap);
+                messageUserMap.put(chat_user_ref + "/" + push_id, messageMap);
+                mRootRef.updateChildren(messageUserMap, (databaseError, databaseReference) -> {
+                    mDisCovDatabase.child(mCurrentId).child("seen").setValue(false);
+                    Toast.makeText(SendActivity.this, "Gửi thành công", Toast.LENGTH_SHORT).show();
+                });
+            }
+        });
+    }
 
-                        Map<String, Object> messageUserMap = new HashMap<>();
-                        messageUserMap.put(current_user_ref + "/" + push_id, messageMap);
-                        messageUserMap.put(chat_user_ref + "/" + push_id, messageMap);
-                        mRootRef.updateChildren(messageUserMap, new DatabaseReference.CompletionListener() {
-                            @Override
-                            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                                mDisCovDatabase.child(mCurrentId).child("seen").setValue(false);
-                                Toast.makeText(SendActivity.this, "Gửi thành công", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                }
-            });
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btnSend:
+                mCovDatabase.child(id).child("seen").setValue(true);
+                sendMessage();
+                edSend.setText("");
+                adapter = new MessagesAdapter(getApplicationContext(), list);
+                adapter.changeDataset(list);
+                seenMessage();
+                break;
+            case R.id.btnAddImage:
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "SELECT IMAGE"), GALLERY_PICK);
+                break;
+            case R.id.imgBack:
+                onBackPressed();
+                break;
         }
     }
 }

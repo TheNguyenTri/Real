@@ -1,9 +1,7 @@
 package android.trithe.real.adapter;
 
-
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Build;
@@ -24,8 +22,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -34,7 +30,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
@@ -67,7 +62,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> 
         }
     }
 
-
     public ChatAdapter(Context mContext, List<Conv> albumList, OnClick onClick, OnClick1 onClick1) {
         this.context = mContext;
         this.list = albumList;
@@ -93,102 +87,87 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull final MyViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
         final Conv planss = list.get(position);
-        firebaseFirestore.collection("Users").document(planss.userId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    final String userName = task.getResult().getString("name");
-                    final String userImage = task.getResult().getString("image");
-                    boolean online = task.getResult().getBoolean("online");
-                    if (online) {
-                        viewHolder.online.setVisibility(View.VISIBLE);
-                    } else {
-                        viewHolder.online.setVisibility(View.INVISIBLE);
-                    }
-                    viewHolder.name.setText(userName);
-                    Glide.with(context).load(userImage).into(viewHolder.avatar);
+        firebaseFirestore.collection("Users").document(planss.userId).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                final String userName = task.getResult().getString("name");
+                final String userImage = task.getResult().getString("image");
+                boolean online = task.getResult().getBoolean("online");
+                if (online) {
+                    viewHolder.online.setVisibility(View.VISIBLE);
+                } else {
+                    viewHolder.online.setVisibility(View.INVISIBLE);
+                }
+                viewHolder.name.setText(userName);
+                Glide.with(context).load(userImage).into(viewHolder.avatar);
 
-                    viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                viewHolder.itemView.setOnClickListener(v -> {
+                    Intent chatIntent = new Intent(context, SendActivity.class);
+                    chatIntent.putExtra("user_id", planss.userId);
+                    context.startActivity(chatIntent);
+                    onClick.onItemClickClicked(position);
+                    mCovDatabase.child(planss.userId).addValueEventListener(new ValueEventListener() {
                         @Override
-                        public void onClick(View v) {
-                            Intent chatIntent = new Intent(context, SendActivity.class);
-                            chatIntent.putExtra("user_id", planss.userId);
-                            chatIntent.putExtra("user_name", userName);
-                            chatIntent.putExtra("user_image", userImage);
-                            context.startActivity(chatIntent);
-                            onClick.onItemClickClicked(position);
-                            mCovDatabase.child(planss.userId).addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    if (dataSnapshot.exists()) {
-                                        mCovDatabase.child(planss.userId).child("seen").setValue(true);
-                                    }
-                                }
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists()) {
+                                mCovDatabase.child(planss.userId).child("seen").setValue(true);
+                            }
+                        }
 
-                                }
-                            });
-
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
 
                         }
                     });
-                }
-
+                });
             }
         });
 
-        Query converstationQuery = mCovDatabase.orderByChild("timestamp");
-        converstationQuery.addChildEventListener(new ChildEventListener() {
+        Query converStationQuery = mCovDatabase.orderByChild("timestamp");
+        converStationQuery.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Query lastMessageQuery = mMessageDatabase.child(planss.userId).limitToLast(1);
                 lastMessageQuery.addChildEventListener(new ChildEventListener() {
+                    @SuppressLint("SetTextI18n")
                     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
                     @Override
                     public void onChildAdded(final DataSnapshot dataSnapshot, String s) {
                         final String user = Objects.requireNonNull(dataSnapshot.child("from").getValue()).toString();
                         long times = Long.parseLong(Objects.requireNonNull(dataSnapshot.child("time").getValue()).toString());
-                        final long lasttime = Long.parseLong(String.valueOf(times));
-                        final String lastSeentime = GetTimeAgo.getTimeAgo(lasttime, context);
-                        firebaseFirestore.collection("Users").document(user).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                            @SuppressLint("SetTextI18n")
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    final String userName = task.getResult().getString("name");
-                                    if (Objects.requireNonNull(dataSnapshot.child("type").getValue()).toString().equals("text")) {
-                                        if (mCurrent_user_id.equals(user)) {
-                                            viewHolder.status.setText("Bạn : " + Objects.requireNonNull(dataSnapshot.child("message").getValue()).toString());
-                                            viewHolder.time.setText(" - " + lastSeentime);
-                                        } else {
-                                            viewHolder.status.setText(Objects.requireNonNull(dataSnapshot.child("message").getValue()).toString());
-                                            viewHolder.time.setText(" - " + lastSeentime);
-                                            if (planss.isSeen()) {
-                                                viewHolder.status.setTypeface(viewHolder.status.getTypeface(), Typeface.NORMAL);
-                                            } else {
-                                                viewHolder.status.setTypeface(viewHolder.status.getTypeface(), Typeface.BOLD);
-                                            }
-                                        }
+                        final String lastSeenTime = GetTimeAgo.getTimeAgo(Long.parseLong(String.valueOf(times)), context);
+                        firebaseFirestore.collection("Users").document(user).get().addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                final String userName = task.getResult().getString("name");
+                                if (Objects.requireNonNull(dataSnapshot.child("type").getValue()).toString().equals("text")) {
+                                    if (mCurrent_user_id.equals(user)) {
+                                        viewHolder.status.setText("Bạn : " + Objects.requireNonNull(dataSnapshot.child("message").getValue()).toString());
+                                        viewHolder.time.setText(" - " + lastSeenTime);
                                     } else {
-                                        if (mCurrent_user_id.equals(user)) {
-                                            viewHolder.status.setText("Bạn đã gửi 1 ảnh ");
-                                            viewHolder.time.setText(" - " + lastSeentime);
+                                        viewHolder.status.setText(Objects.requireNonNull(dataSnapshot.child("message").getValue()).toString());
+                                        viewHolder.time.setText(" - " + lastSeenTime);
+                                        if (planss.isSeen()) {
+                                            viewHolder.status.setTypeface(viewHolder.status.getTypeface(), Typeface.NORMAL);
                                         } else {
-                                            viewHolder.status.setText(userName + " đã gửi 1 ảnh ");
-                                            viewHolder.time.setText(" - " + lastSeentime);
-                                            if (planss.isSeen()) {
-                                                viewHolder.status.setTypeface(viewHolder.status.getTypeface(), Typeface.NORMAL);
-                                            } else {
-                                                viewHolder.status.setTypeface(viewHolder.status.getTypeface(), Typeface.BOLD);
-                                            }
+                                            viewHolder.status.setTypeface(viewHolder.status.getTypeface(), Typeface.BOLD);
+                                        }
+                                    }
+                                } else {
+                                    if (mCurrent_user_id.equals(user)) {
+                                        viewHolder.status.setText("Bạn đã gửi 1 ảnh ");
+                                        viewHolder.time.setText(" - " + lastSeenTime);
+                                    } else {
+                                        viewHolder.status.setText(userName + " đã gửi 1 ảnh ");
+                                        viewHolder.time.setText(" - " + lastSeenTime);
+                                        if (planss.isSeen()) {
+                                            viewHolder.status.setTypeface(viewHolder.status.getTypeface(), Typeface.NORMAL);
+                                        } else {
+                                            viewHolder.status.setTypeface(viewHolder.status.getTypeface(), Typeface.BOLD);
                                         }
                                     }
                                 }
-
                             }
-                        });
 
+                        });
                     }
 
                     @Override
@@ -234,29 +213,20 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> 
 
             }
         });
-        viewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                builder.setTitle("Message");
-                builder.setMessage("Do you want to delete this conversation ?");
-                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mMessageDatabase.child(planss.userId).setValue(null);
-                        mCovDatabase.child(planss.userId).setValue(null);
-                        onClick1.onItemClickClicked(position);
-                    }
-                });
-                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+        viewHolder.itemView.setOnLongClickListener(v -> {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle("Message");
+            builder.setMessage("Do you want to delete this conversation ?");
+            builder.setPositiveButton("Yes", (dialog, which) -> {
+                mMessageDatabase.child(planss.userId).setValue(null);
+                mCovDatabase.child(planss.userId).setValue(null);
+                onClick1.onItemClickClicked(position);
+            });
+            builder.setNegativeButton("No", (dialog, which) -> {
 
-                    }
-                });
-                builder.show();
-                return false;
-            }
+            });
+            builder.show();
+            return false;
         });
     }
 
@@ -264,7 +234,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> 
     public int getItemCount() {
         return list.size();
     }
-
 
 
 }

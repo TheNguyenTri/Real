@@ -12,7 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.bumptech.glide.Glide;
+
 import java.util.List;
 
 public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.MyViewHolder> {
@@ -25,7 +27,6 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.MyViewHolder
         final TextView status;
         final ImageView avatar;
 
-
         MyViewHolder(View view) {
             super(view);
             name = view.findViewById(R.id.title);
@@ -33,7 +34,6 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.MyViewHolder
             status = view.findViewById(R.id.weight);
         }
     }
-
 
     public UsersAdapter(Context mContext, List<Users> albumList) {
         this.context = mContext;
@@ -55,29 +55,20 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.MyViewHolder
         holder.status.setText(planss.getStatus());
         Glide.with(context).load(planss.getImage()).into(holder.avatar);
         final String user_id = planss.userId;
-        holder.avatar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, InfoUserActivity.class);
-                intent.putExtra("user_id", user_id);
-                context.startActivity(intent);
-            }
+        holder.avatar.setOnClickListener(v -> {
+            Intent intent = new Intent(context, InfoUserActivity.class);
+            intent.putExtra("user_id", user_id);
+            context.startActivity(intent);
         });
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, InfoUserActivity.class);
-                intent.putExtra("user_id", user_id);
-                context.startActivity(intent);
-            }
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, InfoUserActivity.class);
+            intent.putExtra("user_id", user_id);
+            context.startActivity(intent);
         });
-
     }
 
     @Override
     public int getItemCount() {
         return list.size();
     }
-
-
 }

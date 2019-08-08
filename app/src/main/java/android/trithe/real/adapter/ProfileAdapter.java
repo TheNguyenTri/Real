@@ -33,7 +33,6 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.MyViewHo
         }
     }
 
-
     public ProfileAdapter(Context mContext, List<Configuration> albumList) {
         this.context = mContext;
         this.list = albumList;
@@ -60,5 +59,4 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.MyViewHo
     public int getItemCount() {
         return list.size();
     }
-
 }

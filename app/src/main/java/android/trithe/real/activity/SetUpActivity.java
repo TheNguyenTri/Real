@@ -1,16 +1,12 @@
 package android.trithe.real.activity;
 
-import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.trithe.real.R;
@@ -19,7 +15,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -36,7 +31,7 @@ import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class SetUpActivity extends AppCompatActivity {
+public class SetUpActivity extends AppCompatActivity implements View.OnClickListener {
     private ProgressDialog pDialog;
     private CircleImageView image;
     private EditText textName;
@@ -55,29 +50,23 @@ public class SetUpActivity extends AppCompatActivity {
         setContentView(R.layout.activity_set_up);
         initView();
         initFirebase();
-        image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //quyền
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (ContextCompat.checkSelfPermission(SetUpActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                        ActivityCompat.requestPermissions(SetUpActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-                    } else {
-                        BringImagePicker();
-                    }
-                } else {
-                    BringImagePicker();
-                }
-            }
-        });
-
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setUp();
-            }
-        });
+        image.setOnClickListener(this);
+        btn.setOnClickListener(this);
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.image:
+                BringImagePicker();
+                break;
+            case R.id.btn:
+                setUp();
+                break;
+        }
+    }
+
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void setUp() {
@@ -87,24 +76,20 @@ public class SetUpActivity extends AppCompatActivity {
             pDialog.setMessage("Please wait...");
             pDialog.setCancelable(false);
             pDialog.show();
-//nếu thay đổi
             if (isChanged) {
                 user_id = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
                 StorageReference image_path = storageReference.child("profile_images").child(user_id + ".jpg");
-                image_path.putFile(mainImageURI).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            storeFirebase(task, username);
-                        } else {
-                            Toast.makeText(getApplicationContext(), "Upload Error", Toast.LENGTH_SHORT).show();
-                            if (pDialog.isShowing())
-                                pDialog.dismiss();
-                        }
+                image_path.putFile(mainImageURI).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        storeFireBase(task, username);
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Upload Error", Toast.LENGTH_SHORT).show();
+                        if (pDialog.isShowing())
+                            pDialog.dismiss();
                     }
                 });
             } else {
-                storeFirebase(null, username);
+                storeFireBase(null, username);
             }
         }
     }
@@ -144,9 +129,8 @@ public class SetUpActivity extends AppCompatActivity {
         }
     }
 
-
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private void storeFirebase(@NonNull Task<UploadTask.TaskSnapshot> task, final String username) {
+    private void storeFireBase(@NonNull Task<UploadTask.TaskSnapshot> task, final String username) {
         final Uri download_uri;
         if (task != null) {
             download_uri = task.getResult().getDownloadUrl();
@@ -159,21 +143,16 @@ public class SetUpActivity extends AppCompatActivity {
         userMap.put("status", "Mới tới");
         userMap.put("image", String.valueOf(download_uri));
         userMap.put("token_id", Objects.requireNonNull(token_id));
-        firebaseFirestore.collection("Users").document(user_id).set(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    Toast.makeText(getApplicationContext(), "Updated", Toast.LENGTH_SHORT).show();
-                    finish();
-                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                } else {
-                    Toast.makeText(getApplicationContext(), Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
-                }
-                if (pDialog.isShowing())
-                    pDialog.dismiss();
+        firebaseFirestore.collection("Users").document(user_id).set(userMap).addOnCompleteListener(task1 -> {
+            if (task1.isSuccessful()) {
+                Toast.makeText(getApplicationContext(), "Updated", Toast.LENGTH_SHORT).show();
+                finish();
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            } else {
+                Toast.makeText(getApplicationContext(), Objects.requireNonNull(task1.getException()).getMessage(), Toast.LENGTH_SHORT).show();
             }
+            if (pDialog.isShowing())
+                pDialog.dismiss();
         });
     }
-
-
 }

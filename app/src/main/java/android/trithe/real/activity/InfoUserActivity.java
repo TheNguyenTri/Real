@@ -2,7 +2,6 @@ package android.trithe.real.activity;
 
 import android.content.Intent;
 import android.os.Build;
-import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,8 +17,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -28,12 +25,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -65,30 +58,22 @@ public class InfoUserActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_info_user);
-        initFirebase();
+        initFireBase();
         initView();
         getInfo();
         getPosts();
         getFollow();
-        btnSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                xulysend();
-            }
-        });
-        btnMessage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(InfoUserActivity.this, SendActivity.class);
-                intent.putExtra("user_id", user_id);
-                intent.putExtra("user_name", username);
-                intent.putExtra("user_image", userImage);
-                startActivity(intent);
-            }
+        btnSend.setOnClickListener(v -> actionSend());
+        btnMessage.setOnClickListener(v -> {
+            Intent intent = new Intent(InfoUserActivity.this, SendActivity.class);
+            intent.putExtra("user_id", user_id);
+            intent.putExtra("user_name", username);
+            intent.putExtra("user_image", userImage);
+            startActivity(intent);
         });
     }
 
-    private void initFirebase() {
+    private void initFireBase() {
         firebaseFirestore = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
         mCurrent_user = FirebaseAuth.getInstance().getCurrentUser();
@@ -96,20 +81,17 @@ public class InfoUserActivity extends AppCompatActivity {
         user_id = getIntent().getStringExtra("user_id");
     }
 
-    private void xulysend() {
+    private void actionSend() {
         final String currentDate = DateFormat.getDateTimeInstance().format(new Date());
         Map<String, Object> followMap = new HashMap<>();
         followMap.put("Follows/" + user_id + "/" + mCurrent_user.getUid() + "/date", currentDate);
-        mRootRef.updateChildren(followMap, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                if (databaseError == null) {
-                    if (databaseReference != null) {
-                        btnSend.setText(R.string.unfollow);
-                    }
-                } else {
-                    Toast.makeText(getApplicationContext(), databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+        mRootRef.updateChildren(followMap, (databaseError, databaseReference) -> {
+            if (databaseError == null) {
+                if (databaseReference != null) {
+                    btnSend.setText(R.string.unfollow);
                 }
+            } else {
+                Toast.makeText(getApplicationContext(), databaseError.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -118,20 +100,17 @@ public class InfoUserActivity extends AppCompatActivity {
         info_list.clear();
         Query firstQuery = firebaseFirestore.collection("Posts").whereEqualTo("user_id", user_id)
                 .orderBy("timestamp", Query.Direction.DESCENDING);
-        firstQuery.addSnapshotListener(this, new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(QuerySnapshot queryDocumentSnapshots, FirebaseFirestoreException e) {
-                if (queryDocumentSnapshots != null) {
-                    for (DocumentChange doc : queryDocumentSnapshots.getDocumentChanges()) {
-                        if (doc.getType() == DocumentChange.Type.ADDED) {
-                            String infoPostUserId = doc.getDocument().getId();
-                            BlogPost blogPost = doc.getDocument().toObject(BlogPost.class).withId(infoPostUserId);
-                            info_list.add(blogPost);
-                            infoPostUserAdapter.notifyDataSetChanged();
-                        }
+        firstQuery.addSnapshotListener(this, (queryDocumentSnapshots, e) -> {
+            if (queryDocumentSnapshots != null) {
+                for (DocumentChange doc : queryDocumentSnapshots.getDocumentChanges()) {
+                    if (doc.getType() == DocumentChange.Type.ADDED) {
+                        String infoPostUserId = doc.getDocument().getId();
+                        BlogPost blogPost = doc.getDocument().toObject(BlogPost.class).withId(infoPostUserId);
+                        info_list.add(blogPost);
+                        infoPostUserAdapter.notifyDataSetChanged();
                     }
-
                 }
+
             }
         });
         RecyclerView.LayoutManager manager = new LinearLayoutManager(this);
@@ -141,17 +120,14 @@ public class InfoUserActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void getInfo() {
-        firebaseFirestore.collection("Users").document(user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    username = task.getResult().getString("name");
-                    userImage = task.getResult().getString("image");
-                    String userStatus = task.getResult().getString("status");
-                    infoName.setText(username);
-                    infoStatus.setText(userStatus);
-                    Glide.with(getApplicationContext()).load(userImage).into(imgInfo);
-                }
+        firebaseFirestore.collection("Users").document(user_id).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                username = task.getResult().getString("name");
+                userImage = task.getResult().getString("image");
+                String userStatus = task.getResult().getString("status");
+                infoName.setText(username);
+                infoStatus.setText(userStatus);
+                Glide.with(getApplicationContext()).load(userImage).into(imgInfo);
             }
         });
         if (user_id.equals(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())) {
@@ -165,41 +141,30 @@ public class InfoUserActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     btnSend.setText(R.string.unfollow);
-                    btnSend.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Map<String, Object> unfollowMap = new HashMap<>();
-                            unfollowMap.put("Follows/" + user_id + "/" + mCurrent_user.getUid(), null);
-                            mRootRef.updateChildren(unfollowMap, new DatabaseReference.CompletionListener() {
-                                @Override
-                                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                                    if (databaseError == null) {
-                                        btnSend.setText(R.string.follow);
-                                        btnSend.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View v) {
-                                                final String currentDate = DateFormat.getDateTimeInstance().format(new Date());
-                                                Map<String, Object> followMap = new HashMap<>();
-                                                followMap.put("Follows/" + user_id + "/" + mCurrent_user.getUid() + "/date", currentDate);
-                                                mRootRef.updateChildren(followMap, new DatabaseReference.CompletionListener() {
-                                                    @Override
-                                                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                                                        if (databaseError == null) {
-                                                            btnSend.setText(R.string.unfollow);
-                                                        } else {
-                                                            Toast.makeText(getApplicationContext(), databaseError.getMessage(), Toast.LENGTH_SHORT).show();
-                                                        }
-                                                    }
-                                                });
-                                            }
-                                        });
-                                    } else {
-                                        Toast.makeText(getApplicationContext(), databaseError.getMessage(), Toast.LENGTH_SHORT).show();
-                                    }
-                                    btnSend.setEnabled(true);
-                                }
-                            });
-                        }
+                    btnSend.setOnClickListener(v -> {
+                        Map<String, Object> unfollowMap = new HashMap<>();
+                        unfollowMap.put("Follows/" + user_id + "/" + mCurrent_user.getUid(), null);
+                        mRootRef.updateChildren(unfollowMap, (databaseError, databaseReference) -> {
+                            if (databaseError == null) {
+                                btnSend.setText(R.string.follow);
+                                btnSend.setOnClickListener(v1 -> {
+                                    final String currentDate = DateFormat.getDateTimeInstance().format(new Date());
+                                    Map<String, Object> followMap = new HashMap<>();
+                                    followMap.put("Follows/" + user_id + "/" + mCurrent_user.getUid() + "/date", currentDate);
+                                    mRootRef.updateChildren(followMap, (databaseError1, databaseReference1) -> {
+                                        if (databaseError1 == null) {
+                                            btnSend.setText(R.string.unfollow);
+                                        } else {
+                                            Toast.makeText(getApplicationContext(), databaseError1.getMessage(),
+                                                    Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                });
+                            } else {
+                                Toast.makeText(getApplicationContext(), databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                            btnSend.setEnabled(true);
+                        });
                     });
                 } else {
                     btnSend.setText(R.string.follow);
@@ -223,5 +188,4 @@ public class InfoUserActivity extends AppCompatActivity {
         btnMessage = findViewById(R.id.btnMessage);
         infoPostUserAdapter = new BlogAdapter(info_list, this);
     }
-
 }

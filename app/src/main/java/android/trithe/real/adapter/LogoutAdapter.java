@@ -34,11 +34,10 @@ public class LogoutAdapter extends RecyclerView.Adapter<LogoutAdapter.MyViewHold
         }
     }
 
-
-    public LogoutAdapter(Context mContext, List<Logout> albumList,OnClick onClick) {
+    public LogoutAdapter(Context mContext, List<Logout> albumList, OnClick onClick) {
         this.context = mContext;
         this.list = albumList;
-        this.onClick=onClick;
+        this.onClick = onClick;
     }
 
     @NonNull
@@ -55,12 +54,7 @@ public class LogoutAdapter extends RecyclerView.Adapter<LogoutAdapter.MyViewHold
         final Logout planss = list.get(position);
         holder.name.setText(planss.getLabel());
         Glide.with(context).load(planss.getIcon()).into(holder.icon);
-        holder.name.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onClick.onItemClickClicked(position);
-            }
-        });
+        holder.name.setOnClickListener(v -> onClick.onItemClickClicked(position));
     }
 
     @Override

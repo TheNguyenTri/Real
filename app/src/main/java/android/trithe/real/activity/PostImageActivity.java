@@ -3,7 +3,6 @@ package android.trithe.real.activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
@@ -17,8 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -26,11 +23,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,9 +33,9 @@ import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class TinActivity extends AppCompatActivity {
+public class PostImageActivity extends AppCompatActivity {
     private ImageView imgTin;
-    private CircleImageView imageprofile;
+    private CircleImageView imageProfile;
     private TextView blogUserName;
     private TextView blogDate;
     private ImageView btnAddImage;
@@ -63,34 +58,28 @@ public class TinActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tin);
-        initFirebase();
+        initFireBase();
         initView();
         getInfoUser();
         if (user_id.equals(mCurrentId)) {
             ll.setVisibility(View.GONE);
         } else {
-            btnAddImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent();
-                    intent.setType("image/*");
-                    intent.setAction(Intent.ACTION_GET_CONTENT);
-                    startActivityForResult(Intent.createChooser(intent, "SELECT IMAGE"), GALLERY_PICK);
-                }
+            btnAddImage.setOnClickListener(v -> {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "SELECT IMAGE"), GALLERY_PICK);
             });
-            btnSend.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    sendMessage();
-                    edSend.setText("");
-                    chatseen();
-                }
+            btnSend.setOnClickListener(v -> {
+                sendMessage();
+                edSend.setText("");
+                chatseen();
             });
         }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private void initFirebase() {
+    private void initFireBase() {
         firebaseFirestore = FirebaseFirestore.getInstance();
         user_id = getIntent().getStringExtra("user_id");
         post_time = getIntent().getStringExtra("post_time");
@@ -113,10 +102,7 @@ public class TinActivity extends AppCompatActivity {
                     Map<String, Object> chatUserMap = new HashMap<>();
                     chatUserMap.put("Chats/" + mCurrentId + "/" + user_id, chatAddMap);
                     chatUserMap.put("Chats/" + user_id + "/" + mCurrentId, chatAddMap);
-                    mRootRef.updateChildren(chatUserMap, new DatabaseReference.CompletionListener() {
-                        @Override
-                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                        }
+                    mRootRef.updateChildren(chatUserMap, (databaseError, databaseReference) -> {
                     });
                 }
             }
@@ -150,26 +136,20 @@ public class TinActivity extends AppCompatActivity {
             messageUserMap.put(current_user_ref + "/" + push_id, messageMap);
             messageUserMap.put(chat_user_ref + "/" + push_id, messageMap);
 
-            mRootRef.updateChildren(messageUserMap, new DatabaseReference.CompletionListener() {
-                @Override
-                public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                    mDisCovDatabase.child(mCurrentId).child("seen").setValue(false);
-                    Toast.makeText(TinActivity.this, "Gửi thành công", Toast.LENGTH_SHORT).show();
-                }
+            mRootRef.updateChildren(messageUserMap, (databaseError, databaseReference) -> {
+                mDisCovDatabase.child(mCurrentId).child("seen").setValue(false);
+                Toast.makeText(PostImageActivity.this, "Gửi thành công", Toast.LENGTH_SHORT).show();
             });
         }
     }
 
     private void getInfoUser() {
-        firebaseFirestore.collection("Users").document(user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    final String userName = task.getResult().getString("name");
-                    final String userImage = task.getResult().getString("image");
-                    Glide.with(TinActivity.this).load(userImage).into(imageprofile);
-                    blogUserName.setText(userName);
-                }
+        firebaseFirestore.collection("Users").document(user_id).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                final String userName = task.getResult().getString("name");
+                final String userImage = task.getResult().getString("image");
+                Glide.with(PostImageActivity.this).load(userImage).into(imageProfile);
+                blogUserName.setText(userName);
             }
         });
         blogDate.setText(post_time);
@@ -178,7 +158,7 @@ public class TinActivity extends AppCompatActivity {
 
     private void initView() {
         imgTin = findViewById(R.id.imgTin);
-        imageprofile = findViewById(R.id.imageprofile);
+        imageProfile = findViewById(R.id.imageprofile);
         blogUserName = findViewById(R.id.blog_user_name);
         blogDate = findViewById(R.id.blog_date);
         btnAddImage = findViewById(R.id.btnAddImage);
@@ -209,7 +189,7 @@ public class TinActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         onStop();
-        startActivity(new Intent(TinActivity.this, MainActivity.class));
+        startActivity(new Intent(PostImageActivity.this, MainActivity.class));
         finish();
     }
 
@@ -229,29 +209,22 @@ public class TinActivity extends AppCompatActivity {
         DatabaseReference user_message_push = mRootRef.child("Messages").child(mCurrentId).child(user_id).push();
         final String push_id = user_message_push.getKey();
         StorageReference filepath = mImageStorage.child("message_images").child(push_id + ".jpg");
-        filepath.putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-            @Override
-            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                if (task.isSuccessful()) {
-                    String download_uri = Objects.requireNonNull(task.getResult().getDownloadUrl()).toString();
-                    Map<String, Object> messageMap = new HashMap<>();
-                    messageMap.put("message", download_uri);
-                    messageMap.put("seen", false);
-                    messageMap.put("type", "image");
-                    messageMap.put("time", ServerValue.TIMESTAMP);
-                    messageMap.put("from", mCurrentId);
-                    Map<String, Object> messageUserMap = new HashMap<>();
-                    messageUserMap.put(current_user_ref + "/" + push_id, messageMap);
-                    messageUserMap.put(chat_user_ref + "/" + push_id, messageMap);
-                    mRootRef.updateChildren(messageUserMap, new DatabaseReference.CompletionListener() {
-                        @Override
-                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                            mDisCovDatabase.child(mCurrentId).child("seen").setValue(false);
-                            Toast.makeText(TinActivity.this, "Gửi thành công", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
+        filepath.putFile(imageUri).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                String download_uri = Objects.requireNonNull(task.getResult().getDownloadUrl()).toString();
+                Map<String, Object> messageMap = new HashMap<>();
+                messageMap.put("message", download_uri);
+                messageMap.put("seen", false);
+                messageMap.put("type", "image");
+                messageMap.put("time", ServerValue.TIMESTAMP);
+                messageMap.put("from", mCurrentId);
+                Map<String, Object> messageUserMap = new HashMap<>();
+                messageUserMap.put(current_user_ref + "/" + push_id, messageMap);
+                messageUserMap.put(chat_user_ref + "/" + push_id, messageMap);
+                mRootRef.updateChildren(messageUserMap, (databaseError, databaseReference) -> {
+                    mDisCovDatabase.child(mCurrentId).child("seen").setValue(false);
+                    Toast.makeText(PostImageActivity.this, "Gửi thành công", Toast.LENGTH_SHORT).show();
+                });
             }
         });
     }

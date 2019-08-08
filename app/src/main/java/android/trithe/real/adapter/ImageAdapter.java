@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.trithe.real.R;
-import android.trithe.real.activity.TinActivity;
+import android.trithe.real.activity.PostImageActivity;
 import android.trithe.real.model.BlogPost;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -66,30 +66,25 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.MyViewHolder
         holder.setIsRecyclable(false);
         final BlogPost planss = list.get(position);
         final String user_id = planss.getUser_id();
-        firebaseFirestore.collection("Users").document(user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    String username = task.getResult().getString("name");
-                    String userImage = task.getResult().getString("image");
-                    holder.name.setText(username);
-                    Glide.with(context).load(userImage).into(holder.imageUser);
-                    Glide.with(context).load(planss.getImage_url()).thumbnail(Glide.with(context).load(planss.getImage_thumb())).into(holder.imageView);
-                }
+        firebaseFirestore.collection("Users").document(user_id).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                String username = task.getResult().getString("name");
+                String userImage = task.getResult().getString("image");
+                holder.name.setText(username);
+                Glide.with(context).load(userImage).into(holder.imageUser);
+                Glide.with(context).load(planss.getImage_url()).thumbnail(
+                        Glide.with(context).load(planss.getImage_thumb())).into(holder.imageView);
             }
         });
         DateFormat dateFormat = SimpleDateFormat.getDateInstance(DateFormat.MEDIUM, Locale.US);
         try {
             final String creationDate = dateFormat.format(planss.getTimestamp().getTime());
-            holder.imageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(context, TinActivity.class);
-                    intent.putExtra("user_id", user_id);
-                    intent.putExtra("image", planss.getImage_url());
-                    intent.putExtra("post_time", creationDate);
-                    context.startActivity(intent);
-                }
+            holder.imageView.setOnClickListener(v -> {
+                Intent intent = new Intent(context, PostImageActivity.class);
+                intent.putExtra("user_id", user_id);
+                intent.putExtra("image", planss.getImage_url());
+                intent.putExtra("post_time", creationDate);
+                context.startActivity(intent);
             });
         } catch (Exception ignored) {
         }

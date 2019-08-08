@@ -9,7 +9,8 @@
         android:layout_width="140dp"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:layout_margin="@dimen/card_margin"
+        android:layout_marginEnd="@dimen/margin_10"
+        android:layout_marginRight="@dimen/margin_10"
         android:elevation="3dp"
         card_view:cardCornerRadius="@dimen/card_album_radius"
         tools:targetApi="lollipop">

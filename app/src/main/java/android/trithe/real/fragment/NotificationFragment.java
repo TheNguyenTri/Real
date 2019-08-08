@@ -41,14 +41,14 @@ public class NotificationFragment extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_notification, container, false);
         setHasOptionsMenu(true);
         initView(view);
-        getNotifi();
+        getNotification();
         return view;
     }
 
-    private void getNotifi() {
+    private void getNotification() {
         list.clear();
-        Query converstationQuery = mRootRef.child("Nofications").child(mCurrent_id).orderByChild("timestamp");
-        converstationQuery.addChildEventListener(new ChildEventListener() {
+        Query converStationQuery = mRootRef.child("Nofications").child(mCurrent_id).orderByChild("timestamp");
+        converStationQuery.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 if (dataSnapshot.exists()) {
@@ -82,7 +82,6 @@ public class NotificationFragment extends Fragment {
             }
         });
     }
-
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void initView(View view){

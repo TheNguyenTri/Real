@@ -19,11 +19,8 @@ import android.view.ViewGroup;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +35,6 @@ public class PostFragment extends Fragment {
     private FirebaseFirestore firebaseFirestore;
     private BlogAdapter blogAdapter;
     private ImageAdapter imageAdapter;
-
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Nullable
@@ -64,21 +60,17 @@ public class PostFragment extends Fragment {
     private void getDataPost() {
         blog_list.clear();
         Query firstQuery = firebaseFirestore.collection("Posts").orderBy("timestamp", Query.Direction.DESCENDING);
-        firstQuery.addSnapshotListener(Objects.requireNonNull(getActivity()), new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(QuerySnapshot queryDocumentSnapshots, FirebaseFirestoreException e) {
-                if (queryDocumentSnapshots != null) {
-                    for (DocumentChange doc : queryDocumentSnapshots.getDocumentChanges()) {
-                        if (doc.getType() == DocumentChange.Type.ADDED) {
-                            String blogPostId = doc.getDocument().getId();
-                            BlogPost blogPost = doc.getDocument().toObject(BlogPost.class).withId(blogPostId);
-                            blog_list.add(blogPost);
-                            blogAdapter.notifyDataSetChanged();
-                        }
+        firstQuery.addSnapshotListener(Objects.requireNonNull(getActivity()), (queryDocumentSnapshots, e) -> {
+            if (queryDocumentSnapshots != null) {
+                for (DocumentChange doc : queryDocumentSnapshots.getDocumentChanges()) {
+                    if (doc.getType() == DocumentChange.Type.ADDED) {
+                        String blogPostId = doc.getDocument().getId();
+                        BlogPost blogPost = doc.getDocument().toObject(BlogPost.class).withId(blogPostId);
+                        blog_list.add(blogPost);
+                        blogAdapter.notifyDataSetChanged();
                     }
                 }
             }
-
         });
         RecyclerView.LayoutManager manager = new LinearLayoutManager(getActivity());
         recyclerViewshop.setLayoutManager(manager);
@@ -89,22 +81,18 @@ public class PostFragment extends Fragment {
     private void getImagePost() {
         image_post.clear();
         Query firstQuery = firebaseFirestore.collection("Posts").orderBy("timestamp", Query.Direction.DESCENDING);
-        firstQuery.addSnapshotListener(Objects.requireNonNull(getActivity()), new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(QuerySnapshot queryDocumentSnapshots, FirebaseFirestoreException e) {
-                if (queryDocumentSnapshots != null) {
-                    for (DocumentChange doc : queryDocumentSnapshots.getDocumentChanges()) {
-                        if (doc.getType() == DocumentChange.Type.ADDED) {
-                            String blogPostId = doc.getDocument().getId();
-                            BlogPost blogPost = doc.getDocument().toObject(BlogPost.class).withId(blogPostId);
-                            image_post.add(blogPost);
-                            imageAdapter.notifyDataSetChanged();
-                        }
+        firstQuery.addSnapshotListener(Objects.requireNonNull(getActivity()), (queryDocumentSnapshots, e) -> {
+            if (queryDocumentSnapshots != null) {
+                for (DocumentChange doc : queryDocumentSnapshots.getDocumentChanges()) {
+                    if (doc.getType() == DocumentChange.Type.ADDED) {
+                        String blogPostId = doc.getDocument().getId();
+                        BlogPost blogPost = doc.getDocument().toObject(BlogPost.class).withId(blogPostId);
+                        image_post.add(blogPost);
+                        imageAdapter.notifyDataSetChanged();
                     }
-
                 }
-            }
 
+            }
         });
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));

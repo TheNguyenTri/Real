@@ -1,7 +1,6 @@
 package android.trithe.real.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
@@ -18,10 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
@@ -39,7 +35,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyView
 
     class MyViewHolder extends RecyclerView.ViewHolder {
         final TextView message;
-        final TextView timesago;
+        final TextView timesAgo;
         final CardView card_view;
         final CircleImageView avatar;
         final ImageView message_image;
@@ -48,12 +44,11 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyView
             super(view);
             message = view.findViewById(R.id.text_chat);
             avatar = view.findViewById(R.id.image_user);
-            timesago = view.findViewById(R.id.text_time);
+            timesAgo = view.findViewById(R.id.text_time);
             message_image = view.findViewById(R.id.message_image);
             card_view = view.findViewById(R.id.card_view);
         }
     }
-
 
     public MessagesAdapter(Context mContext, List<Messages> albumList) {
         this.context = mContext;
@@ -83,34 +78,19 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.MyView
         Messages messages = list.get(position);
         String from_user = messages.getFrom();
         String message_type = messages.getType();
-        if (from_user.equals(current_user_id)) {
-            holder.message.setBackgroundResource(R.drawable.message_text_background_mind);
-            holder.message.setTextColor(Color.BLACK);
-            firebaseFirestore.collection("Users").document(current_user_id).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()) {
-                        Glide.with(context).load(task.getResult().getString("image")).into(holder.avatar);
-                    }
-                }
-            });
-        } else {
-            holder.message.setBackgroundResource(R.drawable.message_text_background);
-            holder.message.setTextColor(Color.WHITE);
-            firebaseFirestore.collection("Users").document(from_user).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()) {
-                        Glide.with(context).load(task.getResult().getString("image")).into(holder.avatar);
-                    }
+        if (!from_user.equals(current_user_id)) {
+            firebaseFirestore.collection("Users").document(from_user).get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Glide.with(context).load(task.getResult().getString("image")).into(holder.avatar);
                 }
             });
         }
-        long times = messages.getTime();
-        long lasttime = Long.parseLong(String.valueOf(times));
-        String lastSeentime = GetTimeAgo.getTimeAgo(lasttime, context);
-        holder.timesago.setText(lastSeentime);
 
+        holder.timesAgo.setText(GetTimeAgo.getTimeAgo(Long.parseLong(String.valueOf(messages.getTime())), context));
+        checkTypeMessage(message_type, holder, messages);
+    }
+
+    private void checkTypeMessage(String message_type, MyViewHolder holder, Messages messages) {
         if (message_type.equals("text")) {
             holder.message.setVisibility(View.VISIBLE);
             holder.message.setText(messages.getMessage());
