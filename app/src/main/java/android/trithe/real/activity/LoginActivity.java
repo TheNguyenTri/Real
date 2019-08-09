@@ -131,14 +131,14 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    private void showpDialog() {
+    private void showPDialog() {
         pDialog = new ProgressDialog(this);
         pDialog.setMessage("Please wait...");
         pDialog.setCancelable(false);
         pDialog.show();
     }
 
-    private void showDispDialog() {
+    private void showDisPDialog() {
         if (pDialog.isShowing())
             pDialog.dismiss();
     }
@@ -151,7 +151,7 @@ public class LoginActivity extends AppCompatActivity {
         } else if (pass.equals("")) {
             editTextPassword.setError("Password must not empty");
         } else {
-            showpDialog();
+            showPDialog();
             mAuth.signInWithEmailAndPassword(emails, pass).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     Objects.requireNonNull(mAuth.getCurrentUser()).getIdToken(true).addOnSuccessListener(getTokenResult -> {
@@ -170,7 +170,7 @@ public class LoginActivity extends AppCompatActivity {
                     String errorMessage = Objects.requireNonNull(task.getException()).getMessage();
                     Toast.makeText(getApplicationContext(), errorMessage, Toast.LENGTH_SHORT).show();
                 }
-                showDispDialog();
+                showDisPDialog();
             });
         }
     }
