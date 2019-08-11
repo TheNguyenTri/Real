@@ -81,9 +81,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.MyViewHolder
             final String creationDate = dateFormat.format(planss.getTimestamp().getTime());
             holder.imageView.setOnClickListener(v -> {
                 Intent intent = new Intent(context, PostImageActivity.class);
-                intent.putExtra("user_id", user_id);
-                intent.putExtra("image", planss.getImage_url());
-                intent.putExtra("post_time", creationDate);
+                intent.putExtra("position", position);
                 context.startActivity(intent);
             });
         } catch (Exception ignored) {
