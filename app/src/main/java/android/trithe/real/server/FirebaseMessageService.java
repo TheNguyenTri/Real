@@ -29,10 +29,24 @@ public class FirebaseMessageService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
         String dataFrom = remoteMessage.getData().get("from_id");
         String dataTo = remoteMessage.getData().get("to_id");
-        pushNormalNotification(dataFrom, remoteMessage, dataTo, mAuth);
+        if (!Objects.requireNonNull(dataTo).equals(Objects.requireNonNull(mAuth.getCurrentUser()).getUid())) {
+            String click_action = Objects.requireNonNull(remoteMessage.getNotification()).getClickAction();
+            String dataMessage = remoteMessage.getData().get("message");
+            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
+                    .setSmallIcon(R.drawable.logo)
+                    .setContentTitle(remoteMessage.getNotification().getTitle()).setContentText(remoteMessage.getNotification().getBody());
+
+            Intent resultIntent = new Intent(click_action);
+            resultIntent.putExtra("dataMessage", dataMessage);
+            resultIntent.putExtra("user_id", dataFrom);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            mBuilder.setContentIntent(pendingIntent);
+            int mNoficationId = (int) System.currentTimeMillis();
+            NotificationManager mNotifi = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            mNotifi.notify(mNoficationId, mBuilder.build());
+        }
     }
 
     private void checkBigImage(FirebaseFirestore firebaseFirestore, String blog_id, String dataTo,

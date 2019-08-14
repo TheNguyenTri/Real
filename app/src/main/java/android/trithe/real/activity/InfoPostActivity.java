@@ -209,7 +209,7 @@ public class InfoPostActivity extends AppCompatActivity implements View.OnClickL
                     DatabaseReference userNotificationPush = mRootRef.child("Nofications").child(user_id).push();
                     String push_id = userNotificationPush.getKey();
                     Map<String, Object> notificationMap = new HashMap<>();
-                    notificationMap.put("body", "đã thích ảnh của bạn");
+                    notificationMap.put("body", " đã thích ảnh của bạn");
                     notificationMap.put("blog_id", blog_id);
                     notificationMap.put("timestamp", ServerValue.TIMESTAMP);
                     notificationMap.put("from", current_user_id);

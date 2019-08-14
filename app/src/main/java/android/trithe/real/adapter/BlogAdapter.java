@@ -139,7 +139,7 @@ public class BlogAdapter extends RecyclerView.Adapter<BlogAdapter.MyViewHolder> 
                             DatabaseReference user_notifi_push = mRootRef.child("Nofications").child(planss.getUser_id()).push();
                             String push_id = user_notifi_push.getKey();
                             Map<String, Object> notiMap = new HashMap<>();
-                            notiMap.put("body", "đã thích ảnh của bạn");
+                            notiMap.put("body", " đã thích ảnh của bạn");
                             notiMap.put("blog_id", blogPostId);
                             notiMap.put("timestamp", ServerValue.TIMESTAMP);
                             notiMap.put("from", currentUserId);
